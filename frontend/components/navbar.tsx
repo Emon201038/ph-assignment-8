@@ -1,8 +1,5 @@
-"use client"
-
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useAuth } from "@/lib/auth-context"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,62 +7,96 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MapPin, Menu } from "lucide-react"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MapPin, Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { auth } from "@/lib/session";
+import { logout } from "@/action";
 
-export function Navbar() {
-  const { user, logout, isAuthenticated } = useAuth()
-
+export async function Navbar() {
+  const session = await auth();
   const NavLinks = () => {
-    if (!isAuthenticated) {
+    if (!session?.data) {
       return (
         <>
-          <Link href="/explore" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="/explore"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Explore Tours
           </Link>
-          <Link href="/become-guide" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="/become-guide"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Become a Guide
           </Link>
         </>
-      )
+      );
     }
 
-    if (user?.role === "guide") {
+    if (session?.data?.role === "GUIDE") {
       return (
         <>
-          <Link href="/explore" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="/explore"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Explore Tours
           </Link>
-          <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="/dashboard"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Dashboard
           </Link>
         </>
-      )
+      );
     }
 
-    if (user?.role === "admin") {
+    if (session?.data?.role === "ADMIN") {
       return (
         <>
-          <Link href="/admin" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="/admin/dashboard"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Admin Dashboard
           </Link>
+          <Link
+            href="/admin/dashboard/tours"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
+            Manage Listing
+          </Link>
+          <Link
+            href="/admin/dashboard/users"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
+            Manage Users
+          </Link>
         </>
-      )
+      );
     }
 
     return (
       <>
-        <Link href="/explore" className="text-sm font-medium hover:text-primary transition-colors">
+        <Link
+          href="/explore"
+          className="text-sm font-medium hover:text-primary transition-colors"
+        >
           Explore Tours
         </Link>
-        <Link href="/my-bookings" className="text-sm font-medium hover:text-primary transition-colors">
+        <Link
+          href="/my-bookings"
+          className="text-sm font-medium hover:text-primary transition-colors"
+        >
           My Bookings
         </Link>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -85,7 +116,7 @@ export function Navbar() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            {!isAuthenticated ? (
+            {!session?.data ? (
               <>
                 <Button variant="ghost" asChild>
                   <Link href="/login">Login</Link>
@@ -97,31 +128,46 @@ export function Navbar() {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-10 w-10 rounded-full"
+                  >
                     <Avatar>
-                      <AvatarImage src={user.profilePic || "/placeholder.svg"} alt={user.name} />
-                      <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                      <AvatarImage
+                        src={session?.data?.profilePic || "/placeholder.svg"}
+                        alt={session?.data?.name}
+                      />
+                      <AvatarFallback>
+                        {session?.data?.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">{user.name}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                      <p className="text-sm font-medium">
+                        {session?.data?.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {session?.data?.email}
+                      </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/profile/${user.id}`}>Profile</Link>
+                    <Link href={`/profile/${session?.data?._id}`}>Profile</Link>
                   </DropdownMenuItem>
-                  {user.role === "guide" && (
+                  {session?.data?.role === "guide" && (
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard">Dashboard</Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="text-destructive">
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="text-destructive"
+                  >
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -139,7 +185,7 @@ export function Navbar() {
             <SheetContent side="right">
               <div className="flex flex-col gap-6 mt-8">
                 <NavLinks />
-                {!isAuthenticated ? (
+                {!session?.data ? (
                   <div className="flex flex-col gap-3 mt-4">
                     <Button variant="outline" asChild>
                       <Link href="/login">Login</Link>
@@ -151,11 +197,11 @@ export function Navbar() {
                 ) : (
                   <div className="flex flex-col gap-3 mt-4">
                     <Button variant="outline" asChild>
-                      <Link href={`/profile/${user.id}`}>Profile</Link>
+                      <Link href={`/profile/${session?.data?._id}`}>
+                        Profile
+                      </Link>
                     </Button>
-                    <Button variant="destructive" onClick={logout}>
-                      Logout
-                    </Button>
+                    <Button variant="destructive">Logout</Button>
                   </div>
                 )}
               </div>
@@ -164,5 +210,5 @@ export function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }

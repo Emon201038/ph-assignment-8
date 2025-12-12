@@ -32,7 +32,7 @@ app.use("/api/v1", router);
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "Parcel Delevery System api is working.",
+    message: "Local guide api is working.",
   });
 });
 

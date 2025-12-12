@@ -20,7 +20,7 @@ export const guideProtectedRoutes: RouteConfig = {
   patterns: [/^\/guide/],
 };
 export const touristProtectedRoutes: RouteConfig = {
-  exact: [],
+  exact: ["/my-bookings"],
   patterns: [/^\/dashboard/],
 };
 export const adminProtectedRoutes: RouteConfig = {

@@ -1,57 +1,59 @@
+import { UserRole } from "@/interfaces/user";
+
 export interface User {
-  id: string
-  name: string
-  email: string
-  role: "tourist" | "guide" | "admin"
-  bio?: string
-  profilePic?: string
-  languages?: string[]
-  expertise?: string[]
-  dailyRate?: number
-  rating?: number
-  toursGiven?: number
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  bio?: string;
+  profilePic?: string;
+  languages?: string[];
+  expertise?: string[];
+  dailyRate?: number;
+  rating?: number;
+  toursGiven?: number;
 }
 
 export interface Tour {
-  id: string
-  title: string
-  description: string
-  guideId: string
-  guideName: string
-  guideAvatar?: string
-  city: string
-  country: string
-  category: string
-  price: number
-  duration: string
-  maxGroupSize: number
-  meetingPoint: string
-  images: string[]
-  rating: number
-  reviewCount: number
-  languages: string[]
+  id: string;
+  title: string;
+  description: string;
+  guideId: string;
+  guideName: string;
+  guideAvatar?: string;
+  city: string;
+  country: string;
+  category: string;
+  price: number;
+  duration: string;
+  maxGroupSize: number;
+  meetingPoint: string;
+  images: string[];
+  rating: number;
+  reviewCount: number;
+  languages: string[];
 }
 
 export interface Booking {
-  id: string
-  tourId: string
-  touristId: string
-  guideId: string
-  date: string
-  status: "pending" | "confirmed" | "completed" | "cancelled"
-  totalPrice: number
+  id: string;
+  tourId: string;
+  touristId: string;
+  guideId: string;
+  date: string;
+  status: "pending" | "confirmed" | "completed" | "cancelled";
+  totalPrice: number;
 }
 
 export interface Review {
-  id: string
-  tourId: string
-  guideId: string
-  touristId: string
-  touristName: string
-  touristAvatar?: string
-  rating: number
-  comment: string
-  date: string
+  id: string;
+  tourId: string;
+  guideId: string;
+  touristId: string;
+  touristName: string;
+  touristAvatar?: string;
+  rating: number;
+  comment: string;
+  date: string;
 }
 
 // Mock data
@@ -60,7 +62,7 @@ export const mockGuides: User[] = [
     id: "1",
     name: "Maria Santos",
     email: "maria@example.com",
-    role: "guide",
+    role: UserRole.GUIDE,
     bio: "Born and raised in Lisbon, I love sharing the hidden gems of my city",
     profilePic: "/woman-smiling-guide.jpg",
     languages: ["English", "Portuguese", "Spanish"],
@@ -73,7 +75,7 @@ export const mockGuides: User[] = [
     id: "2",
     name: "Takeshi Yamamoto",
     email: "takeshi@example.com",
-    role: "guide",
+    role: UserRole.GUIDE,
     bio: "Tokyo local specializing in traditional culture and modern street food",
     profilePic: "/smiling-japanese-man.png",
     languages: ["English", "Japanese"],
@@ -86,7 +88,7 @@ export const mockGuides: User[] = [
     id: "3",
     name: "Sophie Laurent",
     email: "sophie@example.com",
-    role: "guide",
+    role: UserRole.GUIDE,
     bio: "Parisian art historian with a passion for hidden galleries and cafes",
     profilePic: "/french-woman-smiling.jpg",
     languages: ["English", "French", "Italian"],
@@ -95,7 +97,7 @@ export const mockGuides: User[] = [
     rating: 4.8,
     toursGiven: 312,
   },
-]
+];
 
 export const mockTours: Tour[] = [
   {
@@ -113,7 +115,11 @@ export const mockTours: Tour[] = [
     duration: "4 hours",
     maxGroupSize: 8,
     meetingPoint: "Jackson Square",
-    images: ["/new-orleans-jazz-bar.jpg", "/bourbon-street-night.jpg", "/jazz-musician-playing.jpg"],
+    images: [
+      "/new-orleans-jazz-bar.jpg",
+      "/bourbon-street-night.jpg",
+      "/jazz-musician-playing.jpg",
+    ],
     rating: 4.9,
     reviewCount: 127,
     languages: ["English"],
@@ -133,7 +139,11 @@ export const mockTours: Tour[] = [
     duration: "3.5 hours",
     maxGroupSize: 6,
     meetingPoint: "Shibuya Crossing",
-    images: ["/tokyo-street-food.png", "/steaming-ramen.png", "/shibuya-night.jpg"],
+    images: [
+      "/tokyo-street-food.png",
+      "/steaming-ramen.png",
+      "/shibuya-night.jpg",
+    ],
     rating: 5.0,
     reviewCount: 203,
     languages: ["English", "Japanese"],
@@ -153,7 +163,11 @@ export const mockTours: Tour[] = [
     duration: "5 hours",
     maxGroupSize: 10,
     meetingPoint: "Pont des Arts",
-    images: ["/paris-hidden-garden.jpg", "/artist-studio-paris.jpg", "/paris-streets.jpg"],
+    images: [
+      "/paris-hidden-garden.jpg",
+      "/artist-studio-paris.jpg",
+      "/paris-streets.jpg",
+    ],
     rating: 4.8,
     reviewCount: 156,
     languages: ["English", "French", "Italian"],
@@ -173,7 +187,11 @@ export const mockTours: Tour[] = [
     duration: "3 hours",
     maxGroupSize: 5,
     meetingPoint: "Plaça de Catalunya",
-    images: ["/barcelona-sunset.jpg", "/sagrada-familia.png", "/barcelona-beach.png"],
+    images: [
+      "/barcelona-sunset.jpg",
+      "/sagrada-familia.png",
+      "/barcelona-beach.png",
+    ],
     rating: 4.9,
     reviewCount: 89,
     languages: ["English", "Spanish", "Catalan"],
@@ -193,7 +211,11 @@ export const mockTours: Tour[] = [
     duration: "3.5 hours",
     maxGroupSize: 12,
     meetingPoint: "Trafalgar Square",
-    images: ["/london-pub-interior.jpg", "/british-pub-culture.jpg", "/london-street-night.jpg"],
+    images: [
+      "/london-pub-interior.jpg",
+      "/british-pub-culture.jpg",
+      "/london-street-night.jpg",
+    ],
     rating: 4.7,
     reviewCount: 241,
     languages: ["English"],
@@ -222,7 +244,7 @@ export const mockTours: Tour[] = [
     reviewCount: 178,
     languages: ["English", "Turkish", "German"],
   },
-]
+];
 
 export const mockReviews: Review[] = [
   {
@@ -261,7 +283,7 @@ export const mockReviews: Review[] = [
       "Sophie showed us a side of Paris tourists never see. The artist studios were amazing and the gardens were so peaceful.",
     date: "2024-11-08",
   },
-]
+];
 
 export const categories = [
   "Food & Wine",
@@ -272,13 +294,37 @@ export const categories = [
   "Nightlife",
   "Shopping",
   "Nature",
-]
+];
 
 export const cities = [
-  { name: "Tokyo", country: "Japan", image: "/placeholder.svg?height=300&width=400" },
-  { name: "Paris", country: "France", image: "/placeholder.svg?height=300&width=400" },
-  { name: "New York", country: "USA", image: "/placeholder.svg?height=300&width=400" },
-  { name: "Barcelona", country: "Spain", image: "/placeholder.svg?height=300&width=400" },
-  { name: "London", country: "UK", image: "/placeholder.svg?height=300&width=400" },
-  { name: "Istanbul", country: "Turkey", image: "/placeholder.svg?height=300&width=400" },
-]
+  {
+    name: "Tokyo",
+    country: "Japan",
+    image: "/images/tokyo.jpeg",
+  },
+  {
+    name: "Paris",
+    country: "France",
+    image: "/images/paris.jpeg",
+  },
+  {
+    name: "New York",
+    country: "USA",
+    image: "/images/newyork.jpg",
+  },
+  {
+    name: "Barcelona",
+    country: "Spain",
+    image: "/images/barcelona.jpeg",
+  },
+  {
+    name: "London",
+    country: "UK",
+    image: "/images/london.jpeg",
+  },
+  {
+    name: "Istanbul",
+    country: "Turkey",
+    image: "/images/istanbul.jpeg",
+  },
+];

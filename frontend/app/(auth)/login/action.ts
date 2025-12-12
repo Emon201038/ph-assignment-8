@@ -8,12 +8,28 @@ import {
   getDefaultDashboardRoute,
   isValidRedirectForRole,
 } from "@/lib/auth-utils";
+import z from "zod";
+import { zodValidator } from "@/lib/zod-validator";
 
 const serverUrl = "http://localhost:4000/api/v1";
 
+const schema = z.object({
+  email: z.email("Invalid email address"),
+  password: z
+    .string("password is required")
+    .min(6, "password must be minimum 6 digit"),
+});
+
 export const login = async (prevState: unknown, formData: FormData) => {
   try {
-    const redirectTo = formData.get("redirect");
+    const redirectTo = formData.get("redirect") || null;
+    const payload = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
+    if (!zodValidator(payload, schema).success) {
+      return zodValidator(payload, schema);
+    }
     const res = await fetch(`${serverUrl}/auth/login`, {
       method: "POST",
       credentials: "include",
@@ -25,6 +41,13 @@ export const login = async (prevState: unknown, formData: FormData) => {
         "Content-Type": "application/json",
       },
     });
+
+    const data = await res.json();
+
+    if (!data?.success) {
+      throw new Error(data?.message);
+    }
+
     const cookiesHeaders = res.headers.getSetCookie();
     let accessTokenObject: null | any = null;
     let refreshTokenObject: null | any = null;
@@ -81,6 +104,8 @@ export const login = async (prevState: unknown, formData: FormData) => {
       } else {
         redirect(getDefaultDashboardRoute(verifiedToken.role));
       }
+    } else {
+      redirect(getDefaultDashboardRoute(verifiedToken.role));
     }
   } catch (error: any) {
     console.log(error);
@@ -89,7 +114,8 @@ export const login = async (prevState: unknown, formData: FormData) => {
     }
     return {
       success: false,
-      message: "Login Failed",
+      message: error?.message,
+      errors: [],
     };
   }
 };

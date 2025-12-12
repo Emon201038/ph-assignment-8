@@ -12,4 +12,15 @@ const login = catchAsync(async (req, res, next) => {
   });
 });
 
-export const AuthController = { login };
+const getMe = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    statusCode: 200,
+    message: "Profile retrived",
+    success: true,
+    data: await AuthService.me(
+      req.cookies.accessToken || (req.headers.authorization as string)
+    ),
+  });
+});
+
+export const AuthController = { login, getMe };

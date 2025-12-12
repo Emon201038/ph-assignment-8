@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -11,10 +14,17 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus, Calendar, Clock, DollarSign, Users, Star } from "lucide-react";
-import { auth } from "@/lib/session";
+import { useAuth } from "@/lib/auth-context";
 
-export default async function DashboardPage() {
-  // Mock data for guide dashboard
+export default function GuideDashboardPage() {
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  // if (!isAuthenticated || user?.role !== "guide") {
+  //   router.push("/login");
+  //   return null;
+  // }
+
   const stats = [
     {
       label: "Total Earnings",
@@ -85,8 +95,6 @@ export default async function DashboardPage() {
     );
   };
 
-  const session = await auth();
-
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -95,7 +103,7 @@ export default async function DashboardPage() {
             <h1 className="text-3xl md:text-4xl font-bold mb-2">
               Guide Dashboard
             </h1>
-            <p className="text-muted-foreground">Welcome back</p>
+            <p className="text-muted-foreground">Welcome back,</p>
           </div>
           <Button asChild>
             <Link href="/dashboard/listings/new">
@@ -134,6 +142,7 @@ export default async function DashboardPage() {
           <TabsList>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
             <TabsTrigger value="tours">My Tours</TabsTrigger>
+            <TabsTrigger value="earnings">Earnings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="bookings" className="space-y-4">
@@ -250,6 +259,46 @@ export default async function DashboardPage() {
                     </div>
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="earnings" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Earnings Overview</CardTitle>
+                <CardDescription>
+                  Your income and payout history
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-4 border rounded-lg">
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        This Month
+                      </p>
+                      <p className="text-2xl font-bold">$1,250</p>
+                    </div>
+                    <Button>Request Payout</Button>
+                  </div>
+                  <div className="flex justify-between items-center p-4 border rounded-lg">
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        Pending Earnings
+                      </p>
+                      <p className="text-2xl font-bold">$420</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center p-4 border rounded-lg">
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        Total Lifetime Earnings
+                      </p>
+                      <p className="text-2xl font-bold">$18,750</p>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

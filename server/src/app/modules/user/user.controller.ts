@@ -16,22 +16,24 @@ const getUsers = catchAsync(async (req, res, next) => {
 });
 
 const createUser = catchAsync(async (req, res, next) => {
+  const data = await UserService.createUser(req.body);
   sendResponse(res, {
     success: true,
     statusCode: 201,
     message: "user created successfully",
-    data: UserService.createUser(req.body),
+    data,
   });
 });
 
 const getUserById = catchAsync(async (req, res, next) => {
   const isValidId = req.params.id.match(/^[0-9a-fA-F]{24}$/);
   if (!isValidId) throw new AppError(400, "Invalid user id.");
+  const data = UserService.getUser(req.params.id);
   sendResponse(res, {
     success: true,
     statusCode: 200,
     message: "user retrieved successfully",
-    data: UserService.getUser(req.params.id),
+    data,
   });
 });
 

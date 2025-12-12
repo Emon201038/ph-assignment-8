@@ -52,11 +52,6 @@ const createUser = async (payload: Partial<IUser>): Promise<IUser> => {
     );
   }
 
-  // const auth: IAuthProvider = {
-  //   provider: AuthProvider.CREDENTIALS,
-  //   providerId: email as string,
-  // };
-
   const user = await User.create({ email, ...res });
 
   return user;

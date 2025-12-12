@@ -1,8 +1,16 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Check, DollarSign, Users, Calendar, Globe, TrendingUp, Award } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Check,
+  DollarSign,
+  Users,
+  Calendar,
+  Globe,
+  TrendingUp,
+  Award,
+} from "lucide-react";
 
 export default function BecomeGuidePage() {
   return (
@@ -21,12 +29,17 @@ export default function BecomeGuidePage() {
               Turn Your Passion Into Income
             </h1>
             <p className="text-xl text-primary-foreground/90 text-pretty">
-              Share your city's hidden gems, meet amazing travelers, and earn money doing what you love. Become a
-              LocalGuide today.
+              Share your city's hidden gems, meet amazing travelers, and earn
+              money doing what you love. Become a LocalGuide today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" variant="secondary" className="h-12 px-8" asChild>
-                <Link href="/register">Get Started</Link>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="h-12 px-8"
+                asChild
+              >
+                <Link href="/register?role=GUIDE">Get Started</Link>
               </Button>
               <Button
                 size="lg"
@@ -44,8 +57,12 @@ export default function BecomeGuidePage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Become a Guide?</h2>
-            <p className="text-muted-foreground text-lg">Join a community of passionate locals</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Why Become a Guide?
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Join a community of passionate locals
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -53,46 +70,59 @@ export default function BecomeGuidePage() {
               {
                 icon: DollarSign,
                 title: "Earn Money",
-                description: "Set your own rates and keep 85% of what you earn. Top guides make $3,000+ per month.",
+                description:
+                  "Set your own rates and keep 85% of what you earn. Top guides make $3,000+ per month.",
               },
               {
                 icon: Calendar,
                 title: "Flexible Schedule",
-                description: "Work when you want. Accept bookings that fit your schedule and availability.",
+                description:
+                  "Work when you want. Accept bookings that fit your schedule and availability.",
               },
               {
                 icon: Users,
                 title: "Meet People",
-                description: "Connect with travelers from around the world and share your passion for your city.",
+                description:
+                  "Connect with travelers from around the world and share your passion for your city.",
               },
               {
                 icon: Globe,
                 title: "Global Platform",
-                description: "Reach travelers worldwide through our platform with millions of visitors.",
+                description:
+                  "Reach travelers worldwide through our platform with millions of visitors.",
               },
               {
                 icon: TrendingUp,
                 title: "Grow Your Business",
-                description: "Build your reputation with reviews and grow your tour business over time.",
+                description:
+                  "Build your reputation with reviews and grow your tour business over time.",
               },
               {
                 icon: Award,
                 title: "Support & Training",
-                description: "Get access to resources, training, and support to help you succeed.",
+                description:
+                  "Get access to resources, training, and support to help you succeed.",
               },
             ].map((benefit) => {
-              const Icon = benefit.icon
+              const Icon = benefit.icon;
               return (
-                <Card key={benefit.title} className="group hover:shadow-lg transition-all">
+                <Card
+                  key={benefit.title}
+                  className="group hover:shadow-lg transition-all"
+                >
                   <CardContent className="p-6">
                     <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                       <Icon className="h-6 w-6" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">{benefit.title}</h3>
-                    <p className="text-muted-foreground text-sm">{benefit.description}</p>
+                    <h3 className="font-semibold text-lg mb-2">
+                      {benefit.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      {benefit.description}
+                    </p>
                   </CardContent>
                 </Card>
-              )
+              );
             })}
           </div>
         </div>
@@ -102,8 +132,12 @@ export default function BecomeGuidePage() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
-            <p className="text-muted-foreground text-lg">Start guiding in four simple steps</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              How It Works
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Start guiding in four simple steps
+            </p>
           </div>
 
           <div className="max-w-4xl mx-auto space-y-8">
@@ -111,22 +145,26 @@ export default function BecomeGuidePage() {
               {
                 step: "1",
                 title: "Sign Up",
-                description: "Create your guide profile and tell us about your expertise and interests.",
+                description:
+                  "Create your guide profile and tell us about your expertise and interests.",
               },
               {
                 step: "2",
                 title: "Create Your Tours",
-                description: "Design unique experiences showcasing your favorite spots and hidden gems.",
+                description:
+                  "Design unique experiences showcasing your favorite spots and hidden gems.",
               },
               {
                 step: "3",
                 title: "Get Booked",
-                description: "Travelers discover your tours and send booking requests that you can accept.",
+                description:
+                  "Travelers discover your tours and send booking requests that you can accept.",
               },
               {
                 step: "4",
                 title: "Guide & Earn",
-                description: "Meet travelers, share your passion, and get paid for amazing experiences.",
+                description:
+                  "Meet travelers, share your passion, and get paid for amazing experiences.",
               },
             ].map((item) => (
               <div key={item.step} className="flex gap-6 items-start">
@@ -148,8 +186,12 @@ export default function BecomeGuidePage() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">What You Need</h2>
-              <p className="text-muted-foreground text-lg">Simple requirements to get started</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                What You Need
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Simple requirements to get started
+              </p>
             </div>
 
             <Card>
@@ -181,16 +223,19 @@ export default function BecomeGuidePage() {
       <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-accent/5">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <h2 className="text-3xl md:text-5xl font-bold text-balance">Ready to Start Your Journey?</h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-balance">
+              Ready to Start Your Journey?
+            </h2>
             <p className="text-xl text-muted-foreground text-pretty">
-              Join thousands of guides who are sharing their passion and earning money on LocalGuide.
+              Join thousands of guides who are sharing their passion and earning
+              money on LocalGuide.
             </p>
             <Button size="lg" className="h-12 px-8" asChild>
-              <Link href="/register">Become a Guide Today</Link>
+              <Link href="/register?role=GUIDE">Become a Guide Today</Link>
             </Button>
           </div>
         </div>
       </section>
     </div>
-  )
+  );
 }

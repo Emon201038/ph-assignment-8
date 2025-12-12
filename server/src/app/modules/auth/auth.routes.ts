@@ -6,5 +6,6 @@ import { loginSchema } from "./auth.validation";
 const authRouter = Router();
 
 authRouter.post("/login", validateRequest(loginSchema), AuthController.login);
+authRouter.get("/me", AuthController.getMe);
 
 export default authRouter;

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UserRole } from "./user.interface";
 
 // -----------------------------------------
 // Common Validations
@@ -55,6 +56,9 @@ export const UserValidation = {
     name: z.string().min(2),
     email: z.string().email(),
     password: z.string().min(6),
+    role: z
+      .enum(["TOURIST", "GUIDE"], "Invalide role")
+      .default(UserRole.TOURIST),
 
     // Common fields
     profileImage: z.string().optional(),

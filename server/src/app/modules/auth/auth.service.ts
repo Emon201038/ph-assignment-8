@@ -2,10 +2,11 @@ import { Response } from "express";
 import bcrypt from "bcryptjs";
 import AppError from "../../helpers/appError";
 import User from "../user/user.model";
-import { generateJwt } from "../../utils/jwt";
+import { generateJwt, verifyJwt } from "../../utils/jwt";
 import { envVars } from "../../config/env";
 
 const login = async (res: Response, email: string, password: string) => {
+  console.log(email, password);
   const isExists = await User.findOne({ email });
   if (!isExists || isExists.isDeleted) {
     throw new AppError(404, "No user found");
@@ -43,17 +44,25 @@ const login = async (res: Response, email: string, password: string) => {
   );
 
   res.cookie("accessToken", accessToken, {
-    maxAge: 15 * 60 * 1000,
+    maxAge: 24 * 60 * 60 * 1000,
     secure: true,
     sameSite: "none",
     httpOnly: true,
   });
   res.cookie("refreshToken", refreshToken, {
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    maxAge: 90 * 24 * 60 * 60 * 1000,
     secure: true,
     sameSite: "none",
     httpOnly: true,
   });
 };
 
-export const AuthService = { login };
+const me = async (accessToken: string) => {
+  const verifiedToken = verifyJwt(accessToken, envVars.JWT_ACCESS_TOKEN_SECRET);
+  if (typeof verifiedToken === "string") {
+    throw new AppError(400, "Failed to verify token");
+  }
+  return await User.findById(verifiedToken.userId).select("-password");
+};
+
+export const AuthService = { login, me };
