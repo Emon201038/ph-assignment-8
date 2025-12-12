@@ -15,8 +15,6 @@ const getAllUsers = async (queries: Record<string, string>) => {
     .select(["-password"])
     .execWithMeta();
 
-  console.log(res);
-
   return { users: res.data, meta: res.meta };
 };
 
@@ -30,6 +28,22 @@ const createUser = async (payload: Partial<IUser>): Promise<IUser> => {
 
   // check if user already exist
   const isExists = await User.findOne({ email });
+
+  if (isExists && isExists.isDeleted) {
+    const updatedUser = await User.findOneAndUpdate({ email }, res, {
+      context: "query",
+      new: true,
+    });
+
+    return updatedUser!;
+  }
+
+  if (isExists && isExists.isBlocked) {
+    throw new AppError(
+      HTTP_STATUS.BAD_REQUEST,
+      "User account has blocked. Please contact with admin"
+    );
+  }
 
   if (isExists) {
     throw new AppError(

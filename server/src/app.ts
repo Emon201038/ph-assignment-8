@@ -1,6 +1,7 @@
 import express from "express";
 import corse from "cors";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { notFound } from "./app/middlewares/notFound";
 import router from "./app/routes";
@@ -22,6 +23,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(morgan("dev"));
 
 // routes
 app.use("/api/v1", router);

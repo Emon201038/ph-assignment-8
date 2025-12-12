@@ -1,18 +1,29 @@
 import { Schema, model } from "mongoose";
-import { IUser } from "./user.interface";
+import bcrypt from "bcryptjs";
+import { IUser, UserRole } from "./user.interface";
 
 const userSchema = new Schema<IUser>(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: [true, "User name is required"] },
 
-    email: { type: String, required: true, unique: true },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+    },
 
-    password: { type: String, required: true },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      set: function (v: string) {
+        return bcrypt.hashSync(v, 12);
+      },
+    },
 
     role: {
       type: String,
       enum: ["TOURIST", "GUIDE", "ADMIN"],
-      required: true,
+      default: UserRole.TOURIST,
     },
 
     // Common fields

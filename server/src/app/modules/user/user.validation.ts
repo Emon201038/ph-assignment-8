@@ -52,22 +52,19 @@ const adminInfoSchema = z
 // -----------------------------------------
 export const UserValidation = {
   create: z.object({
-    body: z.object({
-      name: z.string().min(2),
-      email: z.string().email(),
-      password: z.string().min(6),
-      role: z.enum(["tourist", "guide", "admin"]),
+    name: z.string().min(2),
+    email: z.string().email(),
+    password: z.string().min(6),
 
-      // Common fields
-      profileImage: z.string().optional(),
-      bio: z.string().optional(),
-      languages: languagesSchema,
+    // Common fields
+    profileImage: z.string().optional(),
+    bio: z.string().optional(),
+    languages: languagesSchema,
 
-      // Nested Role-based fields
-      touristInfo: touristInfoSchema,
-      guideInfo: guideInfoSchema,
-      adminInfo: adminInfoSchema,
-    }),
+    // Nested Role-based fields
+    touristInfo: touristInfoSchema,
+    guideInfo: guideInfoSchema,
+    adminInfo: adminInfoSchema,
   }),
 
   // -----------------------------------------
