@@ -14,6 +14,9 @@ interface IEnvVars {
   JWT_RESET_PASSWORD_TOKEN_SECRET: string;
   JWT_RESET_PASSWORD_TOKEN_EXPIRES_IN: string;
   CLIENT_URL: string;
+  CLOUDINARY_CLOUD_NAME: string;
+  CLOUDINARY_API_KEY: string;
+  CLOUDINARY_API_SECRET: string;
   // EXPRESS_SESSION_SECRET: string;
   // GOOGLE_CLIENT_ID: string;
   // GOOGLE_CLIENT_SECRET: string;
@@ -43,6 +46,9 @@ const loadEnv = (): IEnvVars => {
     "JWT_RESET_PASSWORD_TOKEN_SECRET",
     "JWT_RESET_PASSWORD_TOKEN_EXPIRES_IN",
     "CLIENT_URL",
+    "CLOUDINARY_CLOUD_NAME",
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
     // "EXPRESS_SESSION_SECRET",
     // "GOOGLE_CLIENT_ID",
     // "GOOGLE_CLIENT_SECRET",
@@ -81,6 +87,9 @@ const loadEnv = (): IEnvVars => {
     JWT_RESET_PASSWORD_TOKEN_EXPIRES_IN: process.env
       .JWT_RESET_PASSWORD_TOKEN_EXPIRES_IN as string,
     CLIENT_URL: process.env.CLIENT_URL as string,
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
     // GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
     // GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
     // GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,

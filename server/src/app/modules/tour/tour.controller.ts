@@ -4,7 +4,7 @@ import { TourService } from "./tour.service";
 
 export const TourController = {
   createTour: catchAsync(async (req, res) => {
-    const result = await TourService.createTour(req.body);
+    const result = await TourService.createTour(req);
 
     sendResponse(res, {
       statusCode: 201,

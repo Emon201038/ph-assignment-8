@@ -1,0 +1,62 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TourController = void 0;
+const catchAsync_1 = require("../../utils/catchAsync");
+const sendResponse_1 = require("../../utils/sendResponse");
+const tour_service_1 = require("./tour.service");
+exports.TourController = {
+    createTour: (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield tour_service_1.TourService.createTour(req.body);
+        (0, sendResponse_1.sendResponse)(res, {
+            statusCode: 201,
+            success: true,
+            message: "Tour created successfully",
+            data: result,
+        });
+    })),
+    updateTour: (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield tour_service_1.TourService.updateTour(req.params.id, req.body);
+        (0, sendResponse_1.sendResponse)(res, {
+            success: true,
+            statusCode: 200,
+            message: "Tour updated successfully",
+            data: result,
+        });
+    })),
+    getAllTours: (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield tour_service_1.TourService.getAllTours(req.query);
+        (0, sendResponse_1.sendResponse)(res, {
+            success: true,
+            statusCode: 200,
+            message: "Tours fetched successfully",
+            data: result,
+        });
+    })),
+    getSingleTour: (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield tour_service_1.TourService.getSingleTour(req.params.id);
+        (0, sendResponse_1.sendResponse)(res, {
+            success: true,
+            statusCode: 200,
+            message: "Tour details fetched",
+            data: result,
+        });
+    })),
+    deleteTour: (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield tour_service_1.TourService.deleteTour(req.params.id);
+        (0, sendResponse_1.sendResponse)(res, {
+            success: true,
+            statusCode: 200,
+            message: "Tour deleted successfully",
+            data: result,
+        });
+    })),
+};

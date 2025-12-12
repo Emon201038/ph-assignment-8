@@ -3,7 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../utils/catchAsync";
 import AppError from "../helpers/appError";
 import { HTTP_STATUS } from "../utils/httpStatus";
-import { JwtPayload, verifyJwt } from "../utils/jwt";
+import { verifyJwt } from "../utils/jwt";
+import { JwtPayload } from "jsonwebtoken";
 
 export const checkAuth = (...roles: string[]) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {

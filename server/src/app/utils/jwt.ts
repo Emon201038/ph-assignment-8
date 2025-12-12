@@ -1,12 +1,4 @@
-import jwt, { JwtPayload as JWTPayload, SignOptions } from "jsonwebtoken";
-
-export interface JwtPayload extends JWTPayload {
-  userId: string;
-  role: string;
-  email: string;
-  iat?: number;
-  exp?: number;
-}
+import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 
 export const generateJwt = (
   payload: JwtPayload,

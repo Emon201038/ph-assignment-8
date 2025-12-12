@@ -38,12 +38,13 @@ const getUserById = catchAsync(async (req, res, next) => {
 });
 
 const updateUser = catchAsync(async (req, res, next) => {
+  const user = req.user;
   sendResponse(res, {
     success: true,
     statusCode: 200,
     message: "user updated successfully",
     // Todo : update user
-    data: UserService.updateUser(req.params.id, req.body, {}),
+    data: UserService.updateUser(req.params.id, req.body, user),
   });
 });
 

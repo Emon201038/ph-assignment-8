@@ -1,9 +1,20 @@
+import { Request } from "express";
 import AppError from "../../helpers/appError";
 import { QueryBuilder } from "../../middlewares/queryBuilder";
 import Tour from "./tour.model";
+import { uploadFilesToCloudinary } from "../../utils/upload-files";
 
 export const TourService = {
-  async createTour(payload: any) {
+  async createTour(req: Request) {
+    const payload = req.body;
+    if (req.file) {
+      const res = await uploadFilesToCloudinary(
+        req.file as Express.Multer.File,
+        "local-guide"
+      );
+
+      payload.images = Array.isArray(res) ? res?.map((i) => i?.url) : res?.url;
+    }
     return await Tour.create(payload);
   },
 

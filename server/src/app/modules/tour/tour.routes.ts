@@ -2,13 +2,21 @@ import { Router } from "express";
 import { TourValidation } from "./tour.validation";
 import { TourController } from "./tour.controller";
 import { validateRequest } from "../../middlewares/validateRequest";
+import { checkAuth } from "../../middlewares/checkAuth";
+import { UserRole } from "../user/user.interface";
+import { uploadImage } from "../../middlewares/uploadFile";
 
 const tourRoute = Router();
 
 tourRoute
   .route("/")
   .get(TourController.getAllTours)
-  .post(validateRequest(TourValidation.create), TourController.createTour);
+  .post(
+    checkAuth(UserRole.ADMIN, UserRole.GUIDE),
+    uploadImage.array("images", 3),
+    validateRequest(TourValidation.create),
+    TourController.createTour
+  );
 
 tourRoute
   .route("/:id")
