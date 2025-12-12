@@ -4,7 +4,7 @@ import { zodValidator } from "@/lib/zod-validator";
 import z, { email } from "zod";
 import { login } from "../login/action";
 
-const serverUrl = "http://localhost:4000/api/v1";
+const serverUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
 
 const schema = z.object({
   name: z.string("Name is required").min(1, "Name is required"),

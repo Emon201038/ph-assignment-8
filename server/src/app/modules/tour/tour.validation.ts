@@ -17,7 +17,7 @@ export const TourValidation = {
     city: z.string("city is required"),
     country: z.string("country is required"),
 
-    price: z.number("price is required").min(0),
+    price: z.string("price is required").min(0),
     duration: z.string("duration is required").min(2),
 
     itinerary: itinerarySchema.optional(),
@@ -25,10 +25,10 @@ export const TourValidation = {
     images: z.array(z.string()).optional(),
 
     meetingPoint: z.string("meeting point is required"),
-    maxGroupSize: z.number("max group size is required").min(1),
+    maxGroupSize: z.string("max group size is required").min(1),
 
     language: z
-      .array(z.string("language is required"))
+      .string("language is required")
       .min(1, "At least one language is required"),
 
     guide: z.string("guide id is required"), // guide userId

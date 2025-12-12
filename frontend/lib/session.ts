@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-const serverUrl = "http://localhost:4000/api/v1";
+const serverUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
 export const auth = async () => {
   try {
     const cookieStore = await cookies();

@@ -7,9 +7,9 @@ import { uploadFilesToCloudinary } from "../../utils/upload-files";
 export const TourService = {
   async createTour(req: Request) {
     const payload = req.body;
-    if (req.file) {
+    if (req.files) {
       const res = await uploadFilesToCloudinary(
-        req.file as Express.Multer.File,
+        req.files as Express.Multer.File[],
         "local-guide"
       );
 
@@ -28,7 +28,7 @@ export const TourService = {
     const builder = new QueryBuilder<typeof Tour.prototype>(Tour, query);
     const res = await builder
       .filter()
-      .search(["title", "description", "tag"])
+      .search(["title", "description", "category"])
       .paginate()
       .execWithMeta();
 

@@ -1,21 +1,26 @@
-"use client"
+"use client";
 
-import { use } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { MapPin, Star, Globe, Award, ChevronLeft } from "lucide-react"
-import { mockGuides, mockTours, mockReviews } from "@/lib/mock-data"
+import { use } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MapPin, Star, Globe, Award, ChevronLeft } from "lucide-react";
+import { mockGuides, mockTours, mockReviews } from "@/lib/mock-data";
+import { UserRole } from "@/interfaces/user";
 
-export default function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params)
-  const guide = mockGuides.find((g) => g.id === id)
-  const guideTours = mockTours.filter((t) => t.guideId === id)
-  const guideReviews = mockReviews.filter((r) => r.guideId === id)
+export default function ProfilePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const guide = mockGuides.find((g) => g.id === id);
+  const guideTours = mockTours.filter((t) => t.guideId === id);
+  const guideReviews = mockReviews.filter((r) => r.guideId === id);
 
   if (!guide) {
     return (
@@ -25,10 +30,10 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
           <Link href="/explore">Browse Tours</Link>
         </Button>
       </div>
-    )
+    );
   }
 
-  const isGuide = guide.role === "guide"
+  const isGuide = guide.role === UserRole.GUIDE;
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,18 +53,24 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                 <div className="text-center">
                   <Avatar className="h-32 w-32 mx-auto mb-4 ring-4 ring-primary/10">
                     <AvatarImage src={guide.profilePic || "/placeholder.svg"} />
-                    <AvatarFallback className="text-4xl">{guide.name.charAt(0)}</AvatarFallback>
+                    <AvatarFallback className="text-4xl">
+                      {guide.name.charAt(0)}
+                    </AvatarFallback>
                   </Avatar>
                   <h1 className="text-2xl font-bold mb-2">{guide.name}</h1>
                   {isGuide && guide.rating && (
                     <div className="flex items-center justify-center gap-2 mb-4">
                       <Star className="h-5 w-5 fill-accent text-accent" />
-                      <span className="text-xl font-semibold">{guide.rating}</span>
-                      <span className="text-muted-foreground">({guide.toursGiven} tours)</span>
+                      <span className="text-xl font-semibold">
+                        {guide.rating}
+                      </span>
+                      <span className="text-muted-foreground">
+                        ({guide.toursGiven} tours)
+                      </span>
                     </div>
                   )}
                   <Badge variant="secondary" className="mb-4">
-                    {guide.role === "guide" ? "Local Guide" : "Traveler"}
+                    {guide.role === UserRole.GUIDE ? "Local Guide" : "Traveler"}
                   </Badge>
                 </div>
 
@@ -106,7 +117,9 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                   {isGuide && guide.dailyRate && (
                     <div>
                       <h3 className="font-semibold mb-2">Daily Rate</h3>
-                      <p className="text-2xl font-bold text-primary">${guide.dailyRate}</p>
+                      <p className="text-2xl font-bold text-primary">
+                        ${guide.dailyRate}
+                      </p>
                       <p className="text-sm text-muted-foreground">per day</p>
                     </div>
                   )}
@@ -126,8 +139,12 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
             {isGuide ? (
               <Tabs defaultValue="tours" className="space-y-6">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="tours">Tours ({guideTours.length})</TabsTrigger>
-                  <TabsTrigger value="reviews">Reviews ({guideReviews.length})</TabsTrigger>
+                  <TabsTrigger value="tours">
+                    Tours ({guideTours.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="reviews">
+                    Reviews ({guideReviews.length})
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="tours" className="space-y-4">
@@ -147,7 +164,9 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                               <CardContent className="p-6 flex-1">
                                 <div className="space-y-3">
                                   <div>
-                                    <Badge className="mb-2">{tour.category}</Badge>
+                                    <Badge className="mb-2">
+                                      {tour.category}
+                                    </Badge>
                                     <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
                                       {tour.title}
                                     </h3>
@@ -156,16 +175,26 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                                     <MapPin className="h-4 w-4" />
                                     {tour.city}, {tour.country}
                                   </div>
-                                  <p className="text-sm text-muted-foreground line-clamp-2">{tour.description}</p>
+                                  <p className="text-sm text-muted-foreground line-clamp-2">
+                                    {tour.description}
+                                  </p>
                                   <div className="flex items-center justify-between pt-3 border-t">
                                     <div className="flex items-center gap-1">
                                       <Star className="h-4 w-4 fill-accent text-accent" />
-                                      <span className="font-semibold">{tour.rating}</span>
-                                      <span className="text-sm text-muted-foreground">({tour.reviewCount})</span>
+                                      <span className="font-semibold">
+                                        {tour.rating}
+                                      </span>
+                                      <span className="text-sm text-muted-foreground">
+                                        ({tour.reviewCount})
+                                      </span>
                                     </div>
                                     <div className="text-right">
-                                      <p className="text-xl font-bold">${tour.price}</p>
-                                      <p className="text-xs text-muted-foreground">{tour.duration}</p>
+                                      <p className="text-xl font-bold">
+                                        ${tour.price}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {tour.duration}
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
@@ -178,7 +207,9 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                   ) : (
                     <Card>
                       <CardContent className="p-12 text-center">
-                        <p className="text-muted-foreground">No tours available</p>
+                        <p className="text-muted-foreground">
+                          No tours available
+                        </p>
                       </CardContent>
                     </Card>
                   )}
@@ -191,24 +222,35 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                         <CardContent className="p-6">
                           <div className="flex items-start gap-4">
                             <Avatar>
-                              <AvatarImage src={review.touristAvatar || "/placeholder.svg"} />
-                              <AvatarFallback>{review.touristName.charAt(0)}</AvatarFallback>
+                              <AvatarImage
+                                src={review.touristAvatar || "/placeholder.svg"}
+                              />
+                              <AvatarFallback>
+                                {review.touristName.charAt(0)}
+                              </AvatarFallback>
                             </Avatar>
                             <div className="flex-1">
                               <div className="flex items-center justify-between mb-2">
                                 <div>
-                                  <p className="font-semibold">{review.touristName}</p>
+                                  <p className="font-semibold">
+                                    {review.touristName}
+                                  </p>
                                   <p className="text-sm text-muted-foreground">
                                     {new Date(review.date).toLocaleDateString()}
                                   </p>
                                 </div>
                                 <div className="flex gap-1">
                                   {[...Array(review.rating)].map((_, i) => (
-                                    <Star key={i} className="h-4 w-4 fill-accent text-accent" />
+                                    <Star
+                                      key={i}
+                                      className="h-4 w-4 fill-accent text-accent"
+                                    />
                                   ))}
                                 </div>
                               </div>
-                              <p className="text-muted-foreground">{review.comment}</p>
+                              <p className="text-muted-foreground">
+                                {review.comment}
+                              </p>
                             </div>
                           </div>
                         </CardContent>
@@ -226,8 +268,12 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
             ) : (
               <Card>
                 <CardContent className="p-12 text-center">
-                  <h3 className="text-xl font-semibold mb-2">Traveler Profile</h3>
-                  <p className="text-muted-foreground mb-6">This user is exploring the world with LocalGuide</p>
+                  <h3 className="text-xl font-semibold mb-2">
+                    Traveler Profile
+                  </h3>
+                  <p className="text-muted-foreground mb-6">
+                    This user is exploring the world with LocalGuide
+                  </p>
                   <Button asChild>
                     <Link href="/explore">Find Tours</Link>
                   </Button>
@@ -238,5 +284,5 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -11,7 +11,7 @@ import {
 import z from "zod";
 import { zodValidator } from "@/lib/zod-validator";
 
-const serverUrl = "http://localhost:4000/api/v1";
+const serverUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
 
 const schema = z.object({
   email: z.email("Invalid email address"),
