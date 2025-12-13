@@ -1,15 +1,15 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
-import "./globals.css"
-import { AuthProvider } from "@/lib/auth-context"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
-import { Toaster } from "sonner"
+import type React from "react";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
+import { AuthProvider } from "@/lib/auth-context";
+import { Navbar } from "@/components/module/shared/navbar";
+import { Footer } from "@/components/module/shared/footer";
+import { Toaster } from "sonner";
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const _geist = Geist({ subsets: ["latin"] });
+const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "LocalGuide - Discover Authentic Travel Experiences",
@@ -33,12 +33,12 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -54,5 +54,5 @@ export default function RootLayout({
         <Analytics />
       </body>
     </html>
-  )
+  );
 }

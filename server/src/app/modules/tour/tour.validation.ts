@@ -11,7 +11,7 @@ const itinerarySchema = z.array(
 export const TourValidation = {
   create: z.object({
     title: z.string("title is required").min(3),
-    description: z.string("description is required").min(10),
+    description: z.string("description is required").min(3),
 
     category: z.string("category is required"),
     city: z.string("city is required"),
@@ -27,11 +27,9 @@ export const TourValidation = {
     meetingPoint: z.string("meeting point is required"),
     maxGroupSize: z.string("max group size is required").min(1),
 
-    language: z
+    languages: z
       .string("language is required")
       .min(1, "At least one language is required"),
-
-    guide: z.string("guide id is required"), // guide userId
   }),
 
   update: z.object({

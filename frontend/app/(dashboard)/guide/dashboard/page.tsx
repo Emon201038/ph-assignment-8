@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -14,16 +11,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus, Calendar, Clock, DollarSign, Users, Star } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import CreateTourModal from "@/components/module/guide/CreateTourModal";
+import { auth } from "@/lib/session";
 
-export default function GuideDashboardPage() {
-  const { user, isAuthenticated } = useAuth();
-  const router = useRouter();
-
-  // if (!isAuthenticated || user?.role !== "guide") {
-  //   router.push("/login");
-  //   return null;
-  // }
+export default async function GuideDashboardPage() {
+  const session = await auth();
 
   const stats = [
     {
@@ -105,12 +97,7 @@ export default function GuideDashboardPage() {
             </h1>
             <p className="text-muted-foreground">Welcome back,</p>
           </div>
-          <Button asChild>
-            <Link href="/dashboard/listings/new">
-              <Plus className="h-4 w-4 mr-2" />
-              Create Tour
-            </Link>
-          </Button>
+          <CreateTourModal userId={session?.data?._id} />
         </div>
 
         {/* Stats Grid */}

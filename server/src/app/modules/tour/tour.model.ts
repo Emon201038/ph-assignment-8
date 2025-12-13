@@ -29,7 +29,7 @@ const tourSchema = new Schema<ITour>(
     meetingPoint: { type: String, required: true },
     maxGroupSize: { type: Number, default: 5 },
 
-    language: [{ type: String }],
+    languages: [{ type: String }],
 
     guide: {
       type: Schema.Types.ObjectId,

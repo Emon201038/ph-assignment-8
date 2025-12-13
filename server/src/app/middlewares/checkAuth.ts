@@ -9,12 +9,8 @@ import { JwtPayload } from "jsonwebtoken";
 export const checkAuth = (...roles: string[]) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies.accessToken;
+    console.log(accessToken, req.cookies);
     if (!accessToken) {
-      throw new AppError(HTTP_STATUS.UNAUTHORIZED, "You are not logged in.");
-    }
-
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
       throw new AppError(HTTP_STATUS.UNAUTHORIZED, "You are not logged in.");
     }
 

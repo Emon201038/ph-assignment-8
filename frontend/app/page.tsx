@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,161 +16,24 @@ import {
   UtensilsCrossed,
   Landmark,
 } from "lucide-react";
-import { mockTours, mockGuides, cities } from "@/lib/mock-data";
+import { mockTours, mockGuides } from "@/lib/mock-data";
+import HeroSection from "@/components/module/home/HeroSection";
+import FeaturedCities from "@/components/module/home/FeaturedCities";
+import FeaturedTours from "@/components/module/home/FeaturedTours";
 
 export default async function HomePage() {
-  const featuredTours = mockTours.slice(0, 3);
   const topGuides = mockGuides;
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/tours?limit=3&page=2`
-  );
-  const data = await res.json();
-
-  console.log(data);
 
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/5 via-background to-accent/5 py-20 md:py-32">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center space-y-8">
-            <Badge variant="secondary" className="text-sm px-4 py-1.5">
-              Trusted by 50,000+ travelers worldwide
-            </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-balance">
-              Explore the World with Local Experts
-            </h1>
-            <p className="text-xl text-muted-foreground text-pretty">
-              Discover authentic experiences, hidden gems, and unforgettable
-              adventures guided by passionate locals who know their cities best.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  placeholder="Where do you want to go?"
-                  className="pl-10 h-12 text-base"
-                />
-              </div>
-              <Button size="lg" className="h-12 px-8" asChild>
-                <Link href="/explore">Explore Tours</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* Featured Cities */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Popular Destinations
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Explore cities with local guides
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cities.map((city) => (
-              <Link key={city.name} href={`/explore?city=${city.name}`}>
-                <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300">
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={city.image || "/placeholder.svg"}
-                      alt={city.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-4 left-4 text-white">
-                      <h3 className="text-2xl font-bold">{city.name}</h3>
-                      <p className="text-sm text-white/90">{city.country}</p>
-                    </div>
-                  </div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FeaturedCities />
 
       {/* Featured Tours */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Top-Rated Experiences
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Handpicked tours loved by travelers
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {data?.data?.tours?.map((tour: any) => (
-              <Link key={tour.id} href={`/tours/${tour._id}`}>
-                <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 h-full">
-                  <div className="relative h-56 overflow-hidden">
-                    <img
-                      src={tour.images[0] || "/placeholder.svg"}
-                      alt={tour.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                    <Badge className="absolute top-4 right-4 bg-background/90 text-foreground border">
-                      <Star className="h-3 w-3 fill-accent text-accent mr-1" />
-                      {tour.rating}
-                    </Badge>
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        {tour.city}, {tour.country}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                      {tour.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
-                      {tour.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage
-                            src={tour?.guideAvatar || "/placeholder.svg"}
-                          />
-                          <AvatarFallback>
-                            {tour?.guideName?.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm font-medium">
-                          {tour?.guideName}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold">${tour.price}</p>
-                        <p className="text-xs text-muted-foreground">
-                          per person
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/explore">View All Tours</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <FeaturedTours />
 
       {/* Categories */}
       <section className="py-16 bg-muted/30">
@@ -400,7 +262,7 @@ export default async function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
+      <section className="py-20 bg-linear-to-br from-primary to-primary/80 text-primary-foreground">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <h2 className="text-3xl md:text-5xl font-bold text-balance">

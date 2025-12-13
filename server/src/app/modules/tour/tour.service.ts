@@ -15,6 +15,13 @@ export const TourService = {
 
       payload.images = Array.isArray(res) ? res?.map((i) => i?.url) : res?.url;
     }
+    if (payload?.languages) {
+      payload.languages = (payload.languages as string)
+        .split(",")
+        .map((l) => l.trim())
+        .filter(Boolean);
+    }
+    payload.guide = req.user.userId;
     return await Tour.create(payload);
   },
 
@@ -29,6 +36,8 @@ export const TourService = {
     const res = await builder
       .filter()
       .search(["title", "description", "category"])
+      .sort()
+      .populate(["guide"])
       .paginate()
       .execWithMeta();
 
