@@ -13,11 +13,29 @@ import { MapPin, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { auth } from "@/lib/session";
 import { logout } from "@/action";
+import { UserRole } from "@/interfaces/user.interface";
+import DashboardMobileNav from "../dashboard/DashboardMobileNav";
+import { redirect } from "next/navigation";
+import { INavSection } from "@/interfaces/dashboard.interface";
+import { getDefaultDashboardRoute } from "@/lib/auth-utils";
 
-export async function Navbar() {
+export async function Navbar({
+  showLogo = true,
+  isDashboard = false,
+}: {
+  showLogo?: boolean;
+  isDashboard?: boolean;
+}) {
   const session = await auth();
+  if (!session) {
+    redirect("/login");
+  }
+
+  const navItems: INavSection[] = [];
+  const dashboardHome = getDefaultDashboardRoute(session.role);
+
   const NavLinks = () => {
-    if (!session?.data) {
+    if (!session) {
       return (
         <>
           <Link
@@ -36,7 +54,7 @@ export async function Navbar() {
       );
     }
 
-    if (session?.data?.role === "GUIDE") {
+    if (session?.role === "GUIDE") {
       return (
         <>
           <Link
@@ -55,7 +73,7 @@ export async function Navbar() {
       );
     }
 
-    if (session?.data?.role === "ADMIN") {
+    if (session?.role === "ADMIN") {
       return (
         <>
           <Link
@@ -99,15 +117,64 @@ export async function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary">
-              <MapPin className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-bold">LocalGuide</span>
-          </Link>
+          <div className="flex items-center">
+            {/* Mobile Menu */}
+            <Sheet>
+              <SheetTrigger asChild className="md:hidden">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-primary"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                {isDashboard ? (
+                  <DashboardMobileNav
+                    userInfo={session}
+                    dashboardHome={dashboardHome}
+                    navItems={navItems}
+                  />
+                ) : (
+                  <div className="flex flex-col gap-6 mt-8">
+                    <NavLinks />
+                    {!session ? (
+                      <div className="flex flex-col gap-3 mt-4">
+                        <Button variant="outline" asChild>
+                          <Link href="/login">Login</Link>
+                        </Button>
+                        <Button asChild>
+                          <Link href="/register">Sign Up</Link>
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-3 mt-4">
+                        <Button variant="outline" asChild>
+                          <Link href={`/profile/${session?._id}`}>Profile</Link>
+                        </Button>
+                        <Button variant="destructive">Logout</Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </SheetContent>
+            </Sheet>
+
+            {/* {showLogo ? ( */}
+            <Link href="/" className="flex items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary">
+                <MapPin className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-bold">LocalGuide</span>
+            </Link>
+            {/* ) : ( */}
+            {/* <div></div> */}
+            {/* )} */}
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
@@ -115,8 +182,8 @@ export async function Navbar() {
           </div>
 
           {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex items-center gap-4">
-            {!session?.data ? (
+          <div className="flex items-center gap-4">
+            {!session ? (
               <>
                 <Button variant="ghost" asChild>
                   <Link href="/login">Login</Link>
@@ -134,11 +201,11 @@ export async function Navbar() {
                   >
                     <Avatar>
                       <AvatarImage
-                        src={session?.data?.profilePic || "/placeholder.svg"}
-                        alt={session?.data?.name}
+                        src={session?.profileImage || "/placeholder.svg"}
+                        alt={session?.name}
                       />
                       <AvatarFallback>
-                        {session?.data?.name.charAt(0).toUpperCase()}
+                        {session?.name.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -146,19 +213,17 @@ export async function Navbar() {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">
-                        {session?.data?.name}
-                      </p>
+                      <p className="text-sm font-medium">{session?.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        {session?.data?.email}
+                        {session?.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/profile/${session?.data?._id}`}>Profile</Link>
+                    <Link href={`/profile/${session?._id}`}>Profile</Link>
                   </DropdownMenuItem>
-                  {session?.data?.role === "guide" && (
+                  {session?.role === UserRole.GUIDE && (
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard">Dashboard</Link>
                     </DropdownMenuItem>
@@ -174,39 +239,6 @@ export async function Navbar() {
               </DropdownMenu>
             )}
           </div>
-
-          {/* Mobile Menu */}
-          <Sheet>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <div className="flex flex-col gap-6 mt-8">
-                <NavLinks />
-                {!session?.data ? (
-                  <div className="flex flex-col gap-3 mt-4">
-                    <Button variant="outline" asChild>
-                      <Link href="/login">Login</Link>
-                    </Button>
-                    <Button asChild>
-                      <Link href="/register">Sign Up</Link>
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-3 mt-4">
-                    <Button variant="outline" asChild>
-                      <Link href={`/profile/${session?.data?._id}`}>
-                        Profile
-                      </Link>
-                    </Button>
-                    <Button variant="destructive">Logout</Button>
-                  </div>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
         </div>
       </div>
     </nav>

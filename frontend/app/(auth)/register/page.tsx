@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
 import SignupForm from "./SignupForm";
-import { UserRole } from "@/interfaces/user";
+import { UserRole } from "@/interfaces/user.interface";
 
 export default async function RegisterPage({
   searchParams,

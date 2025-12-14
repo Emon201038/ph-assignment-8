@@ -1,6 +1,3 @@
-"use client";
-
-import { use } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,19 +7,26 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Star, Globe, Award, ChevronLeft } from "lucide-react";
 import { mockGuides, mockTours, mockReviews } from "@/lib/mock-data";
-import { UserRole } from "@/interfaces/user";
+import { IUser, UserRole } from "@/interfaces/user.interface";
+import { serverFetch } from "@/lib/server-fetch";
+import { IResponse } from "@/interfaces";
 
-export default function ProfilePage({
+export default async function ProfilePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
+  const { id } = await params;
   const guide = mockGuides.find((g) => g.id === id);
   const guideTours = mockTours.filter((t) => t.guideId === id);
   const guideReviews = mockReviews.filter((r) => r.guideId === id);
 
-  if (!guide) {
+  const res = await serverFetch.get(`/users/${id}`);
+  const data: IResponse<IUser> = await res.json();
+
+  console.log(data);
+
+  if (!data.success) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold mb-4">Profile not found</h1>
@@ -33,7 +37,7 @@ export default function ProfilePage({
     );
   }
 
-  const isGuide = guide.role === UserRole.GUIDE;
+  const isGuide = data.data.role === UserRole.GUIDE;
 
   return (
     <div className="min-h-screen bg-background">
@@ -52,25 +56,27 @@ export default function ProfilePage({
               <CardContent className="p-6 space-y-6">
                 <div className="text-center">
                   <Avatar className="h-32 w-32 mx-auto mb-4 ring-4 ring-primary/10">
-                    <AvatarImage src={guide.profilePic || "/placeholder.svg"} />
+                    <AvatarImage
+                      src={data.data.profileImage || "/placeholder.svg"}
+                    />
                     <AvatarFallback className="text-4xl">
-                      {guide.name.charAt(0)}
+                      {data.data.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
-                  <h1 className="text-2xl font-bold mb-2">{guide.name}</h1>
-                  {isGuide && guide.rating && (
+                  <h1 className="text-2xl font-bold mb-2">{data.data.name}</h1>
+                  {isGuide && data.data?.guideInfo && (
                     <div className="flex items-center justify-center gap-2 mb-4">
                       <Star className="h-5 w-5 fill-accent text-accent" />
                       <span className="text-xl font-semibold">
-                        {guide.rating}
+                        {data.data.guideInfo?.rating}
                       </span>
-                      <span className="text-muted-foreground">
-                        ({guide.toursGiven} tours)
-                      </span>
+                      <span className="text-muted-foreground">(5 tours)</span>
                     </div>
                   )}
                   <Badge variant="secondary" className="mb-4">
-                    {guide.role === UserRole.GUIDE ? "Local Guide" : "Traveler"}
+                    {data.data.role === UserRole.GUIDE
+                      ? "Local Guide"
+                      : "Traveler"}
                   </Badge>
                 </div>
 
@@ -79,17 +85,19 @@ export default function ProfilePage({
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-semibold mb-2">About</h3>
-                    <p className="text-sm text-muted-foreground">{guide.bio}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {data.data.bio}
+                    </p>
                   </div>
 
-                  {guide.languages && guide.languages.length > 0 && (
+                  {data.data.languages && data.data.languages.length > 0 && (
                     <div>
                       <h3 className="font-semibold mb-2 flex items-center gap-2">
                         <Globe className="h-4 w-4" />
                         Languages
                       </h3>
                       <div className="flex flex-wrap gap-2">
-                        {guide.languages.map((lang) => (
+                        {data.data.languages.map((lang) => (
                           <Badge key={lang} variant="outline">
                             {lang}
                           </Badge>
@@ -98,31 +106,35 @@ export default function ProfilePage({
                     </div>
                   )}
 
-                  {isGuide && guide.expertise && guide.expertise.length > 0 && (
-                    <div>
-                      <h3 className="font-semibold mb-2 flex items-center gap-2">
-                        <Award className="h-4 w-4" />
-                        Expertise
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {guide.expertise.map((exp) => (
-                          <Badge key={exp} variant="secondary">
-                            {exp}
-                          </Badge>
-                        ))}
+                  {isGuide &&
+                    data.data?.guideInfo &&
+                    data.data.guideInfo.expertise.length > 0 && (
+                      <div>
+                        <h3 className="font-semibold mb-2 flex items-center gap-2">
+                          <Award className="h-4 w-4" />
+                          Expertise
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {data.data?.guideInfo.expertise.map((exp) => (
+                            <Badge key={exp} variant="secondary">
+                              {exp}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {isGuide && guide.dailyRate && (
-                    <div>
-                      <h3 className="font-semibold mb-2">Daily Rate</h3>
-                      <p className="text-2xl font-bold text-primary">
-                        ${guide.dailyRate}
-                      </p>
-                      <p className="text-sm text-muted-foreground">per day</p>
-                    </div>
-                  )}
+                  {isGuide &&
+                    data.data.guideInfo &&
+                    data.data?.guideInfo.dailyRate && (
+                      <div>
+                        <h3 className="font-semibold mb-2">Daily Rate</h3>
+                        <p className="text-2xl font-bold text-primary">
+                          ${data.data?.guideInfo.dailyRate}
+                        </p>
+                        <p className="text-sm text-muted-foreground">per day</p>
+                      </div>
+                    )}
                 </div>
 
                 <Separator />

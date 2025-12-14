@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { UserRole } from "./interfaces/user";
+import { UserRole } from "./interfaces/user.interface";
 import { cookies } from "next/headers";
 import {
   getDefaultDashboardRoute,

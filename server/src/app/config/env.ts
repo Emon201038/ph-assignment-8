@@ -17,6 +17,9 @@ interface IEnvVars {
   CLOUDINARY_CLOUD_NAME: string;
   CLOUDINARY_API_KEY: string;
   CLOUDINARY_API_SECRET: string;
+  ADMIN_NAME: string;
+  ADMIN_EMAIL: string;
+  ADMIN_PASSWORD: string;
   // EXPRESS_SESSION_SECRET: string;
   // GOOGLE_CLIENT_ID: string;
   // GOOGLE_CLIENT_SECRET: string;
@@ -49,6 +52,9 @@ const loadEnv = (): IEnvVars => {
     "CLOUDINARY_CLOUD_NAME",
     "CLOUDINARY_API_KEY",
     "CLOUDINARY_API_SECRET",
+    "ADMIN_NAME",
+    "ADMIN_EMAIL",
+    "ADMIN_PASSWORD",
     // "EXPRESS_SESSION_SECRET",
     // "GOOGLE_CLIENT_ID",
     // "GOOGLE_CLIENT_SECRET",
@@ -90,6 +96,9 @@ const loadEnv = (): IEnvVars => {
     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+    ADMIN_NAME: process.env.ADMIN_NAME as string,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
     // GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
     // GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
     // GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,

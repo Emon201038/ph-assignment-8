@@ -1,4 +1,4 @@
-import { UserRole } from "@/interfaces/user";
+import { UserRole } from "@/interfaces/user.interface";
 
 export interface RouteConfig {
   exact: string[];

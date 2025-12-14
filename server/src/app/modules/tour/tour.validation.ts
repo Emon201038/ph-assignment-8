@@ -27,7 +27,7 @@ export const TourValidation = {
     meetingPoint: z.string("meeting point is required"),
     maxGroupSize: z.string("max group size is required").min(1),
 
-    languages: z
+    language: z
       .string("language is required")
       .min(1, "At least one language is required"),
   }),

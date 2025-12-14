@@ -97,7 +97,7 @@ export default async function GuideDashboardPage() {
             </h1>
             <p className="text-muted-foreground">Welcome back,</p>
           </div>
-          <CreateTourModal userId={session?.data?._id} />
+          <CreateTourModal userId={session?._id} />
         </div>
 
         {/* Stats Grid */}

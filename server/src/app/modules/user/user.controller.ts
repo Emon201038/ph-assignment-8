@@ -28,7 +28,7 @@ const createUser = catchAsync(async (req, res, next) => {
 const getUserById = catchAsync(async (req, res, next) => {
   const isValidId = req.params.id.match(/^[0-9a-fA-F]{24}$/);
   if (!isValidId) throw new AppError(400, "Invalid user id.");
-  const data = UserService.getUser(req.params.id);
+  const data = await UserService.getUser(req.params.id);
   sendResponse(res, {
     success: true,
     statusCode: 200,

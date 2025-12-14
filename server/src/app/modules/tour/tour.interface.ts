@@ -20,7 +20,7 @@ export interface ITour {
   meetingPoint: string;
   maxGroupSize: number;
 
-  languages: string[];
+  language: string[];
 
   guide: Types.ObjectId; // reference to User (guide)
 

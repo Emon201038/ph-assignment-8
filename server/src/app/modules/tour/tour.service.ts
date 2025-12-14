@@ -15,8 +15,8 @@ export const TourService = {
 
       payload.images = Array.isArray(res) ? res?.map((i) => i?.url) : res?.url;
     }
-    if (payload?.languages) {
-      payload.languages = (payload.languages as string)
+    if (payload?.language) {
+      payload.language = (payload.language as string)
         .split(",")
         .map((l) => l.trim())
         .filter(Boolean);

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import React, { useActionState, useEffect } from "react";
 import { signUpAction } from "./action";
-import { UserRole } from "@/interfaces/user";
+import { UserRole } from "@/interfaces/user.interface";
 import { toast } from "sonner";
 
 const SignupForm = ({ role = UserRole.TOURIST }) => {

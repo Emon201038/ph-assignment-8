@@ -14,7 +14,7 @@ const tourSchema = z.object({
   meetingPoint: z
     .string("meeting point is required")
     .min(1, "meeting point is required"),
-  languages: z
+  language: z
     .string("languages is required")
     .min(1, "languages is required")
     .transform((val) =>

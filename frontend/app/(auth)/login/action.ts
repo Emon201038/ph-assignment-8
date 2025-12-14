@@ -2,7 +2,7 @@
 import cookie from "cookie";
 import { cookies } from "next/headers";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { UserRole } from "@/interfaces/user";
+import { UserRole } from "@/interfaces/user.interface";
 import { redirect } from "next/navigation";
 import {
   getDefaultDashboardRoute,

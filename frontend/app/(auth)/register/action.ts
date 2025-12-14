@@ -1,5 +1,5 @@
 "use server";
-import { UserRole } from "@/interfaces/user";
+import { UserRole } from "@/interfaces/user.interface";
 import { zodValidator } from "@/lib/zod-validator";
 import z, { email } from "zod";
 import { login } from "../login/action";

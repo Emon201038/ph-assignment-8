@@ -1,65 +1,80 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Search, MapPin, Star, SlidersHorizontal, X } from "lucide-react"
-import { mockTours, categories, cities } from "@/lib/mock-data"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Search, MapPin, Star, SlidersHorizontal, X } from "lucide-react";
+import { mockTours, categories, cities } from "@/lib/mock-data";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export default function ExplorePage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCity, setSelectedCity] = useState<string>("all")
-  const [selectedCategory, setSelectedCategory] = useState<string>("all")
-  const [priceRange, setPriceRange] = useState([0, 200])
-  const [sortBy, setSortBy] = useState("popular")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCity, setSelectedCity] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [priceRange, setPriceRange] = useState([0, 200]);
+  const [sortBy, setSortBy] = useState("popular");
 
   const filteredTours = useMemo(() => {
     const filtered = mockTours.filter((tour) => {
       const matchesSearch =
         tour.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tour.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        tour.city.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesCity = selectedCity === "all" || tour.city === selectedCity
+        tour.city.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCity = selectedCity === "all" || tour.city === selectedCity;
       const matchesCategory =
-        selectedCategory === "all" || tour.category.toLowerCase().includes(selectedCategory.toLowerCase())
-      const matchesPrice = tour.price >= priceRange[0] && tour.price <= priceRange[1]
+        selectedCategory === "all" ||
+        tour.category.toLowerCase().includes(selectedCategory.toLowerCase());
+      const matchesPrice =
+        tour.price >= priceRange[0] && tour.price <= priceRange[1];
 
-      return matchesSearch && matchesCity && matchesCategory && matchesPrice
-    })
+      return matchesSearch && matchesCity && matchesCategory && matchesPrice;
+    });
 
     // Sort
     if (sortBy === "price-low") {
-      filtered.sort((a, b) => a.price - b.price)
+      filtered.sort((a, b) => a.price - b.price);
     } else if (sortBy === "price-high") {
-      filtered.sort((a, b) => b.price - a.price)
+      filtered.sort((a, b) => b.price - a.price);
     } else if (sortBy === "rating") {
-      filtered.sort((a, b) => b.rating - a.rating)
+      filtered.sort((a, b) => b.rating - a.rating);
     } else {
-      filtered.sort((a, b) => b.reviewCount - a.reviewCount)
+      filtered.sort((a, b) => b.reviewCount - a.reviewCount);
     }
 
-    return filtered
-  }, [searchQuery, selectedCity, selectedCategory, priceRange, sortBy])
+    return filtered;
+  }, [searchQuery, selectedCity, selectedCategory, priceRange, sortBy]);
 
   const activeFiltersCount = [
     selectedCity !== "all",
     selectedCategory !== "all",
     priceRange[0] !== 0 || priceRange[1] !== 200,
-  ].filter(Boolean).length
+  ].filter(Boolean).length;
 
   const clearFilters = () => {
-    setSelectedCity("all")
-    setSelectedCategory("all")
-    setPriceRange([0, 200])
-    setSearchQuery("")
-  }
+    setSelectedCity("all");
+    setSelectedCategory("all");
+    setPriceRange([0, 200]);
+    setSearchQuery("");
+  };
 
   const FilterContent = () => (
     <div className="space-y-6">
@@ -104,27 +119,41 @@ export default function ExplorePage() {
             ${priceRange[0]} - ${priceRange[1]}
           </span>
         </div>
-        <Slider min={0} max={200} step={10} value={priceRange} onValueChange={setPriceRange} className="py-4" />
+        <Slider
+          min={0}
+          max={200}
+          step={10}
+          value={priceRange}
+          onValueChange={setPriceRange}
+          className="py-4"
+        />
       </div>
 
       {activeFiltersCount > 0 && (
-        <Button variant="outline" onClick={clearFilters} className="w-full bg-transparent">
+        <Button
+          variant="outline"
+          onClick={clearFilters}
+          className="w-full bg-transparent"
+        >
           <X className="h-4 w-4 mr-2" />
           Clear Filters
         </Button>
       )}
     </div>
-  )
+  );
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Search Section */}
-      <section className="bg-gradient-to-br from-primary/5 via-background to-accent/5 py-12 border-b">
+      <section className="bg-linear-to-br from-primary/5 via-background to-accent/5 py-12 border-b">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Explore Local Experiences</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+              Explore Local Experiences
+            </h1>
             <p className="text-muted-foreground text-lg">
-              Discover authentic tours and activities led by passionate local guides
+              Discover authentic tours and activities led by passionate local
+              guides
             </p>
           </div>
 
@@ -150,7 +179,9 @@ export default function ExplorePage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold">Filters</h2>
-                  {activeFiltersCount > 0 && <Badge variant="secondary">{activeFiltersCount}</Badge>}
+                  {activeFiltersCount > 0 && (
+                    <Badge variant="secondary">{activeFiltersCount}</Badge>
+                  )}
                 </div>
                 <FilterContent />
               </CardContent>
@@ -164,7 +195,10 @@ export default function ExplorePage() {
               <div className="flex items-center gap-2">
                 <Sheet>
                   <SheetTrigger asChild>
-                    <Button variant="outline" className="lg:hidden bg-transparent">
+                    <Button
+                      variant="outline"
+                      className="lg:hidden bg-transparent"
+                    >
                       <SlidersHorizontal className="h-4 w-4 mr-2" />
                       Filters
                       {activeFiltersCount > 0 && (
@@ -177,7 +211,9 @@ export default function ExplorePage() {
                   <SheetContent side="left">
                     <SheetHeader>
                       <SheetTitle>Filters</SheetTitle>
-                      <SheetDescription>Refine your search to find the perfect tour</SheetDescription>
+                      <SheetDescription>
+                        Refine your search to find the perfect tour
+                      </SheetDescription>
                     </SheetHeader>
                     <div className="mt-6">
                       <FilterContent />
@@ -185,12 +221,13 @@ export default function ExplorePage() {
                   </SheetContent>
                 </Sheet>
                 <p className="text-sm text-muted-foreground">
-                  {filteredTours.length} {filteredTours.length === 1 ? "tour" : "tours"} found
+                  {filteredTours.length}{" "}
+                  {filteredTours.length === 1 ? "tour" : "tours"} found
                 </p>
               </div>
 
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-45">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -211,7 +248,8 @@ export default function ExplorePage() {
                   </div>
                   <h3 className="text-xl font-semibold">No tours found</h3>
                   <p className="text-muted-foreground">
-                    Try adjusting your filters or search terms to find what you're looking for.
+                    Try adjusting your filters or search terms to find what
+                    you're looking for.
                   </p>
                   <Button onClick={clearFilters} variant="outline">
                     Clear All Filters
@@ -247,18 +285,28 @@ export default function ExplorePage() {
                         <h3 className="text-lg font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                           {tour.title}
                         </h3>
-                        <p className="text-muted-foreground text-sm line-clamp-2 mb-4">{tour.description}</p>
+                        <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
+                          {tour.description}
+                        </p>
                         <div className="flex items-center justify-between pt-4 border-t">
                           <div className="flex items-center gap-2">
                             <Avatar className="h-7 w-7">
-                              <AvatarImage src={tour.guideAvatar || "/placeholder.svg"} />
-                              <AvatarFallback>{tour.guideName.charAt(0)}</AvatarFallback>
+                              <AvatarImage
+                                src={tour.guideAvatar || "/placeholder.svg"}
+                              />
+                              <AvatarFallback>
+                                {tour.guideName.charAt(0)}
+                              </AvatarFallback>
                             </Avatar>
-                            <span className="text-sm font-medium">{tour.guideName}</span>
+                            <span className="text-sm font-medium">
+                              {tour.guideName}
+                            </span>
                           </div>
                           <div className="text-right">
                             <p className="text-xl font-bold">${tour.price}</p>
-                            <p className="text-xs text-muted-foreground">{tour.duration}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {tour.duration}
+                            </p>
                           </div>
                         </div>
                       </CardContent>
@@ -271,5 +319,5 @@ export default function ExplorePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

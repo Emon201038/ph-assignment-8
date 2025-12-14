@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import type { User } from "./mock-data";
-import { UserRole } from "@/interfaces/user";
+import { UserRole } from "@/interfaces/user.interface";
 
 interface AuthContextType {
   user: User | null;

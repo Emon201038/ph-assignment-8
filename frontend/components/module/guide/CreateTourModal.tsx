@@ -232,7 +232,7 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
                 <Label htmlFor="languages">Languages (comma-separated)</Label>
                 <Input
                   id="languages"
-                  name="languages"
+                  name="language"
                   placeholder="English, Spanish, French"
                 />
                 {getFieldError("languages") && (

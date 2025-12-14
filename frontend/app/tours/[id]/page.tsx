@@ -1,15 +1,20 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import TourDetailsClient from "./tour-details-client"
-import { mockTours, mockReviews } from "@/lib/mock-data"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import TourDetailsClient from "./tour-details-client";
+import { serverFetch } from "@/lib/server-fetch";
+import { ITour } from "@/interfaces/tour.interface";
+import { IResponse } from "@/interfaces";
 
-export default async function TourDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+export default async function TourDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const res = await serverFetch.get(`/tours/${id}`);
+  const data: IResponse<ITour> = await res.json();
 
-  const tour = mockTours.find((t) => t.id === id)
-  const tourReviews = mockReviews.filter((r) => r.tourId === id)
-
-  if (!tour) {
+  if (!data?.success) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold mb-4">Tour not found</h1>
@@ -17,8 +22,9 @@ export default async function TourDetailsPage({ params }: { params: Promise<{ id
           <Link href="/explore">Browse Tours</Link>
         </Button>
       </div>
-    )
+    );
   }
 
-  return <TourDetailsClient tour={tour} tourReviews={tourReviews} />
+  console.log(data);
+  return <TourDetailsClient tour={data.data} />;
 }
