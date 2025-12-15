@@ -10,14 +10,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { auth } from "@/lib/session";
 import { logout } from "@/action";
 import { UserRole } from "@/interfaces/user.interface";
-import DashboardMobileNav from "../dashboard/DashboardMobileNav";
-import { redirect } from "next/navigation";
-import { INavSection } from "@/interfaces/dashboard.interface";
-import { getDefaultDashboardRoute } from "@/lib/auth-utils";
+import DashboardMobileNav from "../module/dashboard/DashboardMobileNav";
+import MobileNav from "./MobileNav";
 
 export async function Navbar({
   showLogo = true,
@@ -27,12 +30,6 @@ export async function Navbar({
   isDashboard?: boolean;
 }) {
   const session = await auth();
-  if (!session) {
-    redirect("/login");
-  }
-
-  const navItems: INavSection[] = [];
-  const dashboardHome = getDefaultDashboardRoute(session.role);
 
   const NavLinks = () => {
     if (!session) {
@@ -122,58 +119,14 @@ export async function Navbar({
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             {/* Mobile Menu */}
-            <Sheet>
-              <SheetTrigger asChild className="md:hidden">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:bg-primary"
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left">
-                {isDashboard ? (
-                  <DashboardMobileNav
-                    userInfo={session}
-                    dashboardHome={dashboardHome}
-                    navItems={navItems}
-                  />
-                ) : (
-                  <div className="flex flex-col gap-6 mt-8">
-                    <NavLinks />
-                    {!session ? (
-                      <div className="flex flex-col gap-3 mt-4">
-                        <Button variant="outline" asChild>
-                          <Link href="/login">Login</Link>
-                        </Button>
-                        <Button asChild>
-                          <Link href="/register">Sign Up</Link>
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col gap-3 mt-4">
-                        <Button variant="outline" asChild>
-                          <Link href={`/profile/${session?._id}`}>Profile</Link>
-                        </Button>
-                        <Button variant="destructive">Logout</Button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </SheetContent>
-            </Sheet>
+            <MobileNav session={session} isDashboard={isDashboard} />
 
-            {/* {showLogo ? ( */}
             <Link href="/" className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary">
                 <MapPin className="h-5 w-5 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold">LocalGuide</span>
             </Link>
-            {/* ) : ( */}
-            {/* <div></div> */}
-            {/* )} */}
           </div>
 
           {/* Desktop Navigation */}

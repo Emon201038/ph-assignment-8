@@ -1,6 +1,5 @@
 import DashboardSidebar from "@/components/module/dashboard/DashboardSidebar";
-import { Footer } from "@/components/module/shared/footer";
-import { Navbar } from "@/components/module/shared/navbar";
+import { Navbar } from "@/components/shared/navbar";
 import React from "react";
 
 const CommonDashboardLayout = ({ children }: { children: React.ReactNode }) => {

@@ -4,8 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
-import { Navbar } from "@/components/module/shared/navbar";
-import { Footer } from "@/components/module/shared/footer";
+import { Navbar } from "@/components/shared/navbar";
+import { Footer } from "@/components/shared/footer";
 import { Toaster } from "sonner";
 
 const _geist = Geist({ subsets: ["latin"] });

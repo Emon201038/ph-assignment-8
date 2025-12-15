@@ -4,6 +4,7 @@ import React from "react";
 import DashboardSidebarContent from "./DashboardSidebarContent";
 import { getDefaultDashboardRoute } from "@/lib/auth-utils";
 import { INavSection } from "@/interfaces/dashboard.interface";
+import { getNavItemsByRole } from "@/lib/navitems.config";
 
 const DashboardSidebar = async () => {
   const session = await auth();
@@ -11,7 +12,7 @@ const DashboardSidebar = async () => {
     redirect("/login");
   }
 
-  const navItems: INavSection[] = [];
+  const navItems: INavSection[] = getNavItemsByRole(session.role);
   const dashboardHome = getDefaultDashboardRoute(session.role);
   return (
     <DashboardSidebarContent

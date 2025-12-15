@@ -10,20 +10,20 @@ import { Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface IDashboardSidebarContentProps {
+interface IDashboardMobileSidebarContentProps {
   userInfo: IUser;
   navItems: INavSection[];
   dashboardHome: string;
 }
 
-const DashboardSidebarContent = ({
+const DashboardMobileSidebarContent = ({
   userInfo,
   dashboardHome,
   navItems,
-}: IDashboardSidebarContentProps) => {
+}: IDashboardMobileSidebarContentProps) => {
   const pathname = usePathname();
   return (
-    <div className="hidden md:flex h-full w-64 flex-col border-r bg-card">
+    <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex h-16 items-center border-b px-6">
         <Link href={dashboardHome} className="flex items-center space-y-2">
@@ -96,4 +96,4 @@ const DashboardSidebarContent = ({
   );
 };
 
-export default DashboardSidebarContent;
+export default DashboardMobileSidebarContent;
