@@ -29,9 +29,22 @@ import { categories, cities } from "@/lib/mock-data";
 import Link from "next/link";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { createTourAction } from "@/action/tour";
+import { ITour } from "@/interfaces/tour.interface";
 
-const CreateTourModal = ({ userId }: { userId: string }) => {
-  const [open, setOpen] = useState(false);
+interface CreateTourModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  tour?: ITour;
+}
+
+const CreateTourModal = ({
+  tour,
+  open,
+  onClose,
+  onSuccess,
+}: CreateTourModalProps) => {
+  const isEdit = tour!!;
   const formRef = useRef<HTMLFormElement>(null);
 
   const [state, createTour, isLoading] = useActionState(createTourAction, null);
@@ -42,7 +55,7 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
       if (formRef?.current) {
         formRef.current.reset();
       }
-      setOpen(false);
+      onClose();
     } else if (state && !state.success) {
       toast.error(state.message);
     }
@@ -57,16 +70,14 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
     }
   };
 
-  console.log(state);
-
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Dialog open={open} onOpenChange={onClose}>
+      {/* <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
           Create Tour
         </Button>
-      </DialogTrigger>
+      </DialogTrigger> */}
       <DialogContent className="max-h-[90vh] overflow-auto">
         <form ref={formRef} action={createTour}>
           <Card>
@@ -83,6 +94,8 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
                   id="title"
                   name="title"
                   placeholder="e.g., Hidden Jazz Bars of New Orleans"
+                  defaultValue={isEdit ? tour?.title : undefined}
+                  value={tour?.title || undefined}
                 />
                 {getFieldError("title") && (
                   <p className="text-sm text-destructive">
@@ -98,6 +111,8 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
                   name="description"
                   placeholder="Describe what makes your tour special..."
                   rows={5}
+                  defaultValue={isEdit ? tour?.description : undefined}
+                  value={tour?.description || undefined}
                 />
                 {getFieldError("description") && (
                   <p className="text-sm text-destructive">
@@ -109,7 +124,11 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="city">City *</Label>
-                  <Select name="city">
+                  <Select
+                    name="city"
+                    defaultValue={isEdit ? tour?.city : undefined}
+                    value={tour?.city || undefined}
+                  >
                     <SelectTrigger name="city" id="city">
                       <SelectValue placeholder="Select city" />
                     </SelectTrigger>
@@ -150,7 +169,11 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
 
                 <div className="space-y-2">
                   <Label htmlFor="category">Category *</Label>
-                  <Select name="category">
+                  <Select
+                    name="category"
+                    defaultValue={isEdit ? tour?.category : undefined}
+                    value={tour?.category || undefined}
+                  >
                     <SelectTrigger name="category" id="category">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
@@ -179,6 +202,8 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
                     type="number"
                     placeholder="50"
                     min="1"
+                    defaultValue={isEdit ? tour?.price : undefined}
+                    value={tour?.price || undefined}
                   />
                   {getFieldError("price") && (
                     <p className="text-sm text-destructive">
@@ -189,7 +214,13 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
 
                 <div className="space-y-2">
                   <Label htmlFor="duration">Duration *</Label>
-                  <Input name="duration" id="duration" placeholder="3 hours" />
+                  <Input
+                    name="duration"
+                    id="duration"
+                    placeholder="3 hours"
+                    defaultValue={isEdit ? tour?.duration : undefined}
+                    value={tour?.duration || undefined}
+                  />
                   {getFieldError("duration") && (
                     <p className="text-sm text-destructive">
                       {getFieldError("duration")}
@@ -205,6 +236,8 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
                     type="number"
                     placeholder="8"
                     min="1"
+                    defaultValue={isEdit ? tour?.maxGroupSize : undefined}
+                    value={tour?.maxGroupSize || undefined}
                   />
                   {getFieldError("maxGroupSize") && (
                     <p className="text-sm text-destructive">
@@ -220,6 +253,8 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
                   id="meetingPoint"
                   name="meetingPoint"
                   placeholder="e.g., Jackson Square, Main Entrance"
+                  defaultValue={isEdit ? tour?.meetingPoint : undefined}
+                  value={tour?.meetingPoint || undefined}
                 />
                 {getFieldError("meetingPoint") && (
                   <p className="text-sm text-destructive">
@@ -234,6 +269,8 @@ const CreateTourModal = ({ userId }: { userId: string }) => {
                   id="languages"
                   name="language"
                   placeholder="English, Spanish, French"
+                  defaultValue={isEdit ? tour?.language?.join(", ") : undefined}
+                  value={tour?.language?.join(", ") || undefined}
                 />
                 {getFieldError("languages") && (
                   <p className="text-sm text-destructive">

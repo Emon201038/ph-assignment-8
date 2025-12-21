@@ -6,9 +6,9 @@ import { checkAuth } from "../../middlewares/checkAuth";
 import { UserRole } from "../user/user.interface";
 import { uploadImage } from "../../middlewares/uploadFile";
 
-const tourRoute = Router();
+const tourRouter = Router();
 
-tourRoute
+tourRouter
   .route("/")
   .get(TourController.getAllTours)
   .post(
@@ -18,10 +18,10 @@ tourRoute
     TourController.createTour
   );
 
-tourRoute
+tourRouter
   .route("/:id")
   .get(TourController.getSingleTour)
   .patch(validateRequest(TourValidation.update), TourController.updateTour)
   .delete(TourController.deleteTour);
 
-export default tourRoute;
+export default tourRouter;

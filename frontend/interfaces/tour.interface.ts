@@ -29,4 +29,5 @@ export interface ITour {
   totalReviews?: number;
 
   isActive: boolean;
+  createdAt: Date;
 }

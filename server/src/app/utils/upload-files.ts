@@ -33,3 +33,23 @@ export async function uploadFilesToCloudinary(
     ? cleanUploads?.[0]
     : null;
 }
+
+export async function uploadFileToCloudinary(
+  file: Express.Multer.File,
+  folder: string
+) {
+  // Upload each file with stream
+
+  if (!file) return null;
+
+  const { mimetype } = file;
+
+  const resourceType = mimetype.startsWith("video") ? "video" : "image";
+
+  // Stream the buffer directly to Cloudinary
+  return uploadStreamToCloudinary(
+    streamifier.createReadStream(file.buffer),
+    folder,
+    resourceType
+  );
+}

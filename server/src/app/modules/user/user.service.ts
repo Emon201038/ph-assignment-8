@@ -7,7 +7,11 @@ import User from "./user.model";
 import bcrypt from "bcryptjs";
 
 const getAllUsers = async (queries: Record<string, string>) => {
-  const builder = new QueryBuilder<typeof User.prototype>(User, queries);
+  const builder = new QueryBuilder<IUser>(User, {
+    ...queries,
+    isDeleted: "false",
+    role: "TOURIST",
+  });
   const res = await builder
     .filter()
     .search(["email", "name", "phone"])
@@ -130,7 +134,10 @@ const deleteUser = async (loggedInUser: JwtPayload, userId: string) => {
     throw new AppError(HTTP_STATUS.NOT_FOUND, "User not found.");
   }
 
-  if (user.role === UserRole.ADMIN) {
+  if (
+    user.role === UserRole.ADMIN &&
+    user.adminInfo?.permissions.includes("DELETE_USER")
+  ) {
     throw new AppError(
       HTTP_STATUS.FORBIDDEN,
       "You are not authorized to delete this user."

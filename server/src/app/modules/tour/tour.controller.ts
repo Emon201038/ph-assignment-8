@@ -32,7 +32,8 @@ export const TourController = {
       success: true,
       statusCode: 200,
       message: "Tours fetched successfully",
-      data: result,
+      data: result.tours,
+      meta: result.meta,
     });
   }),
 

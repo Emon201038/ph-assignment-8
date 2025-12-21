@@ -1,14 +1,18 @@
+import { Document } from "mongoose";
+
 export enum UserRole {
   TOURIST = "TOURIST",
   GUIDE = "GUIDE",
   ADMIN = "ADMIN",
 }
 
-export interface IUser {
+export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
   role: UserRole;
+  address: string;
+  contactNumber: string;
 
   // Common fields
   profileImage?: string;
@@ -23,6 +27,7 @@ export interface IUser {
 
   // Guide fields
   guideInfo?: {
+    gender: string;
     expertise: string[];
     dailyRate: number;
     rating?: number;

@@ -29,7 +29,7 @@ interface IManagementTableProps<T> {
   onView?: (row: T) => void;
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
-  getRowKey?: (row: string) => string;
+  getRowKey?: (row: T) => string;
   emptyMessage?: string;
   isRefreshing?: boolean;
 }
@@ -117,7 +117,6 @@ function ManagementTable<T>({
                             </DropdownMenuItem>
                           )}
                         </DropdownMenuContent>
-                        <DropdownMenuItem></DropdownMenuItem>
                       </DropdownMenu>
                     </TableCell>
                   )}

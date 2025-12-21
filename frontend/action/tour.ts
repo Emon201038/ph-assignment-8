@@ -1,3 +1,5 @@
+import { IResponse } from "@/interfaces";
+import { ITour } from "@/interfaces/tour.interface";
 import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zod-validator";
 import z from "zod";
@@ -106,5 +108,16 @@ export const createTourAction = async (
       data: null,
       errors: [],
     };
+  }
+};
+
+export const getTours = async (queryString?: string) => {
+  try {
+    const res = await serverFetch.get(`/tours?${queryString}`);
+    const data: IResponse<ITour[]> = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
   }
 };

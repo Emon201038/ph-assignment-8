@@ -11,7 +11,8 @@ const getUsers = catchAsync(async (req, res, next) => {
     success: true,
     statusCode: 200,
     message: "users retrieved successfully",
-    data: { users, meta },
+    data: users,
+    meta,
   });
 });
 

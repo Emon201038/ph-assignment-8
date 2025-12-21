@@ -10,6 +10,8 @@ export interface IUser {
   email: string;
   password: string;
   role: UserRole;
+  address: string;
+  contactNumber: string;
 
   // Common fields
   profileImage?: string;
@@ -24,6 +26,7 @@ export interface IUser {
 
   // Guide fields
   guideInfo?: {
+    gender: string;
     expertise: string[];
     dailyRate: number;
     rating?: number;
@@ -40,7 +43,7 @@ export interface IUser {
     permissions: string[];
   };
 
-  createdAt?: Date;
+  createdAt: Date;
   updatedAt?: Date;
 
   isDeleted?: boolean;

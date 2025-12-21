@@ -1,9 +1,6 @@
 import { getGuides } from "@/action/guide";
-import { getUsers } from "@/action/user";
 import GuidesTable from "@/components/module/guide/GuideTable";
 import TourManagementHeader from "@/components/module/tour/TourManagementHeader";
-import UserManagementHeader from "@/components/module/user/UserManagementHeader";
-import UsersTable from "@/components/module/user/UserTable";
 import RefreshButton from "@/components/shared/RefreshButton";
 import SearchFilter from "@/components/shared/SearchFilter";
 import SelectFilter from "@/components/shared/SelectFilter";
@@ -21,11 +18,12 @@ const page = async ({
 }) => {
   const searchParamsObj = await searchParams;
   const queryString = queryStringFormatter(searchParamsObj);
-  const data: IResponse<IUser[]> = await getUsers(queryString);
+  const data: IResponse<IUser[]> = await getGuides(queryString);
 
+  console.log(data);
   return (
     <div className="space-y-4 p-6">
-      <UserManagementHeader />
+      <TourManagementHeader />
       <div className="flex gap-2">
         <SearchFilter />
         <SelectFilter
@@ -35,7 +33,7 @@ const page = async ({
         <RefreshButton />
       </div>
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
-        <UsersTable users={data.data} />
+        <GuidesTable guides={data.data} />
         <TablePagination
           currentPage={data.meta.page || 1}
           totalPages={data.meta.totalPages}

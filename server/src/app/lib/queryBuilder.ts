@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose, { Document, Model } from "mongoose";
 import { QueryFilter } from "mongoose";
+import { IMeta } from "../utils/sendResponse";
 
 interface QueryParams {
   search?: string;
@@ -29,6 +30,7 @@ export class QueryBuilder<T extends Document> {
   filter(): this {
     const excludedFields = [
       "search",
+      "searchTerm",
       "sort",
       "sortBy",
       "sortOrder",
@@ -67,7 +69,7 @@ export class QueryBuilder<T extends Document> {
   }
 
   search(fields: string[]): this {
-    const keyword = this.queryParams.search;
+    const keyword = this.queryParams.searchTerm;
     const searchFields: string[] = this.queryParams.searchFields
       ? this.queryParams.searchFields.split(",")
       : fields
@@ -175,12 +177,7 @@ export class QueryBuilder<T extends Document> {
 
   async execWithMeta(): Promise<{
     data: T[];
-    meta: {
-      totalResult: number;
-      page: number;
-      limit: number;
-      totalPage: number;
-    };
+    meta: IMeta;
   }> {
     const page = Number(this.queryParams.page) || 1;
     const limit = Number(this.queryParams.limit) || 10;
@@ -193,10 +190,10 @@ export class QueryBuilder<T extends Document> {
     return {
       data,
       meta: {
-        totalResult: total,
+        total: total,
         page,
         limit,
-        totalPage: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limit),
       },
     };
   }

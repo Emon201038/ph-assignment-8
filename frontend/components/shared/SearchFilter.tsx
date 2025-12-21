@@ -49,6 +49,7 @@ const SearchFilter = ({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         disabled={isPending}
+        className="pl-10"
       />
     </div>
   );
