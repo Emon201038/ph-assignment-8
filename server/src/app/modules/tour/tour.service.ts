@@ -1,8 +1,8 @@
 import { Request } from "express";
 import AppError from "../../helpers/appError";
-import { QueryBuilder } from "../../middlewares/queryBuilder";
 import Tour from "./tour.model";
 import { uploadFilesToCloudinary } from "../../utils/upload-files";
+import { QueryBuilder } from "../../lib/queryBuilder";
 
 export const TourService = {
   async createTour(req: Request) {
@@ -36,7 +36,7 @@ export const TourService = {
     const res = await builder
       .filter()
       .search(["title", "description", "category"])
-      .sort()
+      // .sort()
       .populate(["guide"])
       .paginate()
       .execWithMeta();

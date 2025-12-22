@@ -36,10 +36,10 @@ export class QueryBuilder<T extends Document> {
       "sortOrder",
       "limit",
       "page",
+      "populate",
     ];
     const filters = { ...this.queryParams };
 
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     excludedFields.forEach((field) => delete filters[field]);
 
     for (const key in filters) {
@@ -48,7 +48,7 @@ export class QueryBuilder<T extends Document> {
       if (value === "true" || value === "false") {
         filters[key] = value === "true";
       }
-      // if the value is "null", null, "undefined", undefined, or empty string → remove this field
+
       if (
         value === null ||
         value === undefined ||
@@ -68,56 +68,90 @@ export class QueryBuilder<T extends Document> {
     return this;
   }
 
-  search(fields: string[]): this {
+  search(fields: string[], populateField?: string): this {
     const keyword = this.queryParams.searchTerm;
-    const searchFields: string[] = this.queryParams.searchFields
-      ? this.queryParams.searchFields.split(",")
-      : fields
-      ? fields
-      : [];
+    if (!keyword || fields.length === 0) return this;
 
-    if (keyword && searchFields.length > 0) {
-      const regex = new RegExp(keyword, "i");
-      const searchConditions = searchFields
-        .map((field) => {
-          const schemaType = this.model.schema.path(field);
+    const regex = new RegExp(keyword, "i");
 
-          // If the field is ObjectId → match directly
-          if (
-            schemaType instanceof mongoose.Schema.Types.ObjectId ||
-            schemaType?.instance === "ObjectID"
-          ) {
-            return mongoose.Types.ObjectId.isValid(keyword)
-              ? { [field]: new mongoose.Types.ObjectId(keyword) }
-              : null; // skip invalid ObjectId
-          }
-
-          // Default: String regex search
-          return { [field]: { $regex: regex } };
-        })
-        .filter(Boolean); // remove nulls
-
-      if (searchConditions.length > 0) {
-        this.filters = { ...this.filters, $or: searchConditions };
-        this.mongooseQuery = this.model.find(this.filters);
+    let searchConditions = fields.map((field) => {
+      if (populateField) {
+        return { [`${populateField}.${field}`]: { $regex: regex } };
       }
-    }
+      return { [field]: { $regex: regex } };
+    });
+
+    this.filters = { ...this.filters, $or: searchConditions };
+    this.mongooseQuery = this.model.find(this.filters);
 
     return this;
   }
 
-  sort(field: { [key: string]: string | number }): this {
+  /**
+   * Search across a referenced/populated field using aggregation lookup
+   * Use this when you need to search by fields in a referenced model
+   *
+   * @param refModel - The referenced model (e.g., User model)
+   * @param localField - The field in current model that references (e.g., 'userId')
+   * @param searchFields - Fields to search in the referenced model (e.g., ['name', 'email'])
+   * @param foreignField - The field in referenced model to match against (default: '_id')
+   */
+  async searchPopulated(
+    refModel: Model<any>,
+    localField: string,
+    searchFields: string[],
+    foreignField: string = "_id"
+  ): Promise<this> {
+    const keyword = this.queryParams.searchTerm;
+    if (!keyword || searchFields.length === 0) {
+      return this;
+    }
+    const regex = new RegExp(keyword, "i");
+
+    // Find matching documents from the referenced model
+    const searchConditions = searchFields.map((field) => ({
+      [field]: { $regex: regex },
+    }));
+
+    // Select only the foreignField to get matching values
+    const matchingRefs = await refModel
+      .find({ $or: searchConditions })
+      .select(foreignField);
+
+    // Extract the values from the foreignField
+    const matchingValues = matchingRefs.map((doc) => doc[foreignField]);
+
+    if (matchingValues.length > 0) {
+      // Add to existing filters
+      this.filters = {
+        ...this.filters,
+        [localField]: { $in: matchingValues },
+      };
+      this.mongooseQuery = this.model.find(this.filters);
+    } else {
+      // No matches found - return empty result
+      this.filters = { ...this.filters, _id: null };
+      this.mongooseQuery = this.model.find(this.filters);
+    }
+    return this;
+  }
+
+  sort(field?: { [key: string]: string | number }): this {
     const { sortBy, sortOrder } = this.queryParams;
 
-    // if (sort) {
-    //   const sortFields = sort.split(",").join(" ");
-    //   this.mongooseQuery = this.mongooseQuery.sort(sortFields);
-    // } else if (sortBy && sortOrder) {
-    //   const order = sortOrder === "desc" ? -1 : 1;
-    //   this.mongooseQuery = this.mongooseQuery.sort({ [sortBy]: order });
-    // } else {
-    this.mongooseQuery = this.mongooseQuery.sort(field);
-    // }
+    // Priority 1: Check if sortBy and sortOrder exist in queryParams
+    if (sortBy && sortOrder) {
+      const order = sortOrder === "desc" ? -1 : 1;
+      this.mongooseQuery = this.mongooseQuery.sort({ [sortBy]: order });
+    }
+    // Priority 2: Use provided field parameter
+    else if (field && Object.keys(field).length > 0) {
+      this.mongooseQuery = this.mongooseQuery.sort(field);
+    }
+    // Priority 3: Default sorting
+    else {
+      this.mongooseQuery = this.mongooseQuery.sort({ createdAt: -1 });
+    }
 
     return this;
   }
@@ -131,26 +165,70 @@ export class QueryBuilder<T extends Document> {
     return this;
   }
 
-  populate(fields: string[] = []): this {
+  populate(
+    fields?: string[] | string,
+    renameFields?: Record<string, string>
+  ): this {
+    // Handle if fields is a string (single field)
+    const fieldsArray: string[] = !fields
+      ? []
+      : typeof fields === "string"
+      ? [fields]
+      : fields;
     const populateFromQuery = this.queryParams.populate as string;
     const fieldsToPopulate = populateFromQuery
       ? populateFromQuery.split(",")
-      : fields.length
-      ? fields
+      : fieldsArray.length
+      ? fieldsArray
       : [];
 
     fieldsToPopulate.forEach((field) => {
       // Support syntax: "author:name;email" => populate only name, email
       if (field.includes(":")) {
         const [path, select] = field.split(":");
-        this.mongooseQuery = this.mongooseQuery.populate({
-          path: path.trim(),
-          select: select.split(";").join(" "), // allow "name;email"
-        });
+        const actualPath = path.trim();
+
+        // Check if we need to rename this field
+        const asName = renameFields?.[actualPath];
+
+        if (asName) {
+          // Use aggregation-style population with alias
+          this.mongooseQuery = this.mongooseQuery.populate({
+            path: actualPath,
+            select: select.split(";").join(" "),
+            options: {
+              transform: (doc: any, id: any) => doc,
+            },
+          });
+          // Note: Mongoose doesn't support direct field renaming in populate
+          // This will be handled in post-processing
+        } else {
+          this.mongooseQuery = this.mongooseQuery.populate({
+            path: actualPath,
+            select: select.split(";").join(" "),
+          });
+        }
       } else {
-        this.mongooseQuery = this.mongooseQuery.populate(field.trim());
+        const actualPath = field.trim();
+        const asName = renameFields?.[actualPath];
+
+        if (asName) {
+          this.mongooseQuery = this.mongooseQuery.populate({
+            path: actualPath,
+            options: {
+              transform: (doc: any, id: any) => doc,
+            },
+          });
+        } else {
+          this.mongooseQuery = this.mongooseQuery.populate(actualPath);
+        }
       }
     });
+
+    // Store rename configuration for post-processing
+    if (renameFields) {
+      (this.mongooseQuery as any).__renameFields = renameFields;
+    }
 
     return this;
   }
@@ -172,7 +250,8 @@ export class QueryBuilder<T extends Document> {
   }
 
   async exec(): Promise<T[]> {
-    return this.mongooseQuery;
+    const results = await this.mongooseQuery;
+    return this.applyFieldRenames(results);
   }
 
   async execWithMeta(): Promise<{
@@ -188,7 +267,7 @@ export class QueryBuilder<T extends Document> {
     ]);
 
     return {
-      data,
+      data: this.applyFieldRenames(data),
       meta: {
         total: total,
         page,
@@ -196,5 +275,30 @@ export class QueryBuilder<T extends Document> {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  /**
+   * Apply field renaming to results based on renameFields configuration
+   */
+  private applyFieldRenames(results: T[]): T[] {
+    const renameFields = (this.mongooseQuery as any).__renameFields;
+
+    if (!renameFields || Object.keys(renameFields).length === 0) {
+      return results;
+    }
+
+    return results.map((doc) => {
+      const plainDoc = doc.toObject ? doc.toObject() : doc;
+      const renamedDoc: any = { ...plainDoc };
+
+      Object.entries(renameFields).forEach(([oldKey, newKey]) => {
+        if (oldKey in renamedDoc) {
+          renamedDoc[newKey as string] = renamedDoc[oldKey];
+          delete renamedDoc[oldKey];
+        }
+      });
+
+      return renamedDoc as T;
+    });
   }
 }

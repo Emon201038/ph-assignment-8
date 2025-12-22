@@ -13,36 +13,11 @@ export interface IUser extends Document {
   role: UserRole;
   address: string;
   contactNumber: string;
+  preferedLanguages: string[];
 
   // Common fields
   profileImage?: string;
   bio?: string;
-  languages?: string[];
-
-  // Tourist fields
-  touristInfo?: {
-    preferences?: string[];
-    wishlist?: string[];
-  };
-
-  // Guide fields
-  guideInfo?: {
-    gender: string;
-    expertise: string[];
-    dailyRate: number;
-    rating?: number;
-    totalReviews?: number;
-    verified?: boolean;
-    availability?: {
-      day: string;
-      slots: string[];
-    }[];
-  };
-
-  // Admin fields
-  adminInfo?: {
-    permissions: string[];
-  };
 
   createdAt?: Date;
   updatedAt?: Date;

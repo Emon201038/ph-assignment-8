@@ -1,20 +1,23 @@
 import { JwtPayload } from "jsonwebtoken";
 import AppError from "../../helpers/appError";
-import { QueryBuilder } from "../../middlewares/queryBuilder";
 import { HTTP_STATUS } from "../../utils/httpStatus";
 import { IUser, UserRole } from "./user.interface";
 import User from "./user.model";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
+import { Tourist } from "../tourist/tourist.model";
+import { QueryBuilder } from "../../lib/queryBuilder";
 
-const getAllUsers = async (queries: Record<string, string>) => {
+const getAllUsers = async (queryString?: Record<string, string>) => {
   const builder = new QueryBuilder<IUser>(User, {
-    ...queries,
-    isDeleted: "false",
+    ...queryString,
+    // isDeleted: "false",
     role: "TOURIST",
   });
   const res = await builder
     .filter()
     .search(["email", "name", "phone"])
+    .sort()
     .paginate()
     .select(["-password"])
     .execWithMeta();
@@ -28,38 +31,67 @@ const getUser = async (userId: string) => {
   return user;
 };
 
-const createUser = async (payload: Partial<IUser>): Promise<IUser> => {
-  const { email, ...res } = payload;
+export const createTourist = async (payload: any) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  // check if user already exist
-  const isExists = await User.findOne({ email });
+  try {
+    const { email, ...rest } = payload;
 
-  if (isExists && isExists.isDeleted) {
-    const updatedUser = await User.findOneAndUpdate({ email }, res, {
-      context: "query",
-      new: true,
-    });
+    // Check if user already exists
+    const existingUser = await User.findOne({ email }).session(session);
 
-    return updatedUser!;
-  }
+    if (existingUser) {
+      if (existingUser.isDeleted) {
+        // Remove soft-deleted user and related Tourist profile
+        await User.deleteOne({ _id: existingUser._id }).session(session);
+        await Tourist.deleteOne({ userId: existingUser._id }).session(session);
+      } else if (existingUser.isBlocked) {
+        throw new AppError(
+          HTTP_STATUS.BAD_REQUEST,
+          "User account has been blocked. Please contact admin"
+        );
+      } else {
+        throw new AppError(
+          HTTP_STATUS.CONFLICT,
+          "User already exists with this email."
+        );
+      }
+    }
 
-  if (isExists && isExists.isBlocked) {
-    throw new AppError(
-      HTTP_STATUS.BAD_REQUEST,
-      "User account has blocked. Please contact with admin"
+    // Create new User
+    const [user] = await User.create(
+      [
+        {
+          email,
+          ...rest,
+          role: UserRole.TOURIST,
+        },
+      ],
+      { session }
     );
-  }
 
-  if (isExists) {
-    throw new AppError(
-      HTTP_STATUS.CONFLICT,
-      "User already exist with this email."
+    // Create Tourist profile
+    await Tourist.create(
+      [
+        {
+          userId: user._id,
+          ...rest,
+        },
+      ],
+      { session }
     );
+
+    // Commit transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    return user;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
   }
-
-  const user = await User.create({ email, ...res });
-
-  return user;
 };
 
 const updateUser = async (
@@ -135,8 +167,8 @@ const deleteUser = async (loggedInUser: JwtPayload, userId: string) => {
   }
 
   if (
-    user.role === UserRole.ADMIN &&
-    user.adminInfo?.permissions.includes("DELETE_USER")
+    user.role === UserRole.ADMIN
+    // user.adminInfo?.permissions.includes("DELETE_USER")
   ) {
     throw new AppError(
       HTTP_STATUS.FORBIDDEN,
@@ -167,7 +199,7 @@ const deleteUser = async (loggedInUser: JwtPayload, userId: string) => {
 export const UserService = {
   getAllUsers,
   getUser,
-  createUser,
+  createUser: createTourist,
   updateUser,
   updateUserRole,
   deleteUser,

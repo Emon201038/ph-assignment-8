@@ -4,6 +4,8 @@ import tourRouter from "../modules/tour/tour.routes";
 import authRouter from "../modules/auth/auth.routes";
 import adminRouter from "../modules/admin/admin.routes";
 import guideRouter from "../modules/guide/guide.routes";
+import lookupRouter from "../modules/lookup/lookup.routes";
+import touristRouter from "../modules/tourist/tourist.routes";
 
 const router = express.Router();
 
@@ -27,6 +29,14 @@ const moduleRoutes: { path: string; route: Router }[] = [
   {
     path: "/guides",
     route: guideRouter,
+  },
+  {
+    path: "/tourists",
+    route: touristRouter,
+  },
+  {
+    path: "/lookup",
+    route: lookupRouter,
   },
 ];
 

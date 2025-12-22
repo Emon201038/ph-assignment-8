@@ -104,8 +104,8 @@ export const adminNavItems: INavSection[] = [
         roles: [UserRole.ADMIN],
       },
       {
-        title: "Users",
-        href: "/admin/dashboard/users-management",
+        title: "Tourists",
+        href: "/admin/dashboard/tourists-management",
         icon: "User",
         roles: [UserRole.ADMIN],
       },

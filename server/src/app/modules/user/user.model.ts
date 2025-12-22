@@ -29,34 +29,6 @@ const userSchema = new Schema<IUser>(
     // Common fields
     profileImage: String,
     bio: String,
-    languages: [String],
-
-    // Tourist specific fields
-    touristInfo: {
-      preferences: [String],
-      wishlist: [{ type: Schema.Types.ObjectId, ref: "Tour" }],
-    },
-
-    // Guide specific fields
-    guideInfo: {
-      expertise: [String],
-      dailyRate: Number,
-      rating: { type: Number, default: 0 },
-      totalReviews: { type: Number, default: 0 },
-      verified: { type: Boolean, default: false },
-
-      availability: [
-        {
-          day: String,
-          slots: [String], // e.g ["09:00", "10:00"]
-        },
-      ],
-    },
-
-    // Admin specific fields
-    adminInfo: {
-      permissions: [String],
-    },
 
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },

@@ -24,10 +24,10 @@ const UserManagementHeader = () => {
       />
 
       <ManagementPageHeader
-        title="User Management"
-        description="Manage users information and details"
+        title="Tourist Management"
+        description="Manage tourists information and details"
         actions={{
-          label: "Add user",
+          label: "Add tourist",
           icon: Plus,
           onClick: () => setIsDialogOpen(true),
         }}
