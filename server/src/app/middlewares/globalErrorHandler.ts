@@ -43,7 +43,7 @@ export const globalErrorHandler = (
   // Zod Error
   else if (err.name === "ZodError") {
     statusCode = HTTP_STATUS.BAD_REQUEST;
-    message = "Zod validation error";
+    message = err.issues[0].message;
     errorSources = err.issues.map((error: any) => {
       return {
         path: error.path[error.path.length - 1],

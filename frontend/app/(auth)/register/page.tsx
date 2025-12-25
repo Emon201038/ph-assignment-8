@@ -7,8 +7,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
-import SignupForm from "./SignupForm";
 import { UserRole } from "@/interfaces/user.interface";
+import SignupForm from "@/components/module/auth/SignupForm";
 
 export default async function RegisterPage({
   searchParams,
@@ -37,7 +37,7 @@ export default async function RegisterPage({
             <CardDescription>Create your LocalGuide account</CardDescription>
           </CardHeader>
           <CardContent>
-            <SignupForm role={params.role} />
+            <SignupForm isSignUp={true} />
 
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">

@@ -3,9 +3,9 @@ import React, { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import ManagementPageHeader from "@/components/shared/ManagementPageHeader";
 import { Plus } from "lucide-react";
-import CreateUserModal from "./UserCreateModal";
+import TouristFormDialog from "./TouristCreateModal";
 
-const UserManagementHeader = () => {
+const TouristManagementHeader = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -17,7 +17,7 @@ const UserManagementHeader = () => {
   };
   return (
     <>
-      <CreateUserModal
+      <TouristFormDialog
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onSuccess={handleSuccess}
@@ -27,7 +27,7 @@ const UserManagementHeader = () => {
         title="Tourist Management"
         description="Manage tourists information and details"
         actions={{
-          label: "Add tourist",
+          label: "Add Tourist",
           icon: Plus,
           onClick: () => setIsDialogOpen(true),
         }}
@@ -36,4 +36,4 @@ const UserManagementHeader = () => {
   );
 };
 
-export default UserManagementHeader;
+export default TouristManagementHeader;

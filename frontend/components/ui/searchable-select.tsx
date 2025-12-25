@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,74 +17,78 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea } from "./scroll-area";
+
+export interface Option {
+  value: string;
+  label: string;
+}
 
 interface SearchableSelectProps {
-  onValueChange: (value: string) => void;
-  defaultValue?: string;
-  options: { value: string; label: string }[];
+  options: Option[];
+  value?: string;
+  onValueChange?: (value: string) => void;
   placeholder?: string;
-  emptyMessage?: string;
+  emptyText?: string;
+  searchPlaceholder?: string;
+  className?: string;
+  disabled?: boolean;
 }
 
 export function SearchableSelect({
   options,
+  value,
   onValueChange,
-  defaultValue,
-  emptyMessage = "No data found!",
-  placeholder = "Select an option",
+  placeholder = "Select an option...",
+  emptyText = "No results found.",
+  searchPlaceholder = "Search...",
+  className,
+  disabled = false,
 }: SearchableSelectProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
-  React.useEffect(() => {
-    if (defaultValue) {
-      setValue(options.find((v) => v.value === defaultValue)?.value || "");
-    }
-  }, [defaultValue]);
+  const selectedOption = options.find((option) => option.value === value);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild className="">
+    <Popover open={open} onOpenChange={setOpen} modal={true}>
+      <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between text-ellipsis min-w-40"
+          className={cn("w-full justify-between", className)}
+          disabled={disabled}
         >
-          <p className=" text-ellipsis">
-            {value
-              ? options.find((v) => v.value === value)?.label
-              : placeholder}
-          </p>
-          <ChevronsUpDown className="opacity-50" />
+          <span className="truncate">
+            {selectedOption ? selectedOption.label : placeholder}
+          </span>
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0">
-        <Command
-          onValueChange={onValueChange}
-          className="max-h-60 overflow-y-auto"
-        >
-          <CommandInput placeholder={placeholder} className="h-9" />
-          <CommandList>
-            <CommandEmpty>{emptyMessage}</CommandEmpty>
+      <PopoverContent
+        className="w-(--radix-popover-trigger-width) p-0 z-100"
+        align="start"
+      >
+        <Command>
+          <CommandInput placeholder={searchPlaceholder} />
+          <CommandList className="max-h-75 overflow-y-auto">
+            <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
-              {options.map((v) => (
+              {options.map((option) => (
                 <CommandItem
-                  key={v.value}
-                  value={v.value}
+                  key={option.value}
+                  value={option.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    onValueChange?.(currentValue === value ? "" : currentValue);
                     setOpen(false);
                   }}
                 >
-                  {v.label}
                   <Check
                     className={cn(
-                      "ml-auto",
-                      value === v.value ? "opacity-100" : "opacity-0"
+                      "mr-2 h-4 w-4",
+                      value === option.value ? "opacity-100" : "opacity-0"
                     )}
                   />
+                  {option.label}
                 </CommandItem>
               ))}
             </CommandGroup>

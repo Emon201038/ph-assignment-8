@@ -15,13 +15,46 @@ const getTourists = catchAsync(async (req, res, next) => {
   });
 });
 
+const getTouristById = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    message: "Tourist fetched successfully",
+    statusCode: 200,
+    success: true,
+    data: await TouristService.getTouristById(req.params.id),
+  });
+});
+
 const createTourist = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     message: "Tourist created successfully",
     statusCode: 201,
     success: true,
-    data: await TouristService.createTourist(req.body),
+    data: await TouristService.createTourist(req),
   });
 });
 
-export const TouristController = { getTourists, createTourist };
+const updateTourist = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    message: "Tourist updated successfully",
+    statusCode: 200,
+    success: true,
+    data: await TouristService.updateTourist(req.params.id, req.body),
+  });
+});
+
+const deleteTourist = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    message: "Tourist deleted successfully",
+    statusCode: 200,
+    success: true,
+    data: await TouristService.deleteTourist(req.params.id),
+  });
+});
+
+export const TouristController = {
+  getTourists,
+  getTouristById,
+  createTourist,
+  updateTourist,
+  deleteTourist,
+};

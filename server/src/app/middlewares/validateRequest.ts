@@ -14,8 +14,6 @@ export const validateRequest =
           req.body[key] = false;
         }
       }
-      if (typeof req.body?.details === "string")
-        req.body.details = JSON.parse(req.body.details);
       if (!req.body) throw new AppError(400, "Request body is empty.");
       req.body = await zodSchema.parseAsync(req.body);
       next();

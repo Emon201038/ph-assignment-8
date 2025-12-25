@@ -3,7 +3,7 @@ import mongoose, { Document } from "mongoose";
 export interface ITourist extends Document {
   userId: mongoose.Types.ObjectId;
   interests: string[];
-  preferredLanguages: string[];
+  preferredLanguage: string;
   preferredCurrency: string;
   totalTrips: number;
   totalSpent: number;

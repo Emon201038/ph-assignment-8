@@ -11,9 +11,7 @@ const touristSchema = new Schema<ITourist>(
     },
 
     interests: [String],
-
-    preferredLanguages: [String], // ISO-639-1
-
+    preferredLanguage: String, // ISO-639-1
     preferredCurrency: String, // ISO-4217
 
     emergencyContact: {

@@ -1,18 +1,30 @@
 "use server";
-import { UserRole } from "@/interfaces/user.interface";
+import { Gender, UserRole } from "@/interfaces/user.interface";
 import { zodValidator } from "@/lib/zod-validator";
 import z, { email } from "zod";
 import { login } from "../login/action";
 
 const serverUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
 
-const schema = z.object({
-  name: z.string("Name is required").min(1, "Name is required"),
-  email: z.email("Invalid email"),
+const createTouristSchema = z.object({
+  name: z.string("name is required").min(2, "name is required"),
+  email: z.email("Invalide email address"),
+  phone: z.string("phone is required").min(10, "phone is required"),
   password: z
     .string("password is required")
-    .min(6, "password must be minimum 6 charecter."),
-  role: z.enum(["TOURIST", "GUIDE"]).default(UserRole.TOURIST),
+    .min(6, "password must be minimum 6 digit"),
+  image: z.file("image is required").optional(),
+  bio: z.string().optional(),
+  interests: z
+    .string()
+    .optional()
+    .transform((z) => {
+      console.log(z);
+      return z?.split(",")?.map((i) => i.trim());
+    })
+    .default([]),
+  preferredLanguage: z.string().optional(),
+  gender: z.enum(Object.values(Gender), "Invalide gender").default(Gender.MALE),
 });
 
 export const signUpAction = async (
@@ -24,33 +36,48 @@ export const signUpAction = async (
       name: formData.get("name"),
       email: formData.get("email"),
       password: formData.get("password"),
-      role: formData.get("role"),
+      image: formData.get("image") || null,
+      preferedLanguage: formData.get("preferedLanguage") || "",
+      interests: formData.get("interests") || "",
+      bio: formData.get("bio") || "",
+      phone: formData.get("phone") || "",
+      gender: formData.get("gender") as Gender,
+      address: formData.get("address") || "",
     };
-    if (!zodValidator(payload, schema).success) {
-      return zodValidator(payload, schema);
+
+    if (!zodValidator(payload, createTouristSchema).success) {
+      return zodValidator(payload, createTouristSchema);
     }
 
-    const validatedPayload = zodValidator(payload, schema);
+    const modifiedFormData = new FormData();
 
-    const newFormData = new FormData();
-
-    newFormData.append("name", validatedPayload?.data?.name as string);
-    newFormData.append("email", validatedPayload?.data?.email as string);
-    newFormData.append("password", validatedPayload?.data?.password as string);
-    newFormData.append("role", validatedPayload?.data?.role as string);
-    if (formData.get("image")) {
-      newFormData.append("image", formData.get("image") as Blob);
+    modifiedFormData.append("name", payload?.name as string);
+    modifiedFormData.append("email", payload?.email as string);
+    modifiedFormData.append("password", payload?.password as string);
+    if ((formData.get("image") as File)?.size) {
+      modifiedFormData.append("image", payload?.image as Blob);
     }
+    modifiedFormData.append(
+      "preferedLanguage",
+      payload?.preferedLanguage as string
+    );
+    modifiedFormData.append("interests", payload?.interests as string);
+    modifiedFormData.append("bio", payload?.bio as string);
+    modifiedFormData.append("phone", payload?.phone as string);
+    modifiedFormData.append("gender", payload?.gender as string);
+    modifiedFormData.append("address", payload?.address as string);
 
-    const res = await fetch(`${serverUrl}/users`, {
+    console.log(payload);
+
+    const res = await fetch(`${serverUrl}/tourists`, {
       method: "POST",
       credentials: "include",
-      body: newFormData,
+      body: modifiedFormData,
     });
 
     const data = await res.json();
 
-    if (data?.success) {
+    if (data?.success && formData.get("isSignUp") === "true") {
       await login(initialState, formData);
     }
     if (!data?.success) {

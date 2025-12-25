@@ -6,18 +6,25 @@ export enum UserRole {
   ADMIN = "ADMIN",
 }
 
+export enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  OTHER = "OTHER",
+}
+
 export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
   role: UserRole;
-  address: string;
-  contactNumber: string;
-  preferedLanguages: string[];
 
   // Common fields
+  address: string;
+  phone: string;
+  preferedLanguages: string[];
   profileImage?: string;
   bio?: string;
+  gender: Gender;
 
   createdAt?: Date;
   updatedAt?: Date;

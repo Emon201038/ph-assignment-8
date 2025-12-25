@@ -4,6 +4,12 @@ export enum UserRole {
   ADMIN = "ADMIN",
 }
 
+export enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  OTHER = "OTHER",
+}
+
 export interface IUser {
   _id: string;
   name: string;
@@ -11,7 +17,8 @@ export interface IUser {
   password: string;
   role: UserRole;
   address: string;
-  contactNumber: string;
+  phone: string;
+  gender: Gender;
 
   // Common fields
   profileImage?: string;
@@ -48,4 +55,23 @@ export interface IUser {
 
   isDeleted?: boolean;
   isBlocked?: boolean;
+}
+
+export interface ITourist {
+  _id: string;
+  user: IUser;
+  interests: string[];
+  preferredLanguage: string;
+  preferredCurrency: string;
+  totalTrips: number;
+  totalSpent: number;
+  wishlistTours: string[];
+  bookedTours: string[];
+  reviewsGiven: string[];
+  emergencyContact?: {
+    name: string;
+    phone: string;
+    email: string;
+    relationship: string;
+  };
 }

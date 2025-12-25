@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
-import { IUser, UserRole } from "./user.interface";
+import { Gender, IUser, UserRole } from "./user.interface";
 
 const userSchema = new Schema<IUser>(
   {
@@ -29,6 +29,13 @@ const userSchema = new Schema<IUser>(
     // Common fields
     profileImage: String,
     bio: String,
+    address: String,
+    gender: {
+      type: String,
+      enum: Object.values(Gender),
+      default: Gender.MALE,
+    },
+    phone: String,
 
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },

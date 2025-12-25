@@ -1,18 +1,21 @@
 import mongoose from "mongoose";
-import { IUser, UserRole } from "../user/user.interface";
+import { UserRole } from "../user/user.interface";
 import User from "../user/user.model";
 import { Tourist } from "./tourist.model";
 import { HTTP_STATUS } from "../../utils/httpStatus";
 import AppError from "../../helpers/appError";
 import { QueryBuilder } from "../../lib/queryBuilder";
+import { Request } from "express";
+import { uploadFileToCloudinary } from "../../utils/upload-files";
 import { ITourist } from "./tourist.interface";
 
-export const createTourist = async (payload: any) => {
+const createTourist = async (req: Request) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const { email, ...rest } = payload;
+    const { email, ...rest } = req.body;
+    console.log(rest, req.body);
 
     // Check if user already exists
     const existingUser = await User.findOne({ email }).session(session);
@@ -35,13 +38,29 @@ export const createTourist = async (payload: any) => {
       }
     }
 
+    if (req.file) {
+      const uploadRes = await uploadFileToCloudinary(
+        req.file as Express.Multer.File,
+        "local-guide"
+      );
+      if (!uploadRes)
+        throw new AppError(500, "Failed to upload profile image.");
+      rest.profileImage = uploadRes?.url;
+    }
+
     // Create new User
     const [user] = await User.create(
       [
         {
           email,
-          ...rest,
+          name: req.body.name,
+          password: req.body.password,
+          phone: req.body.phone,
+          address: req.body.address,
+          gender: req.body.gender,
+          profileImage: rest.profileImage,
           role: UserRole.TOURIST,
+          bio: req.body.bio,
         },
       ],
       { session }
@@ -51,8 +70,13 @@ export const createTourist = async (payload: any) => {
     await Tourist.create(
       [
         {
-          ...rest,
           userId: user._id,
+          preferredLanguage: req.body.preferredLanguage,
+          interests:
+            req.body.interests.map((i: string) => i.trim()).filter(Boolean) ||
+            [],
+          preferredCurrency: req.body.preferredCurrency,
+          emergencyContact: req.body.emergencyContact,
         },
       ],
       { session }
@@ -64,6 +88,7 @@ export const createTourist = async (payload: any) => {
 
     return user;
   } catch (error) {
+    console.log(error);
     await session.abortTransaction();
     session.endSession();
     throw error;
@@ -96,4 +121,36 @@ const getTourists = async (queryParams: Record<string, string>) => {
   return { tourists: result.data, meta: result.meta };
 };
 
-export const TouristService = { createTourist, getTourists };
+const getTouristById = async (id: string) => {
+  const tourist = await Tourist.findById(id).populate("userId", "name email");
+  if (!tourist) {
+    throw new AppError(HTTP_STATUS.NOT_FOUND, "Tourist not found");
+  }
+  return tourist;
+};
+
+const updateTourist = async (id: string, data: Partial<ITourist>) => {
+  const tourist = await Tourist.findById(id);
+  if (!tourist) {
+    throw new AppError(HTTP_STATUS.NOT_FOUND, "Tourist not found");
+  }
+  return tourist;
+};
+
+const deleteTourist = async (id: string) => {
+  const tourist = await Tourist.findById(id);
+  if (!tourist) {
+    throw new AppError(HTTP_STATUS.NOT_FOUND, "Tourist not found");
+  }
+
+  await User.updateOne({ _id: tourist.userId }, { $set: { isDeleted: true } });
+  return tourist;
+};
+
+export const TouristService = {
+  createTourist,
+  getTourists,
+  getTouristById,
+  updateTourist,
+  deleteTourist,
+};
