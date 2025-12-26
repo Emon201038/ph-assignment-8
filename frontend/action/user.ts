@@ -34,11 +34,7 @@ export const getUsers = async (queryString?: string) => {
 export const createTouristAction = async (
   currentState: unknown,
   formData: FormData
-): Promise<{
-  success: boolean;
-  message?: string;
-  errors?: { field: string; message: string }[];
-}> => {
+) => {
   try {
     const payload = {
       name: formData.get("name"),
@@ -53,8 +49,24 @@ export const createTouristAction = async (
       address: formData.get("address") || "",
     };
 
-    if (!zodValidator(payload, createTouristSchema).success) {
-      return zodValidator(payload, createTouristSchema);
+    const validationResult = zodValidator(payload, createTouristSchema);
+
+    if (!validationResult.success && validationResult.errors) {
+      return {
+        success: false,
+        errors: validationResult.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+
+    if (!validationResult.data) {
+      return {
+        success: false,
+        errors: validationResult.errors,
+        formData: payload,
+        message: "validation error",
+      };
     }
 
     const modifiedFormData = new FormData();

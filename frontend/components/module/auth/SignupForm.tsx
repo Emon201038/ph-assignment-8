@@ -9,9 +9,7 @@ import { generateStrongPassword } from "@/lib/generate-password";
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
 import InputFieldError from "@/components/shared/InputFieldError";
-import { ITour } from "@/interfaces/tour.interface";
 import { useActionState, useEffect, useRef, useState } from "react";
-import { createTouristAction } from "@/action/user";
 import { toast } from "sonner";
 import { IInputErrorState } from "@/lib/getInputFieldError";
 import { Gender, ITourist } from "@/interfaces/user.interface";
@@ -24,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { editTourist } from "@/action/tourist";
 
 interface SignupFormProps {
   onClose?: (e: boolean) => void;
@@ -40,6 +39,7 @@ const SignupForm = ({
 }: SignupFormProps) => {
   const isEdit = !!tourist;
   const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [languages, setLanguages] = useState<
     { code: string; name: string; nativeName: string }[]
   >([]);
@@ -55,7 +55,12 @@ const SignupForm = ({
     tourist?.user.gender || Gender.MALE
   );
 
-  const [state, createTourist, isLoading] = useActionState(signUpAction, null);
+  const [state, createTourist, isLoading] = useActionState(
+    isEdit ? editTourist.bind(null, tourist._id) : signUpAction,
+    null
+  );
+
+  console.log(state);
 
   useEffect(() => {
     if (state?.success) {
@@ -64,12 +69,20 @@ const SignupForm = ({
         formRef.current.reset();
       }
 
+      if (fileInputRef?.current) {
+        fileInputRef.current.value = "";
+      }
+      setImage(null);
       onSuccess?.();
       onClose?.(true);
     } else if (state && !state.success) {
-      console.log(state);
       if (state.errors && state.errors?.length === 0)
         toast.error(state.message);
+      if (image && fileInputRef.current) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(image);
+        fileInputRef.current.files = dataTransfer.files;
+      }
     }
   }, [state]);
 
@@ -107,11 +120,19 @@ const SignupForm = ({
       <input type="hidden" name="isSignUp" value={isSignUp.toString()} />
       <input type="hidden" name="interests" value={interests} />
       <input type="hidden" name="gender" value={gender} />
-      <input type="hidden" name="preferedLanguage" value={preferedLanguage} />
+      <input type="hidden" name="preferredLanguage" value={preferedLanguage} />
       <Field className="space-y-1 gap-px">
         <FieldLabel htmlFor="name">Full Name</FieldLabel>
         <FieldContent>
-          <Input id="name" type="text" placeholder="John Doe" name="name" />
+          <Input
+            id="name"
+            type="text"
+            placeholder="John Doe"
+            name="name"
+            defaultValue={
+              state?.formData?.name || (isEdit ? tourist.user.name : undefined)
+            }
+          />
         </FieldContent>
         <InputFieldError state={state as IInputErrorState} field="name" />
       </Field>
@@ -124,6 +145,12 @@ const SignupForm = ({
               type="email"
               placeholder="you@example.com"
               name="email"
+              // defaultValue={isEdit ? tourist?.user.email : undefined}
+              defaultValue={
+                state?.formData?.email ||
+                (isEdit ? tourist?.user.email : undefined)
+              }
+              disabled={isEdit}
             />
           </FieldContent>
           <InputFieldError state={state as IInputErrorState} field="email" />
@@ -135,36 +162,42 @@ const SignupForm = ({
               id="phone"
               placeholder="+8801*********"
               name="phone"
-              defaultValue={isEdit ? tourist.user.phone : ""}
+              // defaultValue={isEdit ? tourist.user.phone : undefined}
+              defaultValue={
+                state?.formData?.phone ||
+                (isEdit ? tourist.user.phone : undefined)
+              }
             />
           </FieldContent>
           <InputFieldError state={state as IInputErrorState} field="phone" />
         </Field>
       </div>
-      <Field className="space-y-1 gap-px">
-        <div className="flex justify-between items-center w-full">
-          <FieldLabel htmlFor="password">Password</FieldLabel>
-          <p
-            onClick={() => {
-              setPassword(generateStrongPassword(8));
-            }}
-            className="text-sm text-primary underline cursor-pointer"
-          >
-            Generate password
-          </p>
-        </div>
-        <FieldContent>
-          <Input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </FieldContent>
-        <InputFieldError state={state as IInputErrorState} field="password" />
-      </Field>
+      {!isEdit && (
+        <Field className="space-y-1 gap-px">
+          <div className="flex justify-between items-center w-full">
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <p
+              onClick={() => {
+                setPassword(generateStrongPassword(8));
+              }}
+              className="text-sm text-primary underline cursor-pointer"
+            >
+              Generate password
+            </p>
+          </div>
+          <FieldContent>
+            <Input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </FieldContent>
+          <InputFieldError state={state as IInputErrorState} field="password" />
+        </Field>
+      )}
       <div className="flex justify-between items-center gap-3">
         <Field className="space-y-1 gap-px w-1/2">
           <FieldLabel htmlFor="interests">Interests</FieldLabel>
@@ -185,7 +218,7 @@ const SignupForm = ({
           />
         </Field>
         <div className="space-y-2 w-1/2">
-          <Label htmlFor="interests">Language</Label>
+          <Label htmlFor="preferredLanguage">Language</Label>
           <SearchableSelect
             options={languages.map((l) => ({
               label: l.nativeName,
@@ -197,6 +230,7 @@ const SignupForm = ({
             }}
             value={preferedLanguage}
             className="z-2000"
+            id="preferredLanguage"
           />
           <InputFieldError
             state={state as IInputErrorState}
@@ -232,48 +266,56 @@ const SignupForm = ({
               name="address"
               id="address"
               placeholder="City, State, Country"
+              // defaultValue={isEdit ? tourist.user.address : undefined}
+              defaultValue={
+                state?.formData?.address ||
+                (isEdit ? tourist.user.address : undefined)
+              }
             />
           </FieldContent>
           <InputFieldError state={state as IInputErrorState} field="address" />
         </Field>
       </div>
 
-      <div className="space-y-2">
-        <div className="flex justify-between items-center w-full">
-          <Label htmlFor="image">Profile Photo</Label>
+      {!isEdit && (
+        <div className="space-y-2">
+          <div className="flex justify-between items-center w-full">
+            <Label htmlFor="image">Profile Photo</Label>
+            {image && (
+              <div
+                onClick={() => {
+                  setImage(null);
+                }}
+                className="text-sm cursor-pointer"
+              >
+                <Trash2 className="w-4 h-4 text-destructive" />
+              </div>
+            )}
+          </div>
+          <Input
+            id="image"
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={(e) => setImage(e.target!.files![0] || null)}
+            ref={fileInputRef}
+          />
           {image && (
-            <div
-              onClick={() => {
-                setImage(null);
-              }}
-              className="text-sm cursor-pointer"
-            >
-              <Trash2 className="w-4 h-4 text-destructive" />
+            <div className="w-full flex justify-center items-center">
+              <Image
+                src={URL.createObjectURL(image)}
+                alt="profile"
+                width={100}
+                height={100}
+                className="rounded-full aspect-square"
+              />
             </div>
           )}
+          <InputFieldError state={state as IInputErrorState} field="image" />
         </div>
-        <Input
-          id="image"
-          type="file"
-          name="image"
-          accept="image/*"
-          onChange={(e) => setImage(e.target!.files![0] || null)}
-        />
-        {image && (
-          <div className="w-full flex justify-center items-center">
-            <Image
-              src={URL.createObjectURL(image)}
-              alt="profile"
-              width={100}
-              height={100}
-              className="rounded-full aspect-square"
-            />
-          </div>
-        )}
-        <InputFieldError state={state as IInputErrorState} field="image" />
-      </div>
+      )}
       <Button type="submit" disabled={isLoading} className="mt-4 w-full">
-        Create
+        {isEdit ? "Update" : " Create"}
       </Button>
     </form>
   );

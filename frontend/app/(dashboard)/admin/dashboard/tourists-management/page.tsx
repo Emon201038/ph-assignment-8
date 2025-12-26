@@ -1,7 +1,6 @@
 import { getTourists } from "@/action/tourist";
 import TouristManagementHeader from "@/components/module/tourist/TouristManagementHeader";
 import TouristsTable from "@/components/module/tourist/TouristTable";
-import UsersTable from "@/components/module/tourist/TouristTable";
 import RefreshButton from "@/components/shared/RefreshButton";
 import SearchFilter from "@/components/shared/SearchFilter";
 import SelectFilter from "@/components/shared/SelectFilter";
@@ -35,7 +34,7 @@ const page = async ({
         <RefreshButton />
       </div>
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
-        <TouristsTable tourists={data.data} />
+        <TouristsTable tourists={data?.data || []} />
         <TablePagination
           currentPage={data?.meta?.page || 1}
           totalPages={data?.meta?.totalPages || 1}

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { UserRole } from "../user/user.interface";
+import { IUser, UserRole } from "../user/user.interface";
 import User from "../user/user.model";
 import { Tourist } from "./tourist.model";
 import { HTTP_STATUS } from "../../utils/httpStatus";
@@ -129,12 +129,53 @@ const getTouristById = async (id: string) => {
   return tourist;
 };
 
-const updateTourist = async (id: string, data: Partial<ITourist>) => {
-  const tourist = await Tourist.findById(id);
-  if (!tourist) {
-    throw new AppError(HTTP_STATUS.NOT_FOUND, "Tourist not found");
+const updateTourist = async (id: string, data: Partial<ITourist & IUser>) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const tourist = await Tourist.findById(id);
+    if (!tourist) {
+      throw new AppError(HTTP_STATUS.NOT_FOUND, "Tourist not found");
+    }
+    await Tourist.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          preferredLanguage: data.preferredLanguage,
+          interests:
+            data?.interests?.map((i: string) => i.trim()).filter(Boolean) || [],
+          preferredCurrency: data.preferredCurrency,
+          emergencyContact: data.emergencyContact,
+        },
+      },
+
+      { new: true }
+    ).session(session);
+    await User.findOneAndUpdate(
+      { _id: tourist.userId },
+      {
+        $set: {
+          name: data.name,
+          phone: data.phone,
+          address: data.address,
+          gender: data.gender,
+          bio: data.bio,
+        },
+      },
+      { new: true }
+    ).session(session);
+    await session.commitTransaction();
+    session.endSession();
+    return await Tourist.findById(id).populate(
+      "userId",
+      "name email phone address gender bio createdAt isDeleted isBlocked"
+    );
+  } catch (error) {
+    console.log(error);
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
   }
-  return tourist;
 };
 
 const deleteTourist = async (id: string) => {

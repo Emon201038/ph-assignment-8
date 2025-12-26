@@ -1,6 +1,6 @@
 "use client";
 import { Edit, Eye, Loader2, MoreHorizontal, Trash } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import {
   Table,
   TableBody,
@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
+import { set } from "zod";
 
 export interface IColumn<T> {
   header: string;
@@ -80,48 +81,69 @@ function ManagementTable<T>({
                 </TableCell>
               </TableRow>
             ) : (
-              data?.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  {columns.map((cell, cellIdx) => (
-                    <TableCell key={cellIdx} className={cell.className}>
-                      {typeof cell.accessor === "function"
-                        ? cell.accessor(row)
-                        : String(row[cell.accessor])}
-                    </TableCell>
-                  ))}
-                  {hasActions && (
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant={"ghost"} size={"icon"}>
-                            <MoreHorizontal className="size-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          {onView && (
-                            <DropdownMenuItem onClick={() => onView(row)}>
-                              <Eye className="mr-2 size-4" />
-                              View
-                            </DropdownMenuItem>
-                          )}
-                          {onEdit && (
-                            <DropdownMenuItem onClick={() => onEdit(row)}>
-                              <Edit className="mr-2 size-4" />
-                              Edit
-                            </DropdownMenuItem>
-                          )}
-                          {onDelete && (
-                            <DropdownMenuItem onClick={() => onDelete(row)}>
-                              <Trash className="mr-2 size-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))
+              data?.map((row, rowIndex) => {
+                const [openDropdown, setOpenDropdown] = useState(false);
+                return (
+                  <TableRow key={rowIndex}>
+                    {columns.map((cell, cellIdx) => (
+                      <TableCell key={cellIdx} className={cell.className}>
+                        {typeof cell.accessor === "function"
+                          ? cell.accessor(row)
+                          : String(row[cell.accessor])}
+                      </TableCell>
+                    ))}
+                    {hasActions && (
+                      <TableCell>
+                        <DropdownMenu
+                          open={openDropdown}
+                          onOpenChange={setOpenDropdown}
+                        >
+                          <DropdownMenuTrigger asChild>
+                            <Button variant={"ghost"} size={"icon"}>
+                              <MoreHorizontal className="size-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {onView && (
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  onView(row);
+                                  setOpenDropdown(false);
+                                }}
+                              >
+                                <Eye className="mr-2 size-4" />
+                                View
+                              </DropdownMenuItem>
+                            )}
+                            {onEdit && (
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  onEdit(row);
+                                  setOpenDropdown(false);
+                                }}
+                              >
+                                <Edit className="mr-2 size-4" />
+                                Edit
+                              </DropdownMenuItem>
+                            )}
+                            {onDelete && (
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  onDelete(row);
+                                  setOpenDropdown(false);
+                                }}
+                              >
+                                <Trash className="mr-2 size-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>

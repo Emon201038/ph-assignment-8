@@ -4,8 +4,7 @@ import { StatusBadgeCell } from "@/components/shared/cell/StatusBadgeCell";
 import { UserInfoCell } from "@/components/shared/cell/UserInfoCell";
 import { IColumn } from "@/components/shared/ManagementTable";
 import { Badge } from "@/components/ui/badge";
-import { ITourist, IUser } from "@/interfaces/user.interface";
-import { Star } from "lucide-react";
+import { ITourist } from "@/interfaces/user.interface";
 
 export const touristsColumns: IColumn<ITourist>[] = [
   {

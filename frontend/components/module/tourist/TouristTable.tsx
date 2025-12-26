@@ -1,11 +1,10 @@
 "use client";
 import ManagementTable from "@/components/shared/ManagementTable";
-import { ITourist, IUser } from "@/interfaces/user.interface";
+import { ITourist } from "@/interfaces/user.interface";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { touristsColumns } from "./TouristColumns";
-import CreateUserModal from "./TouristCreateModal";
 import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationModal";
 import TouristFormDialog from "./TouristCreateModal";
 import { deleteTourist } from "@/action/tourist";

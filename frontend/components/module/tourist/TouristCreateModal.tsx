@@ -32,14 +32,7 @@ const TouristFormDialog = ({
   }, [open]);
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(value) => {
-        if (!value) {
-          onClose(false);
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] overflow-auto">
         <DialogTitle>{isEdit ? "Edit User" : "Create User"}</DialogTitle>
         <SignupForm

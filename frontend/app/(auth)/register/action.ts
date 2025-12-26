@@ -37,7 +37,7 @@ export const signUpAction = async (
       email: formData.get("email"),
       password: formData.get("password"),
       image: formData.get("image") || null,
-      preferedLanguage: formData.get("preferedLanguage") || "",
+      preferredLanguage: formData.get("preferredLanguage") || "",
       interests: formData.get("interests") || "",
       bio: formData.get("bio") || "",
       phone: formData.get("phone") || "",
@@ -45,8 +45,24 @@ export const signUpAction = async (
       address: formData.get("address") || "",
     };
 
-    if (!zodValidator(payload, createTouristSchema).success) {
-      return zodValidator(payload, createTouristSchema);
+    const validationResult = zodValidator(payload, createTouristSchema);
+
+    if (!validationResult.success && validationResult.errors) {
+      return {
+        success: false,
+        errors: validationResult.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+
+    if (!validationResult.data) {
+      return {
+        success: false,
+        errors: validationResult.errors,
+        formData: payload,
+        message: "validation error",
+      };
     }
 
     const modifiedFormData = new FormData();
@@ -58,8 +74,8 @@ export const signUpAction = async (
       modifiedFormData.append("image", payload?.image as Blob);
     }
     modifiedFormData.append(
-      "preferedLanguage",
-      payload?.preferedLanguage as string
+      "preferredLanguage",
+      payload?.preferredLanguage as string
     );
     modifiedFormData.append("interests", payload?.interests as string);
     modifiedFormData.append("bio", payload?.bio as string);

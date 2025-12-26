@@ -32,6 +32,7 @@ interface SearchableSelectProps {
   searchPlaceholder?: string;
   className?: string;
   disabled?: boolean;
+  id?: string;
 }
 
 export function SearchableSelect({
@@ -43,6 +44,7 @@ export function SearchableSelect({
   searchPlaceholder = "Search...",
   className,
   disabled = false,
+  id,
 }: SearchableSelectProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -50,7 +52,7 @@ export function SearchableSelect({
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal={true}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild id={id}>
         <Button
           variant="outline"
           role="combobox"
