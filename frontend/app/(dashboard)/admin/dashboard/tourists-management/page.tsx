@@ -1,4 +1,5 @@
 import { getTourists } from "@/action/tourist";
+import TouristFilter from "@/components/module/tourist/TouristFilter";
 import TouristManagementHeader from "@/components/module/tourist/TouristManagementHeader";
 import TouristsTable from "@/components/module/tourist/TouristTable";
 import RefreshButton from "@/components/shared/RefreshButton";
@@ -25,14 +26,15 @@ const page = async ({
   return (
     <div className="space-y-4 p-6">
       <TouristManagementHeader />
-      <div className="flex gap-2">
+      {/* <div className="flex gap-2">
         <SearchFilter />
         <SelectFilter
           options={[{ label: "Deleted", value: "true" }]}
           paramsName="isDeleted"
         />
         <RefreshButton />
-      </div>
+      </div> */}
+      <TouristFilter />
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
         <TouristsTable tourists={data?.data || []} />
         <TablePagination

@@ -42,6 +42,8 @@ export class QueryBuilder<T extends Document> {
 
     excludedFields.forEach((field) => delete filters[field]);
 
+    console.log(filters, "filters");
+
     for (const key in filters) {
       let value = filters[key];
 
