@@ -1,14 +1,14 @@
 "use client";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import SignupForm from "../auth/SignupForm";
-import { ITourist } from "@/interfaces/user.interface";
+import { ITourist, IUser } from "@/interfaces/user.interface";
 import { useEffect } from "react";
 
 interface TouristFormDialogProps {
   open: boolean;
   onClose: (e: boolean) => void;
   onSuccess: () => void;
-  tourist?: ITourist;
+  tourist?: IUser & { profile: ITourist };
 }
 
 const TouristFormDialog = ({

@@ -1,6 +1,6 @@
 "use client";
 import ManagementTable from "@/components/shared/ManagementTable";
-import { ITourist } from "@/interfaces/user.interface";
+import { ITourist, IUser } from "@/interfaces/user.interface";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -10,15 +10,21 @@ import TouristFormDialog from "./TouristCreateModal";
 import { deleteTourist } from "@/action/tourist";
 
 interface GuidesTableProps {
-  tourists: ITourist[];
+  tourists: (IUser & { profile: ITourist })[];
 }
 
 const TouristsTable = ({ tourists }: GuidesTableProps) => {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [deletingTourist, setDeletingTourist] = useState<ITourist | null>(null);
-  const [viewingTourist, setViewingTourist] = useState<ITourist | null>(null);
-  const [editingTourist, setEditingTourist] = useState<ITourist | null>(null);
+  const [deletingTourist, setDeletingTourist] = useState<
+    (IUser & { profile: ITourist }) | null
+  >(null);
+  const [viewingTourist, setViewingTourist] = useState<
+    (IUser & { profile: ITourist }) | null
+  >(null);
+  const [editingTourist, setEditingTourist] = useState<
+    (IUser & { profile: ITourist }) | null
+  >(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRefresh = () => {
@@ -27,15 +33,15 @@ const TouristsTable = ({ tourists }: GuidesTableProps) => {
     });
   };
 
-  const handleView = (doctor: ITourist) => {
-    setViewingTourist(doctor);
+  const handleView = (tourist: IUser & { profile: ITourist }) => {
+    setViewingTourist(tourist);
   };
 
-  const handleEdit = (doctor: ITourist) => {
-    setEditingTourist(doctor);
+  const handleEdit = (tourist: IUser & { profile: ITourist }) => {
+    setEditingTourist(tourist);
   };
 
-  const handleDelete = (tourist: ITourist) => {
+  const handleDelete = (tourist: IUser & { profile: ITourist }) => {
     setDeletingTourist(tourist);
   };
 
@@ -91,7 +97,7 @@ const TouristsTable = ({ tourists }: GuidesTableProps) => {
         onOpenChange={(open) => !open && setDeletingTourist(null)}
         onConfirm={confirmDelete}
         title="Delete Doctor"
-        description={`Are you sure you want to delete ${deletingTourist?.user?.name}? This action cannot be undone.`}
+        description={`Are you sure you want to delete ${deletingTourist?.name}? This action cannot be undone.`}
         isDeleting={isDeleting}
       />
     </>

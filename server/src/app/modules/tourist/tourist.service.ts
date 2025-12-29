@@ -15,7 +15,6 @@ const createTourist = async (req: Request) => {
 
   try {
     const { email, ...rest } = req.body;
-    console.log(rest, req.body);
 
     // Check if user already exists
     const existingUser = await User.findOne({ email }).session(session);
@@ -61,13 +60,14 @@ const createTourist = async (req: Request) => {
           profileImage: rest.profileImage,
           role: UserRole.TOURIST,
           bio: req.body.bio,
+          roleProfileModel: "Tourist",
         },
       ],
       { session }
     );
 
     // Create Tourist profile
-    await Tourist.create(
+    const [tourist] = await Tourist.create(
       [
         {
           userId: user._id,
@@ -81,6 +81,10 @@ const createTourist = async (req: Request) => {
       ],
       { session }
     );
+
+    user.profile = tourist._id;
+
+    await user.save({ session });
 
     // Commit transaction
     await session.commitTransaction();
@@ -98,24 +102,36 @@ const createTourist = async (req: Request) => {
 const getTourists = async (queryParams: Record<string, string>) => {
   const queryBuilder = new QueryBuilder(Tourist, queryParams);
 
-  // Apply filters first
-  queryBuilder.filter();
+  // Filter Tourist fields, excluding User-specific fields
+  queryBuilder.filter(["gender", "role", "isBlocked", "isDeleted"]);
 
-  // Search by User name (populated field)
-  await queryBuilder.searchPopulated(
-    User,
-    "userId",
-    ["name", "email", "contactNumber"],
-    "_id"
-  );
+  // Build User filters
+  const userFilters: Record<string, string> = {};
+  if (queryParams.gender) userFilters.gender = "gender";
+  if (queryParams.role) userFilters.role = "role";
+  if (queryParams.isBlocked) userFilters.isBlocked = "isBlocked";
+  if (queryParams.isDeleted) userFilters.isDeleted = "isDeleted";
 
-  // Apply sorting, pagination, and population
+  // Apply User filters if any exist
+  if (Object.keys(userFilters).length > 0) {
+    await queryBuilder.filterPopulated(User, "userId", userFilters);
+  }
+
+  // Search
+  if (queryParams.searchTerm) {
+    await queryBuilder.searchPopulated(User, "userId", [
+      "name",
+      "email",
+      "phone",
+    ]);
+  }
+
   const result = await queryBuilder
     .sort()
     .paginate()
-    .populate(["userId:name;email;contactNumber"], {
+    .populate(["userId:name;email;phone;profileImage;gender"], {
       userId: "user",
-    }) // Populate the user data
+    })
     .execWithMeta();
 
   return { tourists: result.data, meta: result.meta };

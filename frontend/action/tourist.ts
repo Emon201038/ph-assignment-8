@@ -5,7 +5,7 @@ import { zodValidator } from "@/lib/zod-validator";
 import z from "zod";
 
 export const getTourists = async (queryString?: string) => {
-  const res = await serverFetch.get(`/tourists?${queryString}`);
+  const res = await serverFetch.get(`/users?role=TOURIST&${queryString}`);
   return await res.json();
 };
 

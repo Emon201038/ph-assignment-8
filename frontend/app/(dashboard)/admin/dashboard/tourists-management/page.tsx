@@ -8,7 +8,7 @@ import SelectFilter from "@/components/shared/SelectFilter";
 import TablePagination from "@/components/shared/TablePagination";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import { IResponse } from "@/interfaces";
-import { ITourist } from "@/interfaces/user.interface";
+import { ITourist, IUser } from "@/interfaces/user.interface";
 import { queryStringFormatter } from "@/lib/formatters";
 import { Suspense } from "react";
 
@@ -18,28 +18,20 @@ const page = async ({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
   const searchParamsObj = await searchParams;
-  searchParamsObj.populate =
-    "userId:name;profileImage;email;phone;isDeleted;interests;preferredLanguages;preferredCurrency;totalSpent;createdAt;gender;address";
   const queryString = queryStringFormatter(searchParamsObj);
-  const data: IResponse<ITourist[]> = await getTourists(queryString);
+  const data: IResponse<(IUser & { profile: ITourist })[]> = await getTourists(
+    queryString
+  );
 
   return (
     <div className="space-y-4 p-6">
       <TouristManagementHeader />
-      {/* <div className="flex gap-2">
-        <SearchFilter />
-        <SelectFilter
-          options={[{ label: "Deleted", value: "true" }]}
-          paramsName="isDeleted"
-        />
-        <RefreshButton />
-      </div> */}
       <TouristFilter />
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
         <TouristsTable tourists={data?.data || []} />
         <TablePagination
           currentPage={data?.meta?.page || 1}
-          totalPages={data?.meta?.totalPages || 1}
+          totalPages={data?.meta?.total || 1}
         />
       </Suspense>
     </div>

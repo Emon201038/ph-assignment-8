@@ -4,26 +4,27 @@ import { StatusBadgeCell } from "@/components/shared/cell/StatusBadgeCell";
 import { UserInfoCell } from "@/components/shared/cell/UserInfoCell";
 import { IColumn } from "@/components/shared/ManagementTable";
 import { Badge } from "@/components/ui/badge";
-import { ITourist } from "@/interfaces/user.interface";
+import { ITourist, IUser } from "@/interfaces/user.interface";
 
-export const touristsColumns: IColumn<ITourist>[] = [
+export const touristsColumns: IColumn<IUser & { profile: ITourist }>[] = [
   {
     header: "Tourists",
     accessor: (user) => (
       <UserInfoCell
-        name={user.user.name}
-        email={user.user.email}
-        photo={user.user.profileImage}
+        name={user.name}
+        email={user.email}
+        photo={user.profileImage}
       />
     ),
+    sortKey: "name",
   },
   {
     header: "Phone",
-    accessor: (guide) => (
+    accessor: (tourist) => (
       <div className="flex flex-col">
-        <span className="text-sm">{guide?.user.phone}</span>
-        {/* {guide.user.address ? (
-          <span className="text-sm text-gray-500">{guide.user.address}</span>
+        <span className="text-sm">{tourist?.phone}</span>
+        {/* {tourist.user.address ? (
+          <span className="text-sm text-gray-500">{tourist.user.address}</span>
         ) : (
           "N/A"
         )} */}
@@ -32,10 +33,10 @@ export const touristsColumns: IColumn<ITourist>[] = [
   },
   {
     header: "Interests",
-    accessor: (guide) => (
+    accessor: (tourist) => (
       <div className="flex gap-px flex-wrap">
-        {guide?.interests?.length > 0
-          ? guide?.interests?.map((interest) => (
+        {tourist?.profile?.interests?.length > 0
+          ? tourist?.profile?.interests?.map((interest) => (
               <Badge key={interest} className="text-sm font-semibold">
                 {interest}
               </Badge>
@@ -46,18 +47,19 @@ export const touristsColumns: IColumn<ITourist>[] = [
   },
   {
     header: "Gender",
-    accessor: (guide) => (
+    accessor: (tourist) => (
       <span className="text-sm capitalize">
-        {(guide?.user?.gender || "").toLowerCase()}
+        {(tourist?.gender || "").toLowerCase()}
       </span>
     ),
   },
   {
     header: "Status",
-    accessor: (guide) => <StatusBadgeCell isDeleted={guide.user.isDeleted} />,
+    accessor: (tourist) => <StatusBadgeCell isDeleted={tourist.isDeleted} />,
   },
   {
     header: "Joined",
-    accessor: (guide) => <DateCell date={guide.user.createdAt} />,
+    accessor: (tourist) => <DateCell date={tourist.createdAt} />,
+    sortKey: "createdAt",
   },
 ];

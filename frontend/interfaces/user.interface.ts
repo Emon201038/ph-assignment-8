@@ -74,4 +74,6 @@ export interface ITourist {
     email: string;
     relationship: string;
   };
+  createdAt: Date;
+  "user.name": string;
 }

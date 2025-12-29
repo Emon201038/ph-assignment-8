@@ -27,7 +27,7 @@ export class QueryBuilder<T extends Document> {
     this.mongooseQuery = this.model.find();
   }
 
-  filter(): this {
+  filter(excludeFields: string[] = []): this {
     const excludedFields = [
       "search",
       "searchTerm",
@@ -37,20 +37,22 @@ export class QueryBuilder<T extends Document> {
       "limit",
       "page",
       "populate",
+      ...excludeFields, // Add custom excluded fields
     ];
     const filters = { ...this.queryParams };
 
     excludedFields.forEach((field) => delete filters[field]);
 
-    console.log(filters, "filters");
-
     for (const key in filters) {
       let value = filters[key];
 
+      // Handle boolean strings
       if (value === "true" || value === "false") {
         filters[key] = value === "true";
+        continue;
       }
 
+      // Skip null/undefined/empty values
       if (
         value === null ||
         value === undefined ||
@@ -62,11 +64,116 @@ export class QueryBuilder<T extends Document> {
         continue;
       }
 
-      filters[key] = value;
+      // Handle comma-separated values (for array fields like interests)
+      // Convert "History & Heritage,Nature & Outdoor,Adventure" to array
+      if (typeof value === "string" && value.includes(",")) {
+        const arrayValues = value.split(",").map((v) => v.trim());
+        // Use $in operator for array matching
+        filters[key] = { $in: arrayValues };
+      } else {
+        filters[key] = value;
+      }
     }
 
     this.filters = { ...this.filters, ...filters };
     this.mongooseQuery = this.model.find(this.filters);
+    return this;
+  }
+
+  /**
+   * Filter by fields in a referenced/populated model
+   * Use this when you need to filter by fields in a referenced model
+   *
+   * @param refModel - The referenced model (e.g., User model)
+   * @param localField - The field in current model that references (e.g., 'userId')
+   * @param filterFields - Object mapping query param names to ref model fields
+   *                       e.g., { gender: 'gender', userRole: 'role' }
+   * @param foreignField - The field in referenced model to match against (default: '_id')
+   */
+  async filterPopulated(
+    refModel: Model<any>,
+    localField: string,
+    filterFields: Record<string, string>,
+    foreignField: string = "_id"
+  ): Promise<this> {
+    const refFilters: Record<string, any> = {};
+
+    // Extract filters that apply to the referenced model
+    for (const [paramKey, refFieldName] of Object.entries(filterFields)) {
+      const value = this.queryParams[paramKey];
+      if (
+        value !== null &&
+        value !== undefined &&
+        value !== "null" &&
+        value !== "undefined" &&
+        value !== ""
+      ) {
+        // Handle boolean conversion
+        if (value === "true" || value === "false") {
+          refFilters[refFieldName] = value === "true";
+        }
+        // Handle comma-separated values
+        else if (typeof value === "string" && value.includes(",")) {
+          const arrayValues = value.split(",").map((v: string) => v.trim());
+          refFilters[refFieldName] = { $in: arrayValues };
+        } else {
+          refFilters[refFieldName] = value;
+        }
+      }
+    }
+
+    // If no filters apply to referenced model, skip this step
+    if (Object.keys(refFilters).length === 0) {
+      return this;
+    }
+
+    // Find matching documents from the referenced model
+    const matchingRefs = await refModel.find(refFilters).select(foreignField);
+
+    // Extract the values from the foreignField
+    const matchingValues = matchingRefs.map((doc) => doc[foreignField]);
+
+    if (matchingValues.length > 0) {
+      // Check if there's already a filter on this localField
+      const existingFilter = this.filters[localField];
+
+      if (existingFilter && existingFilter.$in) {
+        // If there's already a filter (from searchPopulated or previous filterPopulated),
+        // intersect the two arrays (AND logic)
+        const existingIds = existingFilter.$in.map((id: any) => id.toString());
+        const newIds = matchingValues.map((id: any) => id.toString());
+        const intersection = existingIds.filter((id: string) =>
+          newIds.includes(id)
+        );
+
+        if (intersection.length > 0) {
+          this.filters = {
+            ...this.filters,
+            [localField]: {
+              $in: intersection.map(
+                (id: string) => new mongoose.Types.ObjectId(id)
+              ),
+            },
+          };
+        } else {
+          // No intersection - return empty result
+          this.filters = { ...this.filters, _id: { $in: [] } };
+        }
+      } else {
+        // No existing filter, just add the new one
+        this.filters = {
+          ...this.filters,
+          [localField]: { $in: matchingValues },
+        };
+      }
+
+      this.mongooseQuery = this.model.find(this.filters);
+    } else {
+      // No matches found - return empty result
+      this.filters = { ...this.filters, _id: { $in: [] } };
+      this.mongooseQuery = this.model.find(this.filters);
+    }
+
     return this;
   }
 
@@ -177,6 +284,7 @@ export class QueryBuilder<T extends Document> {
       : typeof fields === "string"
       ? [fields]
       : fields;
+
     const populateFromQuery = this.queryParams.populate as string;
     const fieldsToPopulate = populateFromQuery
       ? populateFromQuery.split(",")
@@ -190,40 +298,13 @@ export class QueryBuilder<T extends Document> {
         const [path, select] = field.split(":");
         const actualPath = path.trim();
 
-        // Check if we need to rename this field
-        const asName = renameFields?.[actualPath];
-
-        if (asName) {
-          // Use aggregation-style population with alias
-          this.mongooseQuery = this.mongooseQuery.populate({
-            path: actualPath,
-            select: select.split(";").join(" "),
-            options: {
-              transform: (doc: any, id: any) => doc,
-            },
-          });
-          // Note: Mongoose doesn't support direct field renaming in populate
-          // This will be handled in post-processing
-        } else {
-          this.mongooseQuery = this.mongooseQuery.populate({
-            path: actualPath,
-            select: select.split(";").join(" "),
-          });
-        }
+        this.mongooseQuery = this.mongooseQuery.populate({
+          path: actualPath,
+          select: select.split(";").join(" "),
+        });
       } else {
         const actualPath = field.trim();
-        const asName = renameFields?.[actualPath];
-
-        if (asName) {
-          this.mongooseQuery = this.mongooseQuery.populate({
-            path: actualPath,
-            options: {
-              transform: (doc: any, id: any) => doc,
-            },
-          });
-        } else {
-          this.mongooseQuery = this.mongooseQuery.populate(actualPath);
-        }
+        this.mongooseQuery = this.mongooseQuery.populate(actualPath);
       }
     });
 

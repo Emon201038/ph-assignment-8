@@ -6,7 +6,6 @@ import { generateJwt, verifyJwt } from "../../utils/jwt";
 import { envVars } from "../../config/env";
 
 const login = async (res: Response, email: string, password: string) => {
-  console.log(email, password);
   const isExists = await User.findOne({ email });
   if (!isExists || isExists.isDeleted) {
     throw new AppError(404, "No user found");
@@ -44,7 +43,8 @@ const login = async (res: Response, email: string, password: string) => {
   );
 
   res.cookie("accessToken", accessToken, {
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: 6000,
+    // 24 * 60 * 60 * 1000,
     secure: true,
     sameSite: "none",
     httpOnly: true,
@@ -65,4 +65,46 @@ const me = async (accessToken: string) => {
   return await User.findById(verifiedToken.userId).select("-password");
 };
 
-export const AuthService = { login, me };
+const refreshToken = async (token: string, res: Response) => {
+  console.log(token);
+  const verifiedToken = verifyJwt(token, envVars.JWT_REFRESH_TOKEN_SECRET);
+  if (typeof verifiedToken === "string") {
+    throw new AppError(400, "Failed to verify token");
+  }
+  const accessToken = generateJwt(
+    {
+      userId: verifiedToken.userId,
+      role: verifiedToken.role,
+      email: verifiedToken.email,
+    },
+    envVars.JWT_ACCESS_TOKEN_SECRET,
+    envVars.JWT_ACCESS_TOKEN_EXPIRES_IN
+  );
+
+  const refreshToken = generateJwt(
+    {
+      userId: verifiedToken.userId,
+      role: verifiedToken.role,
+      email: verifiedToken.email,
+    },
+    envVars.JWT_REFRESH_TOKEN_SECRET,
+    envVars.JWT_REFRESH_TOKEN_EXPIRES_IN
+  );
+
+  res.cookie("accessToken", accessToken, {
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: true,
+    sameSite: "none",
+    httpOnly: true,
+  });
+  res.cookie("refreshToken", refreshToken, {
+    maxAge: 90 * 24 * 60 * 60 * 1000,
+    secure: true,
+    sameSite: "none",
+    httpOnly: true,
+  });
+
+  return { refreshToken, accessToken };
+};
+
+export const AuthService = { login, me, refreshToken };

@@ -1,6 +1,15 @@
 "use client";
-import { Edit, Eye, Loader2, MoreHorizontal, Trash } from "lucide-react";
-import { ReactNode, useState } from "react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Edit,
+  Eye,
+  Loader2,
+  MoreHorizontal,
+  Trash,
+} from "lucide-react";
+import { ReactNode, useState, useTransition } from "react";
 import {
   Table,
   TableBody,
@@ -17,11 +26,14 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { set } from "zod";
+import ManagementTableRow from "./ManagementTableRow";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export interface IColumn<T> {
   header: string;
   accessor: keyof T | ((row: T) => ReactNode);
   className?: string;
+  sortKey?: string;
 }
 
 interface IManagementTableProps<T> {
@@ -46,6 +58,43 @@ function ManagementTable<T>({
   onView,
 }: IManagementTableProps<T>) {
   const hasActions = onView || onEdit || onDelete;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
+  const currentSortBy = searchParams.get("sortBy") || "";
+  const currentSortOrder = searchParams.get("sortOrder") || "desc";
+
+  const handleSort = (sortKey: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (currentSortBy === sortKey) {
+      const newOrder = currentSortOrder === "asc" ? "desc" : "asc";
+      params.set("sortOrder", newOrder);
+    } else {
+      params.set("sortBy", sortKey.toString());
+      params.set("sortOrder", "asc");
+    }
+
+    params.set("page", "1");
+
+    startTransition(() => {
+      router.push(`?${params.toString()}`);
+    });
+  };
+
+  const getSortIcon = (sortKey?: string) => {
+    if (!sortKey) return null;
+
+    if (currentSortOrder !== sortKey) {
+      return <ArrowUpDown className="size-4 ml-2 text-muted-foreground" />;
+    }
+    return currentSortOrder === "asc" ? (
+      <ArrowUp className="size-4 ml-2 text-muted-foreground" />
+    ) : (
+      <ArrowDown className="size-4 ml-2 text-muted-foreground" />
+    );
+  };
 
   return (
     <>
@@ -64,7 +113,17 @@ function ManagementTable<T>({
             <TableRow>
               {columns.map((column, colIndex) => (
                 <TableHead key={colIndex} className={column.className}>
-                  {column.header}
+                  {column.sortKey ? (
+                    <span
+                      onClick={() => handleSort(column.sortKey!)}
+                      className="flex items-center p-2 transition-colors hover:text-foreground cursor-pointer select-none font-medium"
+                    >
+                      {column.header}
+                      {getSortIcon(column.sortKey)}
+                    </span>
+                  ) : (
+                    column.header
+                  )}
                 </TableHead>
               ))}
               {hasActions && <TableHead className="w-17.5">Actions</TableHead>}
@@ -81,69 +140,18 @@ function ManagementTable<T>({
                 </TableCell>
               </TableRow>
             ) : (
-              data?.map((row, rowIndex) => {
-                const [openDropdown, setOpenDropdown] = useState(false);
-                return (
-                  <TableRow key={rowIndex}>
-                    {columns.map((cell, cellIdx) => (
-                      <TableCell key={cellIdx} className={cell.className}>
-                        {typeof cell.accessor === "function"
-                          ? cell.accessor(row)
-                          : String(row[cell.accessor])}
-                      </TableCell>
-                    ))}
-                    {hasActions && (
-                      <TableCell>
-                        <DropdownMenu
-                          open={openDropdown}
-                          onOpenChange={setOpenDropdown}
-                        >
-                          <DropdownMenuTrigger asChild>
-                            <Button variant={"ghost"} size={"icon"}>
-                              <MoreHorizontal className="size-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            {onView && (
-                              <DropdownMenuItem
-                                onClick={() => {
-                                  onView(row);
-                                  setOpenDropdown(false);
-                                }}
-                              >
-                                <Eye className="mr-2 size-4" />
-                                View
-                              </DropdownMenuItem>
-                            )}
-                            {onEdit && (
-                              <DropdownMenuItem
-                                onClick={() => {
-                                  onEdit(row);
-                                  setOpenDropdown(false);
-                                }}
-                              >
-                                <Edit className="mr-2 size-4" />
-                                Edit
-                              </DropdownMenuItem>
-                            )}
-                            {onDelete && (
-                              <DropdownMenuItem
-                                onClick={() => {
-                                  onDelete(row);
-                                  setOpenDropdown(false);
-                                }}
-                              >
-                                <Trash className="mr-2 size-4" />
-                                Delete
-                              </DropdownMenuItem>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    )}
-                  </TableRow>
-                );
-              })
+              data?.map((row, rowIndex) => (
+                <ManagementTableRow
+                  key={getRowKey ? getRowKey(row) : rowIndex}
+                  row={row}
+                  rowIndex={rowIndex}
+                  columns={columns}
+                  hasActions={hasActions}
+                  onView={onView}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                />
+              ))
             )}
           </TableBody>
         </Table>

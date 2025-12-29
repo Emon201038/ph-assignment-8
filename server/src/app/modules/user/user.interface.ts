@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 export enum UserRole {
   TOURIST = "TOURIST",
@@ -25,6 +25,8 @@ export interface IUser extends Document {
   profileImage?: string;
   bio?: string;
   gender: Gender;
+  profile: mongoose.Types.ObjectId;
+  roleProfileModel: "Tourist" | "Guide" | "Admin";
 
   createdAt?: Date;
   updatedAt?: Date;

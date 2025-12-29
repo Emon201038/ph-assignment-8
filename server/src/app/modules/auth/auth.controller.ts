@@ -23,4 +23,13 @@ const getMe = catchAsync(async (req, res, next) => {
   });
 });
 
-export const AuthController = { login, getMe };
+const refreshToken = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    statusCode: 200,
+    message: "Profile retrived",
+    success: true,
+    data: await AuthService.refreshToken(req.cookies.refreshToken, res),
+  });
+});
+
+export const AuthController = { login, getMe, refreshToken };

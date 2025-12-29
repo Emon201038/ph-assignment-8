@@ -11,7 +11,10 @@ export const auth = async () => {
     if (!accessToken) {
       return null;
     }
-    const res = await serverFetch.get("/auth/me");
+    const res = await serverFetch.get("/auth/me", {
+      cache: "force-cache",
+      next: { tags: ["me"] },
+    });
     const data: IResponse<IUser> = await res.json();
     return data.data;
   } catch (error) {

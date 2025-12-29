@@ -37,6 +37,17 @@ const userSchema = new Schema<IUser>(
     },
     phone: String,
 
+    profile: {
+      type: Schema.Types.ObjectId,
+      refPath: "roleProfileModel",
+    },
+
+    roleProfileModel: {
+      type: String,
+      required: true,
+      enum: ["Tourist", "Guide", "AdminProfile"],
+    },
+
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
   },

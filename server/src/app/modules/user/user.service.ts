@@ -7,21 +7,45 @@ import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import { Tourist } from "../tourist/tourist.model";
 import { QueryBuilder } from "../../lib/queryBuilder";
+import { DynamicQueryBuilder } from "../../lib/queryBuilderByPipline";
 
-const getAllUsers = async (queryString?: Record<string, string>) => {
-  const builder = new QueryBuilder<IUser>(User, {
-    ...queryString,
-    // isDeleted: "false",
-    role: "TOURIST",
-  });
-  const res = await builder
+const getAllUsers = async (query?: Record<string, string>) => {
+  // const qb = new QueryBuilder(User, query!).search(["name", "email", "phone"]); // 2️⃣ search
+
+  // await qb.filterPopulated(
+  //   // 3️⃣ role-based filters
+  //   Tourist,
+  //   "_id",
+  //   {
+  //     interests: "interests",
+  //     preferredLanguage: "preferredLanguage",
+  //     preferredCurrency: "preferredCurrency",
+  //   },
+  //   "userId"
+  // );
+
+  // qb.filter() // 1️⃣ normal filters.sort() // 4️⃣ sorting
+  //   .paginate() // 5️⃣ pagination
+  //   .select(["-password"])
+  //   .populate("profile");
+
+  const qb = new DynamicQueryBuilder(User, query, [
+    {
+      model: Tourist,
+      localField: "_id",
+      foreignField: "userId",
+      filterKeys: ["interests"],
+      as: "profile",
+    },
+  ]);
+
+  const res = await qb
+    .search(["name", "email", "phone"])
     .filter()
-    .search(["email", "name", "phone"])
+    .filterPopulated()
     .sort()
     .paginate()
-    .select(["-password"])
-    .execWithMeta();
-
+    .exec();
   return { users: res.data, meta: res.meta };
 };
 

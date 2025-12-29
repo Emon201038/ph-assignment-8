@@ -93,7 +93,7 @@ const TouristFilter = () => {
       params.delete("gender");
     }
 
-    params.set("page", "1");
+    // params.set("page", "1");
     startTransition(() => {
       router.push(`?${params.toString()}`);
     });
@@ -116,16 +116,16 @@ const TouristFilter = () => {
   };
 
   const applyToggleInterestsFilter = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("interests");
+    // const params = new URLSearchParams(searchParams.toString());
+    // params.delete("interests");
 
-    if (interests.length > 0) {
-      interests.forEach((i) => params.set("interests", i));
-    }
+    // if (interests.length > 0) {
+    //   interests.forEach((i) => params.set("interests", i));
+    // }
 
-    startTransition(() => {
-      router.push(`?${params.toString()}`);
-    });
+    // startTransition(() => {
+    //   router.push(`?${params.toString()}`);
+    // });
 
     setOpen(false);
   };
@@ -151,7 +151,10 @@ const TouristFilter = () => {
     <div className="space-y-3">
       {/* Row 1: Search and Refresh */}
       <div className="flex items-center gap-3">
-        <SearchFilter paramsName="searchTerm" placeholder="Search doctors..." />
+        <SearchFilter
+          paramsName="searchTerm"
+          placeholder="Search tourists with (name, email, phone)..."
+        />
         <RefreshButton />
       </div>
 
@@ -180,12 +183,12 @@ const TouristFilter = () => {
                 <CommandEmpty>No specialty found.</CommandEmpty>
                 <CommandGroup>
                   {TOURIST_PREFERENCES.map((interest, index) => {
-                    const isSelected = interests.includes(interest.label);
+                    const isSelected = interests.includes(interest.value);
                     return (
                       <CommandItem
                         key={index}
-                        value={interest.label}
-                        onSelect={() => toggleInterests(interest.label)}
+                        value={interest.value}
+                        onSelect={() => toggleInterests(interest.value)}
                         className={isSelected ? "bg-accent" : ""}
                       >
                         <Checkbox checked={isSelected} className="mr-2" />
@@ -229,26 +232,6 @@ const TouristFilter = () => {
             <SelectItem value="FEMALE">Female</SelectItem>
           </SelectContent>
         </Select>
-
-        {/* Email Filter */}
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-50 h-10"
-          disabled={isPending}
-        />
-
-        {/* Contact Number Filter */}
-        <Input
-          type="text"
-          placeholder="Contact"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="w-40 h-10"
-          disabled={isPending}
-        />
 
         {/* Clear Filters */}
         {activeFiltersCount > 0 && (

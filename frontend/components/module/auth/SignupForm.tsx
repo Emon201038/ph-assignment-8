@@ -12,7 +12,7 @@ import InputFieldError from "@/components/shared/InputFieldError";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { IInputErrorState } from "@/lib/getInputFieldError";
-import { Gender, ITourist } from "@/interfaces/user.interface";
+import { Gender, ITourist, IUser } from "@/interfaces/user.interface";
 import { signUpAction } from "@/app/(auth)/register/action";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import {
@@ -27,7 +27,7 @@ import { editTourist } from "@/action/tourist";
 interface SignupFormProps {
   onClose?: (e: boolean) => void;
   onSuccess?: () => void;
-  tourist?: ITourist;
+  tourist?: IUser & { profile: ITourist };
   isSignUp?: boolean;
 }
 
@@ -46,14 +46,12 @@ const SignupForm = ({
   const [password, setPassword] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [preferedLanguage, setPreferedLanguage] = useState<string>(
-    tourist?.preferredLanguage || ""
+    tourist?.profile?.preferredLanguage || ""
   );
   const [interests, setInterests] = useState<string[]>(
-    tourist?.interests || []
+    tourist?.profile?.interests || []
   );
-  const [gender, setGender] = useState<Gender>(
-    tourist?.user.gender || Gender.MALE
-  );
+  const [gender, setGender] = useState<Gender>(tourist?.gender || Gender.MALE);
 
   const [state, createTourist, isLoading] = useActionState(
     isEdit ? editTourist.bind(null, tourist._id) : signUpAction,
@@ -111,6 +109,7 @@ const SignupForm = ({
     fetchLanguages();
   }, []);
 
+  console.log(interests);
   return (
     <form
       ref={formRef}
@@ -130,7 +129,7 @@ const SignupForm = ({
             placeholder="John Doe"
             name="name"
             defaultValue={
-              state?.formData?.name || (isEdit ? tourist.user.name : undefined)
+              state?.formData?.name || (isEdit ? tourist.name : undefined)
             }
           />
         </FieldContent>
@@ -147,8 +146,7 @@ const SignupForm = ({
               name="email"
               // defaultValue={isEdit ? tourist?.user.email : undefined}
               defaultValue={
-                state?.formData?.email ||
-                (isEdit ? tourist?.user.email : undefined)
+                state?.formData?.email || (isEdit ? tourist?.email : undefined)
               }
               disabled={isEdit}
             />
@@ -164,8 +162,7 @@ const SignupForm = ({
               name="phone"
               // defaultValue={isEdit ? tourist.user.phone : undefined}
               defaultValue={
-                state?.formData?.phone ||
-                (isEdit ? tourist.user.phone : undefined)
+                state?.formData?.phone || (isEdit ? tourist.phone : undefined)
               }
             />
           </FieldContent>
@@ -269,7 +266,7 @@ const SignupForm = ({
               // defaultValue={isEdit ? tourist.user.address : undefined}
               defaultValue={
                 state?.formData?.address ||
-                (isEdit ? tourist.user.address : undefined)
+                (isEdit ? tourist.address : undefined)
               }
             />
           </FieldContent>
