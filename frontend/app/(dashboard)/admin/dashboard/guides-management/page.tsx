@@ -1,15 +1,16 @@
 import { getGuides } from "@/action/guide";
 import GuidesTable from "@/components/module/guide/GuideTable";
-import TourManagementHeader from "@/components/module/tour/TourManagementHeader";
+import GuideManagementHeader from "@/components/module/guide/GuideManagementHeader";
 import RefreshButton from "@/components/shared/RefreshButton";
 import SearchFilter from "@/components/shared/SearchFilter";
 import SelectFilter from "@/components/shared/SelectFilter";
 import TablePagination from "@/components/shared/TablePagination";
 import TableSkeleton from "@/components/shared/TableSkeleton";
-import { IMeta, IResponse } from "@/interfaces";
+import { IResponse } from "@/interfaces";
+import { IGuide } from "@/interfaces/guide.interface";
 import { IUser } from "@/interfaces/user.interface";
 import { queryStringFormatter } from "@/lib/formatters";
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 
 const page = async ({
   searchParams,
@@ -18,12 +19,11 @@ const page = async ({
 }) => {
   const searchParamsObj = await searchParams;
   const queryString = queryStringFormatter(searchParamsObj);
-  const data: IResponse<IUser[]> = await getGuides(queryString);
+  const data: IResponse<IUser<IGuide>[]> = await getGuides(queryString);
 
-  console.log(data);
   return (
     <div className="space-y-4 p-6">
-      <TourManagementHeader />
+      <GuideManagementHeader />
       <div className="flex gap-2">
         <SearchFilter />
         <SelectFilter
@@ -35,8 +35,8 @@ const page = async ({
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
         <GuidesTable guides={data.data} />
         <TablePagination
-          currentPage={data.meta.page || 1}
-          totalPages={data.meta.totalPages}
+          currentPage={data?.meta?.page || 1}
+          totalPages={data?.meta?.totalPages || 1}
         />
       </Suspense>
     </div>

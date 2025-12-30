@@ -3,17 +3,18 @@ import { DateCell } from "@/components/shared/cell/DateCell";
 import { StatusBadgeCell } from "@/components/shared/cell/StatusBadgeCell";
 import { UserInfoCell } from "@/components/shared/cell/UserInfoCell";
 import { IColumn } from "@/components/shared/ManagementTable";
+import { IGuide } from "@/interfaces/guide.interface";
 import { IUser } from "@/interfaces/user.interface";
 import { Star } from "lucide-react";
 
-export const guidesColumns: IColumn<IUser>[] = [
+export const guidesColumns: IColumn<IUser<IGuide>>[] = [
   {
     header: "Guides",
-    accessor: (user) => (
+    accessor: (guide) => (
       <UserInfoCell
-        name={user.name}
-        email={user.email}
-        photo={user.profileImage}
+        name={guide.name}
+        email={guide.email}
+        photo={guide.profileImage}
       />
     ),
   },
@@ -21,7 +22,7 @@ export const guidesColumns: IColumn<IUser>[] = [
     header: "Contact",
     accessor: (guide) => (
       <div className="flex flex-col">
-        <span className="text-sm">{guide?.contactNumber}</span>
+        <span className="text-sm">{guide?.phone}</span>
         {guide.address && (
           <span className="text-sm text-gray-500">{guide.address}</span>
         )}
@@ -29,10 +30,10 @@ export const guidesColumns: IColumn<IUser>[] = [
     ),
   },
   {
-    header: "Fee (daily)",
+    header: "Fee (hourly)",
     accessor: (guide) => (
       <span className="text-sm font-semibold text-green-500">
-        ${guide?.guideInfo?.dailyRate}
+        ${guide?.profile?.hourlyRate || 0}
       </span>
     ),
   },
@@ -42,7 +43,7 @@ export const guidesColumns: IColumn<IUser>[] = [
       <div className="flex items-center gap-1">
         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
         <span className="text-sm font-medium">
-          {(guide?.guideInfo?.rating || 0)!.toFixed(1)}
+          {(guide?.profile?.rating || 0)!.toFixed(1)}
         </span>
       </div>
     ),
@@ -51,7 +52,7 @@ export const guidesColumns: IColumn<IUser>[] = [
     header: "Gender",
     accessor: (guide) => (
       <span className="text-sm capitalize">
-        {(guide?.guideInfo?.gender || "").toLowerCase()}
+        {(guide?.gender || "").toLowerCase()}
       </span>
     ),
   },

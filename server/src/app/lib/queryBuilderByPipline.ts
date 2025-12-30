@@ -10,7 +10,7 @@ interface QueryBuilderOptions {
   [key: string]: any; // dynamic filters
 }
 
-interface PopulatedModelConfig {
+export interface PopulatedModelConfig {
   model: Model<Document>;
   localField: string;
   foreignField?: string;
@@ -154,7 +154,8 @@ export class DynamicQueryBuilder<T extends Document> {
       meta: {
         page: this.page,
         limit: this.limit,
-        total: totalAgg[0]?.total || 0,
+        total: parseInt(totalAgg[0]?.total) || 0,
+        totalPages: Math.ceil(totalAgg[0]?.total / this.limit),
       },
       data,
     };

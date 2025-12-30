@@ -19,9 +19,7 @@ const page = async ({
 }) => {
   const searchParamsObj = await searchParams;
   const queryString = queryStringFormatter(searchParamsObj);
-  const data: IResponse<(IUser & { profile: ITourist })[]> = await getTourists(
-    queryString
-  );
+  const data: IResponse<IUser<ITourist>[]> = await getTourists(queryString);
 
   return (
     <div className="space-y-4 p-6">
@@ -31,7 +29,7 @@ const page = async ({
         <TouristsTable tourists={data?.data || []} />
         <TablePagination
           currentPage={data?.meta?.page || 1}
-          totalPages={data?.meta?.total || 1}
+          totalPages={data?.meta?.totalPages || 1}
         />
       </Suspense>
     </div>

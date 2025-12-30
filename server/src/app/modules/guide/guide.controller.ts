@@ -25,11 +25,12 @@ const getGuide = catchAsync(async (req, res, next) => {
 });
 
 const createGuide = catchAsync(async (req, res, next) => {
+  console.log(req, "req");
   sendResponse(res, {
     message: "Guide created successfully",
     statusCode: 201,
     success: true,
-    data: await GuideService.createGuide(req.body),
+    data: await GuideService.createGuide(req),
   });
 });
 

@@ -19,6 +19,7 @@ export const globalErrorHandler = (
   let message = "Something went wrong!";
   let errorSources: IErrorSources[] = [];
 
+  console.log(err);
   // Mongoose Duplicate key error
   if (err.code === 11000) {
     statusCode = HTTP_STATUS.CONFLICT;

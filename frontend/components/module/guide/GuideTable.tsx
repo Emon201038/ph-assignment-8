@@ -1,27 +1,28 @@
 "use client";
-// import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationDialog";
 import ManagementTable from "@/components/shared/ManagementTable";
-import { IUser } from "@/interfaces/user.interface";
-// import { softDeleteDoctor } from "@/services/admin/doctorManagement";
-// import { IUser } from "@/types/doctor.interface";
-// import { ISpecialty } from "@/types/specialities.interface";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { guidesColumns } from "./GuideColumns";
-// import DoctorFormDialog from "./DoctorFormDialog";
-// import DoctorViewDetailDialog from "./DoctorViewDetailDialog";
+import { IUser } from "@/interfaces/user.interface";
+import { IGuide as Guide, IGuide } from "@/interfaces/guide.interface";
 
 interface GuidesTableProps {
-  guides: IUser[];
+  guides: IUser<IGuide>[];
 }
 
 const GuidesTable = ({ guides }: GuidesTableProps) => {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [deletingDoctor, setDeletingDoctor] = useState<IUser | null>(null);
-  const [viewingDoctor, setViewingDoctor] = useState<IUser | null>(null);
-  const [editingDoctor, setEditingDoctor] = useState<IUser | null>(null);
+  const [deletingDoctor, setDeletingDoctor] = useState<IUser<IGuide> | null>(
+    null
+  );
+  const [viewingDoctor, setViewingDoctor] = useState<IUser<IGuide> | null>(
+    null
+  );
+  const [editingDoctor, setEditingDoctor] = useState<IUser<IGuide> | null>(
+    null
+  );
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRefresh = () => {
@@ -30,15 +31,15 @@ const GuidesTable = ({ guides }: GuidesTableProps) => {
     });
   };
 
-  const handleView = (doctor: IUser) => {
+  const handleView = (doctor: IUser<IGuide>) => {
     setViewingDoctor(doctor);
   };
 
-  const handleEdit = (doctor: IUser) => {
+  const handleEdit = (doctor: IUser<IGuide>) => {
     setEditingDoctor(doctor);
   };
 
-  const handleDelete = (doctor: IUser) => {
+  const handleDelete = (doctor: IUser<IGuide>) => {
     setDeletingDoctor(doctor);
   };
 

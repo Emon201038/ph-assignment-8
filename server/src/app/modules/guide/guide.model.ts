@@ -29,34 +29,19 @@ const guideSchema = new Schema<IGuide>(
       },
     ],
 
-    dailyRate: {
+    hourlyRate: {
       type: Number,
+      required: true,
+    },
+
+    languages: {
+      type: [String],
       required: true,
     },
 
     currency: {
       type: String, // ISO-4217
-      required: true,
-    },
-
-    rating: {
-      type: Number,
-      default: 0,
-    },
-
-    totalReviews: {
-      type: Number,
-      default: 0,
-    },
-
-    totalEarnings: {
-      type: Number,
-      default: 0,
-    },
-
-    pendingEarnings: {
-      type: Number,
-      default: 0,
+      // required: true,
     },
 
     verified: {
@@ -71,16 +56,6 @@ const guideSchema = new Schema<IGuide>(
       accountName: String,
       accountNumber: String,
       country: String,
-    },
-
-    completedTours: {
-      type: Number,
-      default: 0,
-    },
-
-    cancelledTours: {
-      type: Number,
-      default: 0,
     },
 
     isDeleted: {

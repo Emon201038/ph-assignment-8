@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useTransition } from "react";
-import CreateTourModal from "../tour/CreateTourModal";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import ManagementPageHeader from "@/components/shared/ManagementPageHeader";
 import { Plus } from "lucide-react";
+import GuideModal from "./GuideModal";
 
-const GuidManagementHeader = () => {
+const GuideManagementHeader = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -17,7 +17,7 @@ const GuidManagementHeader = () => {
   };
   return (
     <>
-      <CreateTourModal
+      <GuideModal
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onSuccess={handleSuccess}
@@ -27,7 +27,7 @@ const GuidManagementHeader = () => {
         title="Guide Management"
         description="Manage guides information and details"
         actions={{
-          label: "Add guide",
+          label: "Add Guide",
           icon: Plus,
           onClick: () => setIsDialogOpen(true),
         }}
@@ -36,4 +36,4 @@ const GuidManagementHeader = () => {
   );
 };
 
-export default GuidManagementHeader;
+export default GuideManagementHeader;

@@ -1,13 +1,14 @@
-import mongoose, { Document } from "mongoose";
+import { IUser } from "./user.interface";
 
-export interface IGuide extends Document {
-  _id: mongoose.Types.ObjectId;
-  userId: mongoose.Types.ObjectId; // ref: users
+export interface IGuide {
+  _id: string;
+  profile: IUser<IGuide>;
 
   // Professional profile
   expertise: string[]; // City tours, Food tours
   experienceYears: number;
   certifications?: string[];
+  languages: string[];
 
   // Availability
   availability?: {
@@ -31,8 +32,11 @@ export interface IGuide extends Document {
     country: string; // ISO-3166
   };
 
+  rating: number;
+  totalTrips: number;
+  totalEarnings: number;
+
   // System
-  languages: string[];
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;

@@ -10,7 +10,7 @@ export enum Gender {
   OTHER = "OTHER",
 }
 
-export interface IUser {
+export interface IUser<T> {
   _id: string;
   name: string;
   email: string;
@@ -24,31 +24,7 @@ export interface IUser {
   profileImage?: string;
   bio?: string;
   languages?: string[];
-
-  // Tourist fields
-  touristInfo?: {
-    preferences?: string[];
-    wishlist?: string[];
-  };
-
-  // Guide fields
-  guideInfo?: {
-    gender: string;
-    expertise: string[];
-    dailyRate: number;
-    rating?: number;
-    totalReviews?: number;
-    verified?: boolean;
-    availability?: {
-      day: string;
-      slots: string[];
-    }[];
-  };
-
-  // Admin fields
-  adminInfo?: {
-    permissions: string[];
-  };
+  profile: T;
 
   createdAt: Date;
   updatedAt?: Date;
@@ -59,7 +35,7 @@ export interface IUser {
 
 export interface ITourist {
   _id: string;
-  user: IUser;
+  user: IUser<ITourist>;
   interests: string[];
   preferredLanguage: string;
   preferredCurrency: string;

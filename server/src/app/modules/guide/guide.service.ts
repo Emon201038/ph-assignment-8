@@ -37,6 +37,7 @@ const createGuide = async (req: Request) => {
 
   try {
     const payload = req.body;
+    console.log(req.body);
 
     // Check if user exists
     const existingUser = await User.findOne({ email: payload.email }).session(
@@ -59,21 +60,25 @@ const createGuide = async (req: Request) => {
         {
           ...payload,
           role: UserRole.GUIDE,
+          roleProfileModel: "Guide",
         },
       ],
       { session }
     );
 
     // Create guide profile
-    await Guide.create(
+    const [guide] = await Guide.create(
       [
         {
           userId: user._id,
-          ...payload.guide,
+          ...payload,
         },
       ],
       { session }
     );
+
+    user.profile = guide._id;
+    await user.save({ session });
 
     // Commit transaction
     await session.commitTransaction();

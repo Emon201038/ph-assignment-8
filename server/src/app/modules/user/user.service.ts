@@ -7,37 +7,35 @@ import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import { Tourist } from "../tourist/tourist.model";
 import { QueryBuilder } from "../../lib/queryBuilder";
-import { DynamicQueryBuilder } from "../../lib/queryBuilderByPipline";
+import {
+  DynamicQueryBuilder,
+  PopulatedModelConfig,
+} from "../../lib/queryBuilderByPipline";
+import { Guide } from "../guide/guide.model";
 
 const getAllUsers = async (query?: Record<string, string>) => {
-  // const qb = new QueryBuilder(User, query!).search(["name", "email", "phone"]); // 2️⃣ search
+  const populatedArray: PopulatedModelConfig[] = [];
 
-  // await qb.filterPopulated(
-  //   // 3️⃣ role-based filters
-  //   Tourist,
-  //   "_id",
-  //   {
-  //     interests: "interests",
-  //     preferredLanguage: "preferredLanguage",
-  //     preferredCurrency: "preferredCurrency",
-  //   },
-  //   "userId"
-  // );
-
-  // qb.filter() // 1️⃣ normal filters.sort() // 4️⃣ sorting
-  //   .paginate() // 5️⃣ pagination
-  //   .select(["-password"])
-  //   .populate("profile");
-
-  const qb = new DynamicQueryBuilder(User, query, [
-    {
+  if (query?.role === UserRole.GUIDE) {
+    populatedArray.push({
+      model: Guide,
+      localField: "_id",
+      foreignField: "userId",
+      filterKeys: ["expertise", "languages"],
+      as: "profile",
+    });
+  }
+  if (query?.role === UserRole.TOURIST) {
+    populatedArray.push({
       model: Tourist,
       localField: "_id",
       foreignField: "userId",
       filterKeys: ["interests"],
       as: "profile",
-    },
-  ]);
+    });
+  }
+
+  const qb = new DynamicQueryBuilder(User, query, populatedArray);
 
   const res = await qb
     .search(["name", "email", "phone"])
@@ -46,6 +44,50 @@ const getAllUsers = async (query?: Record<string, string>) => {
     .sort()
     .paginate()
     .exec();
+
+  if (query?.role === UserRole.GUIDE) {
+    for (const user of res.data) {
+      const ratingAgg = await User.aggregate([
+        { $match: { _id: user._id } },
+        {
+          $lookup: {
+            from: "reviews",
+            localField: "_id",
+            foreignField: "docId",
+            as: "reviews",
+          },
+        },
+        {
+          $project: {
+            rating: {
+              $ifNull: [{ $avg: "$reviews.rating" }, 0],
+            },
+          },
+        },
+      ]);
+
+      const tripsAgg = await User.aggregate([
+        { $match: { _id: user._id } },
+        {
+          $lookup: {
+            from: "bookings",
+            localField: "_id",
+            foreignField: "guideId",
+            as: "bookings",
+          },
+        },
+        {
+          $project: {
+            totalTrips: { $size: "$bookings" },
+          },
+        },
+      ]);
+
+      user.profile.rating = ratingAgg[0]?.rating ?? 0;
+      user.profile.totalTrips = tripsAgg[0]?.totalTrips ?? 0;
+    }
+  }
+
   return { users: res.data, meta: res.meta };
 };
 

@@ -2,19 +2,18 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MultiSelect } from "@/components/ui/multi-select";
-import { TOURIST_PREFERENCES } from "@/constants/user";
-import { SearchableSelect } from "@/components/ui/searchable-select";
-import { generateStrongPassword } from "@/lib/generate-password";
-import Image from "next/image";
-import { Trash2 } from "lucide-react";
-import InputFieldError from "@/components/shared/InputFieldError";
 import { useActionState, useEffect, useRef, useState } from "react";
+import { Gender, IUser, UserRole } from "@/interfaces/user.interface";
 import { toast } from "sonner";
-import { IInputErrorState } from "@/lib/getInputFieldError";
-import { Gender, ITourist, IUser } from "@/interfaces/user.interface";
-import { signUpAction } from "@/app/(auth)/register/action";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
+import InputFieldError from "@/components/shared/InputFieldError";
+import { IInputErrorState } from "@/lib/getInputFieldError";
+import { generateStrongPassword } from "@/lib/generate-password";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { IGuide } from "@/interfaces/guide.interface";
+import { createGuide } from "@/services/guide/guideManagement";
+import { GUIDE_EXPERTISE } from "@/constants/user";
+import allLanguages from "@/data/iso/languages.json";
 import {
   Select,
   SelectContent,
@@ -22,42 +21,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { editTourist } from "@/action/tourist";
-// import MultiSelect from "@/components/ui/multi-select-2";
+import { Trash2 } from "lucide-react";
+import Image from "next/image";
+import { Textarea } from "@/components/ui/textarea";
 
-interface SignupFormProps {
+interface IGuideForm {
   onClose?: (e: boolean) => void;
   onSuccess?: () => void;
-  tourist?: IUser<ITourist>;
+  guide?: IUser<IGuide>;
   isSignUp?: boolean;
 }
 
-const SignupForm = ({
-  tourist,
-  onClose,
-  onSuccess,
-  isSignUp = true,
-}: SignupFormProps) => {
-  const isEdit = !!tourist;
+const GuideForm = ({ guide, isSignUp, onClose, onSuccess }: IGuideForm) => {
+  const isEdit = !!guide;
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [languages, setLanguages] = useState<
-    { code: string; name: string; nativeName: string }[]
-  >([]);
   const [password, setPassword] = useState("");
   const [image, setImage] = useState<File | null>(null);
-  const [preferedLanguage, setPreferedLanguage] = useState<string>(
-    tourist?.profile?.preferredLanguage || ""
+  const [languages, setlanguages] = useState<string[]>(
+    guide?.profile?.languages || []
   );
-  const [interests, setInterests] = useState<
-    { label: string; value: string }[]
-  >(tourist?.profile?.interests.map((i) => ({ label: i, value: i })) || []);
-  const [gender, setGender] = useState<Gender>(tourist?.gender || Gender.MALE);
+  const [expertise, setExpertise] = useState<string[]>(
+    guide?.profile?.expertise || []
+  );
+  const [gender, setGender] = useState<Gender>(guide?.gender || Gender.MALE);
 
-  const [state, createTourist, isLoading] = useActionState(
-    isEdit ? editTourist.bind(null, tourist._id) : signUpAction,
+  const [state, createguide, isLoading] = useActionState(
+    // isEdit ? editguide.bind(null, guide._id) :
+    createGuide,
     null
   );
+
+  console.log(languages, "languages");
 
   useEffect(() => {
     if (state?.success) {
@@ -83,45 +78,16 @@ const SignupForm = ({
     }
   }, [state]);
 
-  useEffect(() => {
-    const fetchLanguages = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/lookup/languages`
-        );
-        const data: {
-          success: boolean;
-          message: string;
-          data: { code: string; name: string; nativeName: string }[];
-        } = await res.json();
-
-        if (data.success) {
-          setLanguages(data.data);
-        } else {
-          toast.error(data.message);
-        }
-      } catch (error) {
-        toast.error("Failed to fetch languages");
-      }
-    };
-
-    fetchLanguages();
-  }, []);
-
   return (
     <form
       ref={formRef}
-      action={createTourist}
+      action={createguide}
       className="space-y-4 overflow-x-hidden"
     >
-      <input type="hidden" name="isSignUp" value={isSignUp.toString()} />
-      <input
-        type="hidden"
-        name="interests"
-        value={interests.map((i) => i.value)}
-      />
+      <input type="hidden" name="isSignUp" value={isSignUp?.toString()} />
+      <input type="hidden" name="expertise" value={expertise || null} />
       <input type="hidden" name="gender" value={gender} />
-      <input type="hidden" name="preferredLanguage" value={preferedLanguage} />
+      <input type="hidden" name="languages" value={languages} />
       <Field className="space-y-1 gap-px">
         <FieldLabel htmlFor="name">Full Name</FieldLabel>
         <FieldContent>
@@ -131,11 +97,25 @@ const SignupForm = ({
             placeholder="John Doe"
             name="name"
             defaultValue={
-              state?.formData?.name || (isEdit ? tourist.name : undefined)
+              state?.formData?.name || (isEdit ? guide.name : undefined)
             }
           />
         </FieldContent>
         <InputFieldError state={state as IInputErrorState} field="name" />
+      </Field>
+      <Field className="space-y-1 gap-px">
+        <FieldLabel htmlFor="bio">Bio</FieldLabel>
+        <FieldContent>
+          <Textarea
+            id="bio"
+            placeholder="Explain yourself"
+            name="bio"
+            defaultValue={
+              state?.formData?.bio || (isEdit ? guide.bio : undefined)
+            }
+          />
+        </FieldContent>
+        <InputFieldError state={state as IInputErrorState} field="bio" />
       </Field>
       <div className="flex justify-between items-center gap-3">
         <Field className="space-y-1 gap-px">
@@ -146,9 +126,9 @@ const SignupForm = ({
               type="email"
               placeholder="you@example.com"
               name="email"
-              // defaultValue={isEdit ? tourist?.user.email : undefined}
+              // defaultValue={isEdit ? guide?.user.email : undefined}
               defaultValue={
-                state?.formData?.email || (isEdit ? tourist?.email : undefined)
+                state?.formData?.email || (isEdit ? guide?.email : undefined)
               }
               disabled={isEdit}
             />
@@ -162,9 +142,9 @@ const SignupForm = ({
               id="phone"
               placeholder="+8801*********"
               name="phone"
-              // defaultValue={isEdit ? tourist.user.phone : undefined}
+              // defaultValue={isEdit ? guide.user.phone : undefined}
               defaultValue={
-                state?.formData?.phone || (isEdit ? tourist.phone : undefined)
+                state?.formData?.phone || (isEdit ? guide.phone : undefined)
               }
             />
           </FieldContent>
@@ -199,53 +179,41 @@ const SignupForm = ({
       )}
       <div className="flex justify-between items-center gap-3">
         <Field className="space-y-1 gap-px w-1/2">
-          <FieldLabel htmlFor="interests">Interests</FieldLabel>
+          <FieldLabel htmlFor="expertise">Expertise</FieldLabel>
           <FieldContent>
             <MultiSelect
-              options={TOURIST_PREFERENCES}
-              onValueChange={(e) =>
-                setInterests(
-                  e.map((i) => {
-                    const interest = TOURIST_PREFERENCES.find(
-                      (p) => p.value === i
-                    );
-                    return {
-                      label: interest?.label || "",
-                      value: interest?.value || "",
-                    };
-                  })
-                )
-              }
-              value={interests.map((i) => i.value)}
-              placeholder="Select interest..."
-              searchPlaceholder="Search interest..."
+              options={GUIDE_EXPERTISE}
+              onValueChange={(e) => setExpertise(e)}
+              value={expertise}
+              placeholder="Select expertise..."
+              searchPlaceholder="Search expertise..."
               maxDisplayed={2}
-              id="interests"
+              id="expertise"
             />
           </FieldContent>
           <InputFieldError
             state={state as IInputErrorState}
-            field="interests"
+            field="expertise"
           />
         </Field>
         <div className="space-y-2 w-1/2">
-          <Label htmlFor="preferredLanguage">Language</Label>
-          <SearchableSelect
-            options={languages.map((l) => ({
+          <Label htmlFor="languages">Languages</Label>
+          <MultiSelect
+            options={allLanguages.map((l) => ({
               label: l.nativeName,
               value: l.code,
             }))}
             onValueChange={(e) => {
               console.log(e);
-              setPreferedLanguage(e);
+              setlanguages(e);
             }}
-            value={preferedLanguage}
+            value={languages}
             className="z-2000"
-            id="preferredLanguage"
+            id="languages"
           />
           <InputFieldError
             state={state as IInputErrorState}
-            field="preferedLanguage"
+            field="languages"
           />
         </div>
       </div>
@@ -277,14 +245,48 @@ const SignupForm = ({
               name="address"
               id="address"
               placeholder="City, State, Country"
-              // defaultValue={isEdit ? tourist.user.address : undefined}
+              // defaultValue={isEdit ? guide.user.address : undefined}
               defaultValue={
-                state?.formData?.address ||
-                (isEdit ? tourist.address : undefined)
+                state?.formData?.address || (isEdit ? guide.address : undefined)
               }
             />
           </FieldContent>
           <InputFieldError state={state as IInputErrorState} field="address" />
+        </Field>
+      </div>
+
+      <div className="flex justify-between items-center gap-3">
+        <Field className="space-y-1 gap-px">
+          <FieldLabel htmlFor="hourlyRate">Hourly Rate ($)</FieldLabel>
+          <FieldContent>
+            <Input
+              type="number"
+              name="hourlyRate"
+              id="hourlyRate"
+              placeholder="Hourly Rate in USD"
+              defaultValue={state?.formData?.hourlyRate}
+            />
+          </FieldContent>
+          <InputFieldError
+            state={state as IInputErrorState}
+            field="hourlyRate"
+          />
+        </Field>
+        <Field className="space-y-1 gap-px">
+          <FieldLabel htmlFor="experienceYears">Experience (year)</FieldLabel>
+          <FieldContent>
+            <Input
+              type="number"
+              name="experienceYears"
+              id="experienceYears"
+              placeholder="Experience in year"
+              defaultValue={state?.formData?.experienceYears}
+            />
+          </FieldContent>
+          <InputFieldError
+            state={state as IInputErrorState}
+            field="experienceYears"
+          />
         </Field>
       </div>
 
@@ -332,4 +334,4 @@ const SignupForm = ({
   );
 };
 
-export default SignupForm;
+export default GuideForm;
