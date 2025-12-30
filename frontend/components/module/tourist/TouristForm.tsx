@@ -13,7 +13,6 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { IInputErrorState } from "@/lib/getInputFieldError";
 import { Gender, ITourist, IUser } from "@/interfaces/user.interface";
-import { signUpAction } from "@/app/(auth)/register/action";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import {
   Select,
@@ -22,28 +21,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { editTourist } from "@/action/tourist";
-// import MultiSelect from "@/components/ui/multi-select-2";
+import languages from "@/data/iso/languages.json";
+import {
+  createTouristAction,
+  editTourist,
+} from "@/services/tourist/tourist.service";
+import { createTourAction } from "@/action/tour";
 
-interface SignupFormProps {
+interface TouristFormProps {
   onClose?: (e: boolean) => void;
   onSuccess?: () => void;
   tourist?: IUser<ITourist>;
   isSignUp?: boolean;
 }
 
-const SignupForm = ({
+const TouristForm = ({
   tourist,
   onClose,
   onSuccess,
   isSignUp = true,
-}: SignupFormProps) => {
+}: TouristFormProps) => {
   const isEdit = !!tourist;
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [languages, setLanguages] = useState<
-    { code: string; name: string; nativeName: string }[]
-  >([]);
   const [password, setPassword] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [preferedLanguage, setPreferedLanguage] = useState<string>(
@@ -55,7 +55,7 @@ const SignupForm = ({
   const [gender, setGender] = useState<Gender>(tourist?.gender || Gender.MALE);
 
   const [state, createTourist, isLoading] = useActionState(
-    isEdit ? editTourist.bind(null, tourist._id) : signUpAction,
+    isEdit ? editTourist.bind(null, tourist._id) : createTourAction,
     null
   );
 
@@ -82,31 +82,6 @@ const SignupForm = ({
       }
     }
   }, [state]);
-
-  useEffect(() => {
-    const fetchLanguages = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/lookup/languages`
-        );
-        const data: {
-          success: boolean;
-          message: string;
-          data: { code: string; name: string; nativeName: string }[];
-        } = await res.json();
-
-        if (data.success) {
-          setLanguages(data.data);
-        } else {
-          toast.error(data.message);
-        }
-      } catch (error) {
-        toast.error("Failed to fetch languages");
-      }
-    };
-
-    fetchLanguages();
-  }, []);
 
   return (
     <form
@@ -332,4 +307,4 @@ const SignupForm = ({
   );
 };
 
-export default SignupForm;
+export default TouristForm;

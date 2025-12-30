@@ -25,6 +25,5 @@ export default async function TourDetailsPage({
     );
   }
 
-  console.log(data);
   return <TourDetailsClient tour={data.data} />;
 }

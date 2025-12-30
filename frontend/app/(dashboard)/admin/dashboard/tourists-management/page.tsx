@@ -1,4 +1,3 @@
-import { getTourists } from "@/action/tourist";
 import TouristFilter from "@/components/module/tourist/TouristFilter";
 import TouristManagementHeader from "@/components/module/tourist/TouristManagementHeader";
 import TouristsTable from "@/components/module/tourist/TouristTable";
@@ -10,6 +9,7 @@ import TableSkeleton from "@/components/shared/TableSkeleton";
 import { IResponse } from "@/interfaces";
 import { ITourist, IUser } from "@/interfaces/user.interface";
 import { queryStringFormatter } from "@/lib/formatters";
+import { getTourists } from "@/services/tourist/tourist.service";
 import { Suspense } from "react";
 
 const page = async ({

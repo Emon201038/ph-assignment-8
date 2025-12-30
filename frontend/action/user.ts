@@ -18,7 +18,6 @@ const createTouristSchema = z.object({
     .string()
     .optional()
     .transform((z) => {
-      console.log(z);
       return z?.split(",")?.map((i) => i.trim());
     })
     .default([]),

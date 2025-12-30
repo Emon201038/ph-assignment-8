@@ -1,12 +1,12 @@
 "use server";
-import { Gender, UserRole } from "@/interfaces/user.interface";
+import { Gender, ITourist, IUser } from "@/interfaces/user.interface";
 import { zodValidator } from "@/lib/zod-validator";
-import z, { email } from "zod";
-import { login } from "../login/action";
+import z from "zod";
+import { login } from "../auth/auth.service";
+import { serverFetch } from "@/lib/server-fetch";
+import { IResponse } from "@/interfaces";
 
-const serverUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
-
-const createTouristSchema = z.object({
+const touristSchema = z.object({
   name: z.string("name is required").min(2, "name is required"),
   email: z.email("Invalide email address"),
   phone: z.string("phone is required").min(10, "phone is required"),
@@ -26,7 +26,7 @@ const createTouristSchema = z.object({
   gender: z.enum(Object.values(Gender), "Invalide gender").default(Gender.MALE),
 });
 
-export const signUpAction = async (
+export const createTouristAction = async (
   initialState: unknown,
   formData: FormData
 ) => {
@@ -44,7 +44,7 @@ export const signUpAction = async (
       address: formData.get("address") || "",
     };
 
-    const validationResult = zodValidator(payload, createTouristSchema);
+    const validationResult = zodValidator(payload, touristSchema);
 
     if (!validationResult.success && validationResult.errors) {
       return {
@@ -82,7 +82,7 @@ export const signUpAction = async (
     modifiedFormData.append("gender", payload?.gender as string);
     modifiedFormData.append("address", payload?.address as string);
 
-    const res = await fetch(`${serverUrl}/tourists`, {
+    const res = await serverFetch.post(`/tourists`, {
       method: "POST",
       credentials: "include",
       body: modifiedFormData,
@@ -105,6 +105,90 @@ export const signUpAction = async (
     return {
       success: false,
       message: error?.message,
+    };
+  }
+};
+
+export const getTourists = async (queryString?: string) => {
+  const res = await serverFetch.get(`/users?role=TOURIST&${queryString}`);
+  return await res.json();
+};
+
+export const deleteTourist = async (
+  id: string
+): Promise<IResponse<IUser<ITourist> | null>> => {
+  try {
+    const res = await serverFetch.delete(`/tourists/${id}`);
+
+    return await res.json();
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message || "Failed to delete tourist",
+      data: null,
+    };
+  }
+};
+
+export const editTourist = async (
+  id: string,
+  currentState: unknown,
+  formData: FormData
+) => {
+  const schema = z.object({
+    name: z.string("name is required").min(2, "name is required"),
+    phone: z.string("phone is required").min(10, "phone is required"),
+    // bio: z.string().optional() || "",
+    interests: z
+      .string()
+      .optional()
+      .transform((z) => {
+        return z?.split(",")?.map((i) => i.trim());
+      })
+      .default([]),
+    preferredLanguage: z.string().optional() || "",
+    gender: z
+      .enum(Object.values(Gender), "Invalide gender")
+      .default(Gender.MALE),
+    address: z.string().optional() || "",
+  });
+
+  const payload = {
+    name: formData.get("name"),
+    phone: formData.get("phone"),
+    bio: formData.get("bio"),
+    interests: formData.get("interests"),
+    preferredLanguage: formData.get("preferredLanguage"),
+    gender: formData.get("gender"),
+    address: formData.get("address"),
+  };
+
+  try {
+    const validatedPayload = zodValidator(payload, schema);
+
+    if (!validatedPayload.success) {
+      return {
+        success: false,
+        message: "validation failed",
+        formData: payload,
+        data: null,
+        errors: validatedPayload.errors,
+      };
+    }
+    const res = await serverFetch.put(`/tourists/${id}`, {
+      body: JSON.stringify(validatedPayload.data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return await res.json();
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message || "Failed to edit tourist",
+      formData: payload,
+      data: null,
     };
   }
 };

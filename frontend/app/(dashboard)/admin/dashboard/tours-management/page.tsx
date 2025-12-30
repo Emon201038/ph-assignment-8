@@ -10,8 +10,6 @@ import React, { Suspense } from "react";
 
 const page = async () => {
   const data = await getTours();
-
-  console.log(data);
   return (
     <div className="space-y-4 p-6">
       <TourManagementHeader />
@@ -26,8 +24,8 @@ const page = async () => {
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
         <ToursTable tours={data?.data || []} />
         <TablePagination
-          currentPage={data?.meta.page || 1}
-          totalPages={data?.meta.totalPages || 0}
+          currentPage={data?.meta?.page || 1}
+          totalPages={data?.meta?.totalPages || 0}
         />
       </Suspense>
     </div>

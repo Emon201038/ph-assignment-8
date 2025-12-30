@@ -3,12 +3,13 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import SignupForm from "../auth/SignupForm";
 import { ITourist, IUser } from "@/interfaces/user.interface";
 import { useEffect } from "react";
+import TouristForm from "./TouristForm";
 
 interface TouristFormDialogProps {
   open: boolean;
   onClose: (e: boolean) => void;
   onSuccess: () => void;
-  tourist?: IUser & { profile: ITourist };
+  tourist?: IUser<ITourist>;
 }
 
 const TouristFormDialog = ({
@@ -35,7 +36,7 @@ const TouristFormDialog = ({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] overflow-auto">
         <DialogTitle>{isEdit ? "Edit Tourist" : "Create Tourist"}</DialogTitle>
-        <SignupForm
+        <TouristForm
           onSuccess={onSuccess}
           onClose={onClose}
           isSignUp={!!isEdit}

@@ -11,11 +11,9 @@ export const guideSchema = z.object({
   image: z.file("image is required").optional(),
   bio: z.string("bio is required").min(2, "bio is required"),
   expertise: z.string("expertise is required").transform((z) => {
-    console.log(z, "expertise");
     return z?.split(",")?.map((i) => i.trim());
   }),
   languages: z.string("languages is required").transform((z) => {
-    console.log(z);
     return z?.split(",")?.map((i) => i.trim());
   }),
   gender: z.enum(Object.values(Gender), "Invalide gender").default(Gender.MALE),

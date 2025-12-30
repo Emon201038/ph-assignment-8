@@ -66,7 +66,6 @@ const me = async (accessToken: string) => {
 };
 
 const refreshToken = async (token: string, res: Response) => {
-  console.log(token);
   const verifiedToken = verifyJwt(token, envVars.JWT_REFRESH_TOKEN_SECRET);
   if (typeof verifiedToken === "string") {
     throw new AppError(400, "Failed to verify token");

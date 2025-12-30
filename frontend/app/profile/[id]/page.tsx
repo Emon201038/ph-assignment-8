@@ -7,9 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Star, Globe, Award, ChevronLeft } from "lucide-react";
 import { mockGuides, mockTours, mockReviews } from "@/lib/mock-data";
-import { IUser, UserRole } from "@/interfaces/user.interface";
+import { ITourist, IUser, UserRole } from "@/interfaces/user.interface";
 import { serverFetch } from "@/lib/server-fetch";
 import { IResponse } from "@/interfaces";
+import { IGuide } from "@/interfaces/guide.interface";
 
 export default async function ProfilePage({
   params,
@@ -22,9 +23,7 @@ export default async function ProfilePage({
   const guideReviews = mockReviews.filter((r) => r.guideId === id);
 
   const res = await serverFetch.get(`/users/${id}`);
-  const data: IResponse<IUser> = await res.json();
-
-  console.log(data);
+  const data: IResponse<IUser<ITourist> | IUser<IGuide>> = await res.json();
 
   if (!data.success) {
     return (
@@ -64,12 +63,10 @@ export default async function ProfilePage({
                     </AvatarFallback>
                   </Avatar>
                   <h1 className="text-2xl font-bold mb-2">{data.data.name}</h1>
-                  {isGuide && data.data?.guideInfo && (
+                  {data.data.role === UserRole.GUIDE && (
                     <div className="flex items-center justify-center gap-2 mb-4">
                       <Star className="h-5 w-5 fill-accent text-accent" />
-                      <span className="text-xl font-semibold">
-                        {data.data.guideInfo?.rating}
-                      </span>
+                      <span className="text-xl font-semibold">{5}</span>
                       <span className="text-muted-foreground">(5 tours)</span>
                     </div>
                   )}
@@ -106,7 +103,7 @@ export default async function ProfilePage({
                     </div>
                   )}
 
-                  {isGuide &&
+                  {/* {isGuide &&
                     data.data?.guideInfo &&
                     data.data.guideInfo.expertise.length > 0 && (
                       <div>
@@ -134,7 +131,7 @@ export default async function ProfilePage({
                         </p>
                         <p className="text-sm text-muted-foreground">per day</p>
                       </div>
-                    )}
+                    )} */}
                 </div>
 
                 <Separator />

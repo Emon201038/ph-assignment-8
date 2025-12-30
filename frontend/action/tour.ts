@@ -93,7 +93,6 @@ export const createTourAction = async (
 
     const data = await res.json();
 
-    console.log(data);
     return {
       success: true,
       message: "success",

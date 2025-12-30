@@ -5,6 +5,7 @@ import User from "../user/user.model";
 import mongoose from "mongoose";
 import AppError from "../../helpers/appError";
 import { Guide } from "./guide.model";
+import { HTTP_STATUS } from "../../utils/httpStatus";
 
 const getGuides = async (queryString?: Record<string, string>) => {
   const builder = new QueryBuilder<IUser>(User, {
@@ -37,7 +38,6 @@ const createGuide = async (req: Request) => {
 
   try {
     const payload = req.body;
-    console.log(req.body);
 
     // Check if user exists
     const existingUser = await User.findOne({ email: payload.email }).session(
@@ -92,9 +92,80 @@ const createGuide = async (req: Request) => {
   }
 };
 
-const updateGuide = async (req: Request) => {};
+const updateGuide = async (req: Request) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const { id } = req.params;
+    const data = req.body;
 
-const deleteGuide = async (req: Request) => {};
+    const guide = await Guide.findOne({ userId: id });
+    if (!guide) {
+      throw new AppError(HTTP_STATUS.NOT_FOUND, "Guide not found");
+    }
+
+    // Update guide
+    await Guide.findOneAndUpdate(
+      { userId: id },
+      {
+        $set: {
+          languages: data.languages,
+          expertise:
+            data?.expertise?.map((i: string) => i.trim()).filter(Boolean) || [],
+          experienceYears: data.experienceYears,
+          hourlyRate: data.hourlyRate,
+        },
+      },
+
+      { new: true }
+    ).session(session);
+
+    // Update user
+    await User.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          name: data.name,
+          phone: data.phone,
+          address: data.address,
+          gender: data.gender,
+          bio: data.bio,
+        },
+      },
+      { new: true }
+    ).session(session);
+
+    // Commit transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    return await User.findById(id).populate("profile");
+  } catch (error) {
+    console.log(error);
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
+
+const deleteGuide = async (id: string) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const guide = await Guide.findOne({ userId: id }).session(session);
+    if (!guide) {
+      throw new AppError(HTTP_STATUS.NOT_FOUND, "Guide not found");
+    }
+    await User.updateOne({ _id: id }, { isDeleted: true }).session(session);
+    await session.commitTransaction();
+    session.endSession();
+    return { success: true, message: "Guide deleted successfully", data: null };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
 
 export const GuideService = {
   getGuides,

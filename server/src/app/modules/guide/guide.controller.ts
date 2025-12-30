@@ -25,7 +25,6 @@ const getGuide = catchAsync(async (req, res, next) => {
 });
 
 const createGuide = catchAsync(async (req, res, next) => {
-  console.log(req, "req");
   sendResponse(res, {
     message: "Guide created successfully",
     statusCode: 201,
@@ -48,7 +47,7 @@ const deleteGuide = catchAsync(async (req, res, next) => {
     message: "Guide deleted successfully",
     statusCode: 200,
     success: true,
-    data: await GuideService.deleteGuide(req),
+    data: await GuideService.deleteGuide(req.params.id),
   });
 });
 

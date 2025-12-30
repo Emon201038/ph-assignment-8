@@ -7,24 +7,23 @@ import { toast } from "sonner";
 import { touristsColumns } from "./TouristColumns";
 import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationModal";
 import TouristFormDialog from "./TouristCreateModal";
-import { deleteTourist } from "@/action/tourist";
+import { deleteTourist } from "@/services/tourist/tourist.service";
 
 interface GuidesTableProps {
-  tourists: (IUser & { profile: ITourist })[];
+  tourists: IUser<ITourist>[];
 }
 
 const TouristsTable = ({ tourists }: GuidesTableProps) => {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [deletingTourist, setDeletingTourist] = useState<
-    (IUser & { profile: ITourist }) | null
-  >(null);
-  const [viewingTourist, setViewingTourist] = useState<
-    (IUser & { profile: ITourist }) | null
-  >(null);
-  const [editingTourist, setEditingTourist] = useState<
-    (IUser & { profile: ITourist }) | null
-  >(null);
+  const [deletingTourist, setDeletingTourist] =
+    useState<IUser<ITourist> | null>(null);
+  const [viewingTourist, setViewingTourist] = useState<IUser<ITourist> | null>(
+    null
+  );
+  const [editingTourist, setEditingTourist] = useState<IUser<ITourist> | null>(
+    null
+  );
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRefresh = () => {
@@ -33,15 +32,15 @@ const TouristsTable = ({ tourists }: GuidesTableProps) => {
     });
   };
 
-  const handleView = (tourist: IUser & { profile: ITourist }) => {
+  const handleView = (tourist: IUser<ITourist>) => {
     setViewingTourist(tourist);
   };
 
-  const handleEdit = (tourist: IUser & { profile: ITourist }) => {
+  const handleEdit = (tourist: IUser<ITourist>) => {
     setEditingTourist(tourist);
   };
 
-  const handleDelete = (tourist: IUser & { profile: ITourist }) => {
+  const handleDelete = (tourist: IUser<ITourist>) => {
     setDeletingTourist(tourist);
   };
 

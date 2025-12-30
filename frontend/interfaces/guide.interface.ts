@@ -2,7 +2,6 @@ import { IUser } from "./user.interface";
 
 export interface IGuide {
   _id: string;
-  profile: IUser<IGuide>;
 
   // Professional profile
   expertise: string[]; // City tours, Food tours

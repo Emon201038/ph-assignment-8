@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import { guidesColumns } from "./GuideColumns";
 import { IUser } from "@/interfaces/user.interface";
 import { IGuide as Guide, IGuide } from "@/interfaces/guide.interface";
+import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationModal";
+import GuideModal from "./GuideModal";
+import { deleteGuide } from "@/services/guide/guide.service";
 
 interface GuidesTableProps {
   guides: IUser<IGuide>[];
@@ -14,15 +17,11 @@ interface GuidesTableProps {
 const GuidesTable = ({ guides }: GuidesTableProps) => {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [deletingDoctor, setDeletingDoctor] = useState<IUser<IGuide> | null>(
+  const [deletingGuide, setDeletingGuide] = useState<IUser<IGuide> | null>(
     null
   );
-  const [viewingDoctor, setViewingDoctor] = useState<IUser<IGuide> | null>(
-    null
-  );
-  const [editingDoctor, setEditingDoctor] = useState<IUser<IGuide> | null>(
-    null
-  );
+  const [viewingGuide, setViewingGuide] = useState<IUser<IGuide> | null>(null);
+  const [editingGuide, setEditingGuide] = useState<IUser<IGuide> | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRefresh = () => {
@@ -31,32 +30,32 @@ const GuidesTable = ({ guides }: GuidesTableProps) => {
     });
   };
 
-  const handleView = (doctor: IUser<IGuide>) => {
-    setViewingDoctor(doctor);
+  const handleView = (guide: IUser<IGuide>) => {
+    setViewingGuide(guide);
   };
 
-  const handleEdit = (doctor: IUser<IGuide>) => {
-    setEditingDoctor(doctor);
+  const handleEdit = (guide: IUser<IGuide>) => {
+    setEditingGuide(guide);
   };
 
-  const handleDelete = (doctor: IUser<IGuide>) => {
-    setDeletingDoctor(doctor);
+  const handleDelete = (guide: IUser<IGuide>) => {
+    setDeletingGuide(guide);
   };
 
   const confirmDelete = async () => {
-    if (!deletingDoctor) return;
+    if (!deletingGuide) return;
 
     setIsDeleting(true);
-    // const result = await softDeleteDoctor(deletingDoctor.id!);
-    // setIsDeleting(false);
+    const result = await deleteGuide(deletingGuide._id!);
+    setIsDeleting(false);
 
-    // if (result.success) {
-    //   toast.success(result.message || "Doctor deleted successfully");
-    //   setDeletingDoctor(null);
-    //   handleRefresh();
-    // } else {
-    //   toast.error(result.message || "Failed to delete doctor");
-    // }
+    if (result.success) {
+      toast.success(result.message || "Doctor deleted successfully");
+      setDeletingGuide(null);
+      handleRefresh();
+    } else {
+      toast.error(result.message || "Failed to delete doctor");
+    }
   };
 
   return (
@@ -68,19 +67,18 @@ const GuidesTable = ({ guides }: GuidesTableProps) => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         getRowKey={(guide) => guide._id!}
-        emptyMessage="No doctors found"
+        emptyMessage="No guides found"
       />
       {/* Edit Doctor Form Dialog */}
-      {/* <DoctorFormDialog
-        open={!!editingDoctor}
-        onClose={() => setEditingDoctor(null)}
-        doctor={editingDoctor!}
-        specialities={specialities}
+      <GuideModal
+        open={!!editingGuide}
+        onClose={() => setEditingGuide(null)}
+        guide={editingGuide!}
         onSuccess={() => {
-          setEditingDoctor(null);
+          setEditingGuide(null);
           handleRefresh();
         }}
-      /> */}
+      />
 
       {/* View Doctor Detail Dialog */}
       {/* <DoctorViewDetailDialog
@@ -90,14 +88,14 @@ const GuidesTable = ({ guides }: GuidesTableProps) => {
       /> */}
 
       {/* Delete Confirmation Dialog */}
-      {/* <DeleteConfirmationDialog
-        open={!!deletingDoctor}
-        onOpenChange={(open) => !open && setDeletingDoctor(null)}
+      <DeleteConfirmationDialog
+        open={!!deletingGuide}
+        onOpenChange={(open) => !open && setDeletingGuide(null)}
         onConfirm={confirmDelete}
-        title="Delete Doctor"
-        description={`Are you sure you want to delete ${deletingDoctor?.name}? This action cannot be undone.`}
+        title="Delete Guide"
+        description={`Are you sure you want to delete ${deletingGuide?.name}? This action cannot be undone.`}
         isDeleting={isDeleting}
-      /> */}
+      />
     </>
   );
 };

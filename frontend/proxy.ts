@@ -22,7 +22,6 @@ export async function proxy(request: NextRequest) {
   }
 
   const tokenRefreshResult = await getNewAccessToken();
-  console.log(tokenRefreshResult);
 
   // If token was refreshed, redirect to same page to fetch with new token
   if (tokenRefreshResult?.tokenRefreshed) {

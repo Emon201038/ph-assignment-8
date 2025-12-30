@@ -11,6 +11,7 @@ import { IGuide } from "@/interfaces/guide.interface";
 import { IUser } from "@/interfaces/user.interface";
 import { queryStringFormatter } from "@/lib/formatters";
 import { Suspense } from "react";
+import GuideFilter from "@/components/module/guide/GuideFilter";
 
 const page = async ({
   searchParams,
@@ -24,14 +25,15 @@ const page = async ({
   return (
     <div className="space-y-4 p-6">
       <GuideManagementHeader />
-      <div className="flex gap-2">
+      <GuideFilter />
+      {/* <div className="flex gap-2">
         <SearchFilter />
         <SelectFilter
           options={[{ label: "Booked", value: "BOOKED" }]}
           paramsName="status"
         />
         <RefreshButton />
-      </div>
+      </div> */}
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
         <GuidesTable guides={data.data} />
         <TablePagination

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useActionState, useEffect, useRef, useState } from "react";
-import { Gender, IUser, UserRole } from "@/interfaces/user.interface";
+import { Gender, IUser } from "@/interfaces/user.interface";
 import { toast } from "sonner";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import InputFieldError from "@/components/shared/InputFieldError";
@@ -11,7 +11,7 @@ import { IInputErrorState } from "@/lib/getInputFieldError";
 import { generateStrongPassword } from "@/lib/generate-password";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { IGuide } from "@/interfaces/guide.interface";
-import { createGuide } from "@/services/guide/guideManagement";
+import { createGuide, editGuide } from "@/services/guide/guide.service";
 import { GUIDE_EXPERTISE } from "@/constants/user";
 import allLanguages from "@/data/iso/languages.json";
 import {
@@ -47,12 +47,9 @@ const GuideForm = ({ guide, isSignUp, onClose, onSuccess }: IGuideForm) => {
   const [gender, setGender] = useState<Gender>(guide?.gender || Gender.MALE);
 
   const [state, createguide, isLoading] = useActionState(
-    // isEdit ? editguide.bind(null, guide._id) :
-    createGuide,
+    isEdit ? editGuide.bind(null, guide._id) : createGuide,
     null
   );
-
-  console.log(languages, "languages");
 
   useEffect(() => {
     if (state?.success) {
@@ -68,7 +65,7 @@ const GuideForm = ({ guide, isSignUp, onClose, onSuccess }: IGuideForm) => {
       onSuccess?.();
       onClose?.(true);
     } else if (state && !state.success) {
-      if (state.errors && state.errors?.length === 0)
+      if ((state.errors && state.errors?.length === 0) || !state.errors)
         toast.error(state.message);
       if (image && fileInputRef.current) {
         const dataTransfer = new DataTransfer();
@@ -264,7 +261,10 @@ const GuideForm = ({ guide, isSignUp, onClose, onSuccess }: IGuideForm) => {
               name="hourlyRate"
               id="hourlyRate"
               placeholder="Hourly Rate in USD"
-              defaultValue={state?.formData?.hourlyRate}
+              defaultValue={
+                state?.formData?.hourlyRate ||
+                (isEdit ? guide.profile.hourlyRate : undefined)
+              }
             />
           </FieldContent>
           <InputFieldError
@@ -280,7 +280,10 @@ const GuideForm = ({ guide, isSignUp, onClose, onSuccess }: IGuideForm) => {
               name="experienceYears"
               id="experienceYears"
               placeholder="Experience in year"
-              defaultValue={state?.formData?.experienceYears}
+              defaultValue={
+                state?.formData?.experienceYears ||
+                (isEdit ? guide.profile.experienceYears : undefined)
+              }
             />
           </FieldContent>
           <InputFieldError
