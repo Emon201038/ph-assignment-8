@@ -9,6 +9,7 @@ import { IGuide as Guide, IGuide } from "@/interfaces/guide.interface";
 import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationModal";
 import GuideModal from "./GuideModal";
 import { deleteGuide } from "@/services/guide/guide.service";
+import GuideViewDetailsDialog from "./GuideViewDetailsDialog";
 
 interface GuidesTableProps {
   guides: IUser<IGuide>[];
@@ -81,11 +82,10 @@ const GuidesTable = ({ guides }: GuidesTableProps) => {
       />
 
       {/* View Doctor Detail Dialog */}
-      {/* <DoctorViewDetailDialog
-        open={!!viewingDoctor}
-        onClose={() => setViewingDoctor(null)}
-        doctor={viewingDoctor}
-      /> */}
+      <GuideViewDetailsDialog
+        open={!!viewingGuide}
+        onOpenChange={() => setViewingGuide(null)}
+      />
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog

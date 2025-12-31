@@ -5,7 +5,7 @@ import { getDefaultDashboardRoute } from "@/lib/auth-utils";
 import { IUser } from "@/interfaces/user.interface";
 import { getNavItemsByRole } from "@/lib/navitems.config";
 
-const DashboardMobileNav = ({ session }: { session: IUser }) => {
+const DashboardMobileNav = ({ session }: { session: IUser<null> }) => {
   const navItems: INavSection[] = getNavItemsByRole(session.role);
   const dashboardHome = getDefaultDashboardRoute(session?.role);
   return (

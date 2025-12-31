@@ -1,3 +1,4 @@
+import { IGuide } from "./guide.interface";
 import { IUser } from "./user.interface";
 
 export interface ITour {
@@ -23,7 +24,7 @@ export interface ITour {
 
   language: string[];
 
-  guide: IUser; // reference to User (guide)
+  guide: IUser<IGuide>; // reference to User (guide)
 
   rating?: number;
   totalReviews?: number;

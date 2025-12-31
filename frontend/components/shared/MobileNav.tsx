@@ -17,7 +17,7 @@ const MobileNav = ({
   session,
 }: {
   isDashboard: boolean;
-  session: IUser | null;
+  session: IUser<null> | null;
 }) => {
   const NavLinks = () => {
     if (!session) {

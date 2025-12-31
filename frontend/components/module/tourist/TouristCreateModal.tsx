@@ -1,6 +1,5 @@
 "use client";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import SignupForm from "../auth/SignupForm";
 import { ITourist, IUser } from "@/interfaces/user.interface";
 import { useEffect } from "react";
 import TouristForm from "./TouristForm";

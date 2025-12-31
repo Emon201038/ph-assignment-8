@@ -6,7 +6,7 @@ import { IColumn } from "@/components/shared/ManagementTable";
 import { Badge } from "@/components/ui/badge";
 import { ITourist, IUser } from "@/interfaces/user.interface";
 
-export const touristsColumns: IColumn<IUser & { profile: ITourist }>[] = [
+export const touristsColumns: IColumn<IUser<ITourist>>[] = [
   {
     header: "Tourists",
     accessor: (user) => (

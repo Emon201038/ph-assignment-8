@@ -10,7 +10,7 @@ import SelectFilter from "@/components/shared/SelectFilter";
 import TablePagination from "@/components/shared/TablePagination";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import { IMeta, IResponse } from "@/interfaces";
-import { IUser } from "@/interfaces/user.interface";
+import { ITourist, IUser } from "@/interfaces/user.interface";
 import { queryStringFormatter } from "@/lib/formatters";
 import React, { Suspense } from "react";
 
@@ -21,7 +21,7 @@ const page = async ({
 }) => {
   const searchParamsObj = await searchParams;
   const queryString = queryStringFormatter(searchParamsObj);
-  const data: IResponse<IUser[]> = await getUsers(queryString);
+  const data: IResponse<IUser<ITourist>[]> = await getUsers(queryString);
 
   return (
     <div className="space-y-4 p-6">
@@ -35,10 +35,10 @@ const page = async ({
         <RefreshButton />
       </div>
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
-        <UsersTable users={data.data} />
+        <UsersTable tourists={data.data} />
         <TablePagination
-          currentPage={data.meta.page || 1}
-          totalPages={data.meta.totalPages}
+          currentPage={data.meta?.page || 1}
+          totalPages={data.meta?.totalPages || 1}
         />
       </Suspense>
     </div>

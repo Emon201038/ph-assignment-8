@@ -33,8 +33,8 @@ import { ITour } from "@/interfaces/tour.interface";
 
 interface CreateTourModalProps {
   open: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
+  onClose?: () => void;
+  onSuccess?: () => void;
   tour?: ITour;
 }
 
@@ -55,7 +55,7 @@ const CreateTourModal = ({
       if (formRef?.current) {
         formRef.current.reset();
       }
-      onClose();
+      onClose?.();
     } else if (state && !state.success) {
       toast.error(state.message);
     }

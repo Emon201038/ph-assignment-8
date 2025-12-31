@@ -4,7 +4,7 @@ import tourRouter from "../modules/tour/tour.routes";
 import authRouter from "../modules/auth/auth.routes";
 import adminRouter from "../modules/admin/admin.routes";
 import guideRouter from "../modules/guide/guide.routes";
-import lookupRouter from "../modules/lookup/lookup.routes";
+// import lookupRouter from "../modules/lookup/lookup.routes";
 import touristRouter from "../modules/tourist/tourist.routes";
 import reviewRouter from "../modules/review/review.routes";
 
@@ -35,10 +35,10 @@ const moduleRoutes: { path: string; route: Router }[] = [
     path: "/tourists",
     route: touristRouter,
   },
-  {
-    path: "/lookup",
-    route: lookupRouter,
-  },
+  // {
+  //   path: "/lookup",
+  //   route: lookupRouter,
+  // },
   {
     path: "/reviews",
     route: reviewRouter,

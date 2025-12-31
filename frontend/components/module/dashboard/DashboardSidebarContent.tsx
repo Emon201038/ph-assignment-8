@@ -11,7 +11,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface IDashboardSidebarContentProps {
-  userInfo: IUser;
+  userInfo: IUser<null>;
   navItems: INavSection[];
   dashboardHome: string;
 }
