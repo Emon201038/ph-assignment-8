@@ -4,7 +4,8 @@ import { IGuide } from "@/interfaces/guide.interface";
 import { Gender, IUser } from "@/interfaces/user.interface";
 import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zod-validator";
-import z, { success } from "zod";
+import z from "zod";
+import { login } from "../auth/auth.service";
 
 export const getGuides = async (queryString?: string) => {
   const res = await serverFetch.get(`/users?role=GUIDE&${queryString}`);
@@ -31,7 +32,7 @@ const guideSchema = z.object({
     .string("hourly rate is required")
     .min(1, "hourly rate is required")
     .transform((z) => parseFloat(z.toString())),
-  address: z.string("address is required"),
+  address: z.string("address is required").min(2, "address is required"),
   experienceYears: z
     .string("experience years is required")
     .min(1, "experience years is required")
@@ -104,6 +105,13 @@ export const createGuide = async (prevState: unknown, formData: FormData) => {
 
     const data = await res.json();
 
+    if (!data?.success) {
+      throw new Error(data?.message);
+    }
+
+    if (data?.success && formData.get("isSignUp") === "true") {
+      await login(prevState, formData);
+    }
     if (!data?.success) {
       throw new Error(data?.message);
     }
