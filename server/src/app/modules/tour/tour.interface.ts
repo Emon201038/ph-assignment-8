@@ -17,15 +17,9 @@ export interface ITour {
   }[];
 
   images: string[];
-  meetingPoint: string;
-  maxGroupSize: number;
-
-  language: string[];
-
-  guide: Types.ObjectId; // reference to User (guide)
-
-  rating?: number;
-  totalReviews?: number;
-
+  language: string;
   isActive: boolean;
+  createdBy: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }

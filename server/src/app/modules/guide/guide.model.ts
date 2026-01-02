@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IGuide } from "./guide.interface";
+import { IGuide, IGuideSchedule } from "./guide.interface";
 
 const guideSchema = new Schema<IGuide>(
   {
@@ -68,3 +68,26 @@ const guideSchema = new Schema<IGuide>(
 );
 
 export const Guide = model<IGuide>("Guide", guideSchema);
+
+const GuideScheduleSchema = new Schema<IGuideSchedule>(
+  {
+    guideId: {
+      type: Schema.Types.ObjectId,
+      ref: "Guide",
+      unique: true,
+    },
+    unavailableRanges: [
+      {
+        startDate: Date,
+        endDate: Date,
+        reason: String,
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+export const GuideSchedule = model<IGuideSchedule>(
+  "GuideSchedule",
+  GuideScheduleSchema
+);

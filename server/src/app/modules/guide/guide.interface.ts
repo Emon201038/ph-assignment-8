@@ -1,4 +1,5 @@
 import mongoose, { Document } from "mongoose";
+import { Types } from "mongoose";
 
 export interface IGuide extends Document {
   _id: mongoose.Types.ObjectId;
@@ -36,5 +37,17 @@ export interface IGuide extends Document {
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;
+  bufferDays: number;
   deletedAt?: Date;
+}
+
+export interface IUnavailableRange {
+  startDate: Date;
+  endDate: Date;
+  reason?: string;
+}
+
+export interface IGuideSchedule {
+  guideId: Types.ObjectId;
+  unavailableRanges: IUnavailableRange[];
 }

@@ -21,12 +21,7 @@ export const TourValidation = {
     duration: z.string("duration is required").min(2),
 
     itinerary: itinerarySchema.optional(),
-
     images: z.array(z.string()).optional(),
-
-    meetingPoint: z.string("meeting point is required"),
-    maxGroupSize: z.string("max group size is required").min(1),
-
     language: z
       .string("language is required")
       .min(1, "At least one language is required"),

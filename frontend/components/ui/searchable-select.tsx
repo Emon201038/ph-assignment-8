@@ -17,6 +17,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Dialog, DialogContent } from "./dialog";
+import { set } from "zod";
 
 export interface Option {
   value: string;
@@ -33,6 +35,8 @@ interface SearchableSelectProps {
   className?: string;
   disabled?: boolean;
   id?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function SearchableSelect({
@@ -45,18 +49,27 @@ export function SearchableSelect({
   className,
   disabled = false,
   id,
+  open,
+  onOpenChange,
 }: SearchableSelectProps) {
-  const [open, setOpen] = React.useState(false);
+  const [openPopover, setOpenPopover] = React.useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (openPopover) {
+      setTimeout(() => inputRef.current?.focus(), 0);
+    }
+  }, [openPopover]);
 
   const selectedOption = options.find((option) => option.value === value);
 
   return (
-    <Popover open={open} onOpenChange={setOpen} modal={true}>
+    <Popover open={openPopover} onOpenChange={setOpenPopover} modal={true}>
       <PopoverTrigger asChild id={id}>
         <Button
           variant="outline"
           role="combobox"
-          aria-expanded={open}
+          aria-expanded={openPopover}
           className={cn("w-full justify-between", className)}
           disabled={disabled}
         >
@@ -71,7 +84,11 @@ export function SearchableSelect({
         align="start"
       >
         <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+          <CommandInput
+            ref={inputRef}
+            placeholder={searchPlaceholder}
+            autoFocus
+          />
           <CommandList className="max-h-75 overflow-y-auto">
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
@@ -81,7 +98,7 @@ export function SearchableSelect({
                   value={option.value}
                   onSelect={(currentValue) => {
                     onValueChange?.(currentValue === value ? "" : currentValue);
-                    setOpen(false);
+                    setOpenPopover(false);
                   }}
                 >
                   <Check

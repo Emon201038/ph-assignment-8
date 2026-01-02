@@ -12,35 +12,25 @@ const itinerarySchema = new Schema(
 
 const tourSchema = new Schema<ITour>(
   {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+    title: { type: String, required: [true, "Title is required"] },
+    description: { type: String, required: [true, "Description is required"] },
 
-    category: { type: String, required: true },
-    city: { type: String, required: true },
-    country: { type: String, required: true },
+    category: { type: String, required: [true, "Category is required"] },
+    city: { type: String, required: [true, "City is required"] },
+    country: { type: String, required: [true, "Country is required"] },
 
-    price: { type: Number, required: true },
-    duration: { type: String, required: true },
-
+    price: { type: Number, required: [true, "Price is required"] },
+    duration: { type: String, required: [true, "Duration is required"] },
     itinerary: [itinerarySchema],
-
     images: [{ type: String }],
+    language: { type: String },
+    isActive: { type: Boolean, default: false },
 
-    meetingPoint: { type: String, required: true },
-    maxGroupSize: { type: Number, default: 5 },
-
-    language: [{ type: String }],
-
-    guide: {
+    createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: [true, "User is required"],
     },
-
-    rating: { type: Number, default: 0 },
-    totalReviews: { type: Number, default: 0 },
-
-    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

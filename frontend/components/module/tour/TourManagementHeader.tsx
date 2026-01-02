@@ -3,7 +3,7 @@ import React, { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import ManagementPageHeader from "@/components/shared/ManagementPageHeader";
 import { Plus } from "lucide-react";
-import CreateTourModal from "./CreateTourModal";
+import CreateTourModal from "./TourDialog";
 
 const TourManagementHeader = () => {
   const router = useRouter();

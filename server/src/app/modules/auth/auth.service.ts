@@ -43,8 +43,8 @@ const login = async (res: Response, email: string, password: string) => {
   );
 
   res.cookie("accessToken", accessToken, {
-    maxAge: 6000,
-    // 24 * 60 * 60 * 1000,
+    maxAge: 24 * 60 * 60 * 1000,
+    // 6000,
     secure: true,
     sameSite: "none",
     httpOnly: true,

@@ -22,7 +22,7 @@ const page = async () => {
         <RefreshButton />
       </div>
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
-        <ToursTable tours={data?.data || []} />
+        <ToursTable tours={[]} />
         <TablePagination
           currentPage={data?.meta?.page || 1}
           totalPages={data?.meta?.totalPages || 0}

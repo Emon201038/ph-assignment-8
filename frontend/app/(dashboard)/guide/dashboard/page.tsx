@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus, Calendar, Clock, DollarSign, Users, Star } from "lucide-react";
-import CreateTourModal from "@/components/module/tour/CreateTourModal";
+import CreateTourModal from "@/components/module/tour/TourDialog";
 import { auth } from "@/lib/session";
 
 export default async function GuideDashboardPage() {

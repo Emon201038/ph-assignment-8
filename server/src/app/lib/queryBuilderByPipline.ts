@@ -155,7 +155,7 @@ export class DynamicQueryBuilder<T extends Document> {
         page: this.page,
         limit: this.limit,
         total: parseInt(totalAgg[0]?.total) || 0,
-        totalPages: Math.ceil(totalAgg[0]?.total / this.limit),
+        totalPages: Math.ceil(totalAgg[0]?.total / this.limit) || 0,
       },
       data,
     };
