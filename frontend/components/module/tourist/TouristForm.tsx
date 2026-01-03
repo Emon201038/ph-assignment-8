@@ -211,7 +211,6 @@ const TouristForm = ({
               value: l.code,
             }))}
             onValueChange={(e) => {
-              console.log(e);
               setPreferedLanguage(e);
             }}
             value={preferedLanguage}

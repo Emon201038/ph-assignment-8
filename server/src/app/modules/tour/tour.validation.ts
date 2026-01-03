@@ -25,32 +25,34 @@ export const TourValidation = {
     language: z
       .string("language is required")
       .min(1, "At least one language is required"),
+
+    isActive: z.boolean().optional().default(true),
+    isFeatured: z.boolean().optional().default(false),
   }),
 
   update: z.object({
     body: z.object({
-      title: z.string().optional(),
-      description: z.string().optional(),
+      title: z.string("title is required").min(3),
+      description: z.string("description is required").min(3),
 
-      category: z.string().optional(),
-      city: z.string().optional(),
-      country: z.string().optional(),
+      category: z.string("category is required"),
+      city: z.string("city is required"),
+      country: z.string("country is required"),
 
-      price: z.number().optional(),
-      duration: z.string().optional(),
+      price: z.string("price is required").min(0),
+      duration: z.string("duration is required").min(2),
 
       itinerary: itinerarySchema.optional(),
       images: z.array(z.string()).optional(),
+      language: z
+        .string("language is required")
+        .min(1, "At least one language is required"),
 
-      meetingPoint: z.string().optional(),
-      maxGroupSize: z.number().optional(),
-
-      language: z.array(z.string()).optional(),
-
-      isActive: z.boolean().optional(),
+      isActive: z.boolean().optional().default(true),
+      isFeatured: z.boolean().optional().default(false),
     }),
-    params: z.object({
-      id: z.string(),
-    }),
+  }),
+  params: z.object({
+    id: z.string(),
   }),
 };

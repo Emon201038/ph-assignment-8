@@ -21,7 +21,11 @@ tourRouter
 tourRouter
   .route("/:id")
   .get(TourController.getSingleTour)
-  .patch(validateRequest(TourValidation.update), TourController.updateTour)
+  .put(
+    uploadImage.array("images", 3),
+    validateRequest(TourValidation.update),
+    TourController.updateTour
+  )
   .delete(TourController.deleteTour);
 
 export default tourRouter;

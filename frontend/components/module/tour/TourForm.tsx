@@ -17,8 +17,9 @@ import { unicodeToEmoji } from "@/lib/unicodeToEmoji";
 import { createTour, updateTour } from "@/services/tour/tour.service";
 import { Loader2, Trash2, X } from "lucide-react";
 import Image from "next/image";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import languages from "@/data/iso/languages.json";
+import { toast } from "sonner";
 
 interface Country {
   id: number;
@@ -28,13 +29,15 @@ interface Country {
 }
 
 interface TourFormProps {
-  mode: "edit" | "create";
   tourData?: any;
+  onSuccess?: () => void;
+  onClose?: () => void;
 }
 
-const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
+const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
+  const isEdit = !!tourData;
   const [category, setCategory] = useState(tourData?.category || "");
-  const [tourImage, setTourImage] = useState<File | undefined>();
+  const [tourImage, setTourImage] = useState<File | null>(null);
   const [countries, setCountries] = useState<Country[]>(
     tourData?.countries || []
   );
@@ -50,8 +53,10 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>(
     tourData?.language || null
   );
+  const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const action = mode === "create" ? createTour : updateTour;
+  const action = !isEdit ? createTour : updateTour;
   const [state, formAction, isPending] = useActionState(action, null);
 
   useEffect(() => {
@@ -83,10 +88,34 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
     fetchContries();
   }, [selectedCountry]);
 
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state.message);
+      if (formRef?.current) {
+        formRef.current.reset();
+      }
+
+      if (fileInputRef?.current) {
+        fileInputRef.current.value = "";
+      }
+      setTourImage(null);
+      onSuccess?.();
+      onClose?.();
+    } else if (state && !state.success) {
+      if (!state.errors || state.errors?.length === 0)
+        toast.error(state.message);
+      if (tourImage && fileInputRef.current) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(tourImage);
+        fileInputRef.current.files = dataTransfer.files;
+      }
+    }
+  }, [state]);
+
   return (
     <form action={formAction} className="space-y-6">
-      {mode === "edit" && tourData && (
-        <input type="hidden" name="tourId" value={tourData.id} />
+      {isEdit && tourData && (
+        <input type="hidden" name="tourId" value={tourData._id} />
       )}
       <input type="hidden" name="category" value={category} />
       <input type="hidden" name="country" value={selectedCountry} />
@@ -100,7 +129,9 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
           <Input
             name="title"
             placeholder="e.g. Historic City Walking Tour"
-            defaultValue={tourData?.title}
+            defaultValue={
+              state?.formData?.title || (isEdit ? tourData.title : undefined)
+            }
           />
           <InputFieldError state={state as IInputErrorState} field="title" />
         </Field>
@@ -111,7 +142,10 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
             name="description"
             placeholder="Describe what makes this tour special..."
             rows={4}
-            defaultValue={tourData?.description}
+            defaultValue={
+              state?.formData?.description ||
+              (isEdit ? tourData.description : undefined)
+            }
           />
           <InputFieldError
             state={state as IInputErrorState}
@@ -131,7 +165,6 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
                 .sort((a, b) => a.value.localeCompare(b.value))}
               value={selectedCountry as string}
               onValueChange={(v) => {
-                console.log(v);
                 setSelectedCountry(v);
               }}
             />
@@ -151,7 +184,6 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
                 .sort((a, b) => a.value.localeCompare(b.value))}
               value={selectedCity as string}
               onValueChange={(v) => {
-                console.log(v);
                 setSelectedCity(v);
               }}
             />
@@ -170,7 +202,6 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
                 .sort((a, b) => a.value.localeCompare(b.value))}
               value={selectedLanguage as string}
               onValueChange={(v) => {
-                console.log(v);
                 setSelectedLanguage(v);
               }}
             />
@@ -214,7 +245,9 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
               type="number"
               placeholder="89"
               min="0"
-              defaultValue={tourData?.price}
+              defaultValue={
+                state?.formData?.price || (isEdit ? tourData.price : undefined)
+              }
             />
             <InputFieldError state={state as IInputErrorState} field="price" />
           </Field>
@@ -224,7 +257,10 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
             <Input
               name="duration"
               placeholder="e.g. 3 hours"
-              defaultValue={tourData?.duration}
+              defaultValue={
+                state?.formData?.duration ||
+                (isEdit ? tourData.duration : undefined)
+              }
             />
             <InputFieldError
               state={state as IInputErrorState}
@@ -245,7 +281,7 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
           accept="image/*"
           name="images"
           placeholder="Tour banner"
-          onChange={(e) => setTourImage(e.target.files?.[0])}
+          onChange={(e) => setTourImage(e.target.files?.[0] as File)}
           multiple
           max={3}
         />
@@ -260,7 +296,7 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
               />
               <Button
                 type="button"
-                onClick={() => setTourImage(undefined)}
+                onClick={() => setTourImage(null)}
                 variant={"outline"}
                 size={"sm"}
                 className="text-sm text-muted-foreground absolute top-1 right-1 hover:bg-primary-foreground/20 rounded-full size-6"
@@ -278,20 +314,31 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
         <FieldGroup className="space-y-2 gap-0">
           <Field orientation={"horizontal"}>
             <Checkbox
-              id="public"
-              name="public"
+              id="active"
+              name="isActive"
               className="rounded"
-              defaultChecked
+              defaultChecked={
+                state?.formData?.isActive ||
+                (isEdit ? tourData.isActive : false)
+              }
             />
             <FieldLabel
-              htmlFor="public"
+              htmlFor="active"
               className="flex items-center gap-2 cursor-pointer"
             >
-              <span className="text-sm">Public tour</span>
+              <span className="text-sm">Active tour</span>
             </FieldLabel>
           </Field>
           <Field orientation={"horizontal"}>
-            <Checkbox name="featured" id="featured" className="rounded" />
+            <Checkbox
+              name="isFeatured"
+              id="featured"
+              className="rounded"
+              defaultChecked={
+                state?.formData?.isFeatured ||
+                (isEdit ? tourData.isFeatured : false)
+              }
+            />
             <FieldLabel
               htmlFor="featured"
               className="flex items-center gap-2 cursor-pointer"
@@ -302,23 +349,11 @@ const TourForm = ({ mode = "create", tourData }: TourFormProps) => {
         </FieldGroup>
       </div>
 
-      {state?.message && (
-        <div
-          className={`p-3 rounded-lg text-sm ${
-            state.success
-              ? "bg-accent/20 text-accent"
-              : "bg-destructive/20 text-destructive"
-          }`}
-        >
-          {state.message}
-        </div>
-      )}
-
       {/* Submit Buttons */}
       <div className="flex gap-3 pt-4 border-t">
         <Button type="submit" size="lg" className="flex-1" disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-          {mode === "create" ? "Create Tour" : "Update Tour"}
+          {isEdit ? "Update Tour" : "Create Tour"}
         </Button>
       </div>
     </form>

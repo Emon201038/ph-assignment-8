@@ -6,10 +6,18 @@ import SearchFilter from "@/components/shared/SearchFilter";
 import SelectFilter from "@/components/shared/SelectFilter";
 import TablePagination from "@/components/shared/TablePagination";
 import TableSkeleton from "@/components/shared/TableSkeleton";
+import { ITour } from "@/interfaces/tour.interface";
+import { queryStringFormatter } from "@/lib/formatters";
 import React, { Suspense } from "react";
 
-const page = async () => {
-  const data = await getTours();
+const page = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+  const searchParamsObj = await searchParams;
+  const queryString = queryStringFormatter(searchParamsObj);
+  const data = await getTours(queryString);
   return (
     <div className="space-y-4 p-6">
       <TourManagementHeader />
@@ -22,7 +30,7 @@ const page = async () => {
         <RefreshButton />
       </div>
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
-        <ToursTable tours={[]} />
+        <ToursTable tours={data?.data as ITour[]} />
         <TablePagination
           currentPage={data?.meta?.page || 1}
           totalPages={data?.meta?.totalPages || 0}

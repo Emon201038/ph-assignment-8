@@ -21,20 +21,90 @@ const createTour = async (req: Request) => {
 };
 
 const updateTour = async (id: string, payload: any) => {
-  const result = await Tour.findByIdAndUpdate(id, payload, { new: true });
+  const result = await Tour.findByIdAndUpdate(id, payload.body, { new: true });
   if (!result) throw new AppError(404, "Tour not found");
   return result;
 };
 
 const getAllTours = async (query: any) => {
-  const builder = new QueryBuilder<typeof Tour.prototype>(Tour, query);
-  const res = await builder
-    .filter()
-    .search(["title", "description", "category"])
-    .paginate()
-    .execWithMeta();
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+  const searchTerm = query.searchTerm;
 
-  return { tours: res.data, meta: res.meta };
+  const matchStage: any = {};
+
+  if (searchTerm) {
+    const words = searchTerm.trim().split(/\s+/);
+    matchStage.$and = words.map((w: string) => ({
+      $or: [{ title: new RegExp(w, "i") }, { description: new RegExp(w, "i") }],
+    }));
+  }
+
+  const pipeline: any[] = [
+    { $match: matchStage },
+    {
+      $lookup: {
+        from: "trips",
+        localField: "_id",
+        foreignField: "tourId",
+        as: "trips",
+      },
+    },
+
+    {
+      $addFields: {
+        totalTrips: { $size: "$trips" },
+        totalReviews: { $sum: "$trips.totalReviews" },
+        averageRating: {
+          $cond: [
+            { $gt: [{ $sum: "$trips.totalReviews" }, 0] },
+            {
+              $divide: [
+                {
+                  $sum: {
+                    $map: {
+                      input: "$trips",
+                      as: "t",
+                      in: { $multiply: ["$$t.rating", "$$t.totalReviews"] },
+                    },
+                  },
+                },
+                { $sum: "$trips.totalReviews" },
+              ],
+            },
+            0,
+          ],
+        },
+      },
+    },
+
+    { $project: { trips: 0 } },
+
+    { $sort: { createdAt: -1 } },
+
+    {
+      $facet: {
+        data: [{ $skip: skip }, { $limit: limit }],
+        total: [{ $count: "count" }],
+      },
+    },
+  ];
+
+  const result = await Tour.aggregate(pipeline);
+
+  const tours = result[0].data;
+  const total = result[0].total[0]?.count || 0;
+
+  return {
+    tours,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
 
 const getSingleTour = async (id: string) => {

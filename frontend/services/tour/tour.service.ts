@@ -2,11 +2,11 @@
 
 import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zod-validator";
+import { is } from "date-fns/locale";
 import z from "zod";
 
-const tourSchema = z.object({
+const tourSchema = {
   title: z.string("title is required").min(2, "title is required"),
-  images: z.file("image is required"),
   description: z
     .string("description is required")
     .min(3, "description should minimum 3 charecters"),
@@ -18,7 +18,7 @@ const tourSchema = z.object({
   language: z
     .string("language is required")
     .min(1, "At least one language is required"),
-});
+};
 
 export const createTour = async (prevState: unknown, formData: FormData) => {
   try {
@@ -34,8 +34,10 @@ export const createTour = async (prevState: unknown, formData: FormData) => {
       language: formData.get("language"),
     };
 
-    console.log(payload.images);
-    const validationResult = zodValidator(payload, tourSchema);
+    const validationResult = zodValidator(
+      payload,
+      z.object({ ...tourSchema, images: z.file("image is required") })
+    );
     if (!validationResult.success && validationResult.errors) {
       return {
         success: false,
@@ -74,7 +76,6 @@ export const createTour = async (prevState: unknown, formData: FormData) => {
     const data = await res.json();
     return data;
   } catch (error: any) {
-    console.log(error);
     return {
       success: false,
       message: error?.message || "Failed to create tour",
@@ -85,17 +86,61 @@ export const createTour = async (prevState: unknown, formData: FormData) => {
 };
 export const updateTour = async (prevState: unknown, formData: FormData) => {
   try {
-    console.log("update");
-    return {
-      success: true,
-      message: "success",
-      formData: {},
-      errors: [],
+    const payload = {
+      id: formData.get("tourId"),
+      title: formData.get("title"),
+      images: formData.get("images"),
+      description: formData.get("description"),
+      category: formData.get("category"),
+      city: formData.get("city"),
+      country: formData.get("country"),
+      price: formData.get("price"),
+      duration: formData.get("duration"),
+      language: formData.get("language"),
+      isActive: formData.get("isActive"),
+      isFeatured: formData.get("isFeatured"),
     };
+
+    const validationResult = zodValidator(
+      payload,
+      z.object({
+        ...tourSchema,
+        id: z.string("id is required").regex(/^[0-9a-fA-F]{24}$/, "Invalid id"),
+        isActive: z.any().transform((z) => z === "on"),
+        isFeatured: z.any().transform((z) => z === "on"),
+      })
+    );
+    if (!validationResult.success && validationResult.errors) {
+      return {
+        success: false,
+        errors: validationResult.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+
+    if (!validationResult.data) {
+      return {
+        success: false,
+        errors: validationResult.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+
+    const modifiedFormData = new FormData();
+    modifiedFormData.append("body", JSON.stringify(validationResult.data));
+
+    const res = await serverFetch.put(`/tours/${validationResult.data.id}`, {
+      body: modifiedFormData,
+    });
+    const data = await res.json();
+    return data;
   } catch (error: any) {
+    console.log(error);
     return {
       success: false,
-      message: error?.message || "Failed to update tour",
+      message: error?.message || "Failed to create tour",
       formData: null,
       errors: [],
     };

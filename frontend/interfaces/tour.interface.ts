@@ -26,9 +26,11 @@ export interface ITour {
 
   guide: IUser<IGuide>; // reference to User (guide)
 
-  rating?: number;
+  averageRating?: number;
   totalReviews?: number;
+  totalTrips: number;
 
   isActive: boolean;
+  isFeatured: boolean;
   createdAt: Date;
 }

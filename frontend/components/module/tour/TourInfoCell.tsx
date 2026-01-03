@@ -5,11 +5,11 @@ import Image from "next/image";
 
 interface TourInfoCellProps {
   name: string;
-  guide: string;
+  // guide: string;
   photo: string;
 }
 
-export function TourInfoCell({ name, guide, photo }: TourInfoCellProps) {
+export function TourInfoCell({ name, photo }: TourInfoCellProps) {
   return (
     <div className="flex items-center gap-3">
       <Avatar className="size-10">
@@ -20,7 +20,7 @@ export function TourInfoCell({ name, guide, photo }: TourInfoCellProps) {
       </Avatar>
       <div>
         <p className="font-medium">{name}</p>
-        <p className="text-sm text-muted-foreground">by {guide}</p>
+        {/* <p className="text-sm text-muted-foreground">by {guide}</p> */}
       </div>
     </div>
   );

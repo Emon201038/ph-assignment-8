@@ -20,7 +20,6 @@ export default async function TourDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const paramsObj = await params;
-  console.log(paramsObj);
   const tour = mockTours.find((t) => t.id === paramsObj.id);
 
   if (!tour) {

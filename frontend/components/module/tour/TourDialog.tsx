@@ -24,7 +24,7 @@ const TourDialog = ({ tour, open, onClose, onSuccess }: TourDialogProps) => {
         <DialogDescription>
           Add a new tour experience to the platform
         </DialogDescription>
-        <TourForm mode="create" />
+        <TourForm tourData={tour} onSuccess={onSuccess} onClose={onClose} />
       </DialogContent>
     </Dialog>
   );

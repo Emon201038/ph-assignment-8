@@ -201,7 +201,6 @@ const GuideForm = ({ guide, isSignUp, onClose, onSuccess }: IGuideForm) => {
               value: l.code,
             }))}
             onValueChange={(e) => {
-              console.log(e);
               setlanguages(e);
             }}
             value={languages}

@@ -9,6 +9,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { toursColumns } from "./TourColumns";
 import { ITour } from "@/interfaces/tour.interface";
+import TourDialog from "./TourDialog";
 // import DoctorFormDialog from "./DoctorFormDialog";
 // import DoctorViewDetailDialog from "./DoctorViewDetailDialog";
 
@@ -19,9 +20,9 @@ interface ToursTableProps {
 const ToursTable = ({ tours }: ToursTableProps) => {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [deletingDoctor, setDeletingDoctor] = useState<ITour | null>(null);
-  const [viewingDoctor, setViewingDoctor] = useState<ITour | null>(null);
-  const [editingDoctor, setEditingDoctor] = useState<ITour | null>(null);
+  const [deletingTour, setDeletingTour] = useState<ITour | null>(null);
+  const [viewingTour, setViewingTour] = useState<ITour | null>(null);
+  const [editingTour, setEditingTour] = useState<ITour | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRefresh = () => {
@@ -31,19 +32,19 @@ const ToursTable = ({ tours }: ToursTableProps) => {
   };
 
   const handleView = (doctor: ITour) => {
-    setViewingDoctor(doctor);
+    setViewingTour(doctor);
   };
 
   const handleEdit = (doctor: ITour) => {
-    setEditingDoctor(doctor);
+    setEditingTour(doctor);
   };
 
   const handleDelete = (doctor: ITour) => {
-    setDeletingDoctor(doctor);
+    setDeletingTour(doctor);
   };
 
   const confirmDelete = async () => {
-    if (!deletingDoctor) return;
+    if (!deletingTour) return;
 
     setIsDeleting(true);
     // const result = await softDeleteDoctor(deletingDoctor.id!);
@@ -70,16 +71,15 @@ const ToursTable = ({ tours }: ToursTableProps) => {
         emptyMessage="No doctors found"
       />
       {/* Edit Doctor Form Dialog */}
-      {/* <DoctorFormDialog
-        open={!!editingDoctor}
-        onClose={() => setEditingDoctor(null)}
-        doctor={editingDoctor!}
-        specialities={specialities}
+      <TourDialog
+        open={!!editingTour}
+        onClose={() => setEditingTour(null)}
+        tour={editingTour!}
         onSuccess={() => {
-          setEditingDoctor(null);
+          setEditingTour(null);
           handleRefresh();
         }}
-      /> */}
+      />
 
       {/* View Doctor Detail Dialog */}
       {/* <DoctorViewDetailDialog

@@ -25,6 +25,7 @@ const tourSchema = new Schema<ITour>(
     images: [{ type: String }],
     language: { type: String },
     isActive: { type: Boolean, default: false },
+    isFeatured: { type: Boolean, default: false },
 
     createdBy: {
       type: Schema.Types.ObjectId,

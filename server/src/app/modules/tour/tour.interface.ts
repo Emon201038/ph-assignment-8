@@ -19,6 +19,7 @@ export interface ITour {
   images: string[];
   language: string;
   isActive: boolean;
+  isFeatured: boolean;
   createdBy: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;

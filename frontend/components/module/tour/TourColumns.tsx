@@ -10,11 +10,7 @@ export const toursColumns: IColumn<ITour>[] = [
   {
     header: "Tours",
     accessor: (tour) => (
-      <TourInfoCell
-        name={tour.title}
-        guide={tour.guide.name}
-        photo={tour.images[0]}
-      />
+      <TourInfoCell name={tour.title} photo={tour.images[0]} />
     ),
   },
   {
@@ -42,8 +38,16 @@ export const toursColumns: IColumn<ITour>[] = [
       <div className="flex items-center gap-1">
         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
         <span className="text-sm font-medium">
-          {(tour?.rating || 0)!.toFixed(1)}
+          {(tour?.averageRating || 0)!.toFixed(1)}
         </span>
+      </div>
+    ),
+  },
+  {
+    header: "Total Trips",
+    accessor: (tour) => (
+      <div className="flex items-center gap-1">
+        <span className="text-sm font-medium">{tour?.totalTrips || 0}</span>
       </div>
     ),
   },
