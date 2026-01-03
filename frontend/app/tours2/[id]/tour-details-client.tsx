@@ -151,7 +151,7 @@ export default function TourDetailsClient({ tour }: TourDetailsClientProps) {
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-accent text-accent" />
                       <span className="font-semibold text-foreground">
-                        {tour.rating}
+                        {tour.averageRating}
                       </span>
                       <span>(5 reviews)</span>
                     </div>

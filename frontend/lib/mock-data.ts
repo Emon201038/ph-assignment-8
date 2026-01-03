@@ -145,12 +145,18 @@ export const mockTours = [
   {
     id: "1",
     title: "Historic City Walking Tour",
+    country: "France",
+    city: "Paris",
     location: "Paris, France",
     price: 89,
     duration: "3 hours",
     rating: 4.9,
-    reviews: 245,
-    image: "/paris-eiffel-tower-streets.jpg",
+    reviewCount: 245,
+    images: [
+      "/paris-eiffel-tower-streets.jpg",
+      "/paris-notre-dame.jpg",
+      "/paris-latin-quarter.jpg",
+    ],
     description:
       "Explore the charming streets of Paris with a knowledgeable local guide who will share fascinating stories about the city's rich history.",
     itinerary: [
@@ -165,12 +171,18 @@ export const mockTours = [
   {
     id: "2",
     title: "Mountain Hiking Adventure",
+    country: "Switzerland",
+    city: "Zermatt",
     location: "Swiss Alps, Switzerland",
     price: 120,
     duration: "5 hours",
     rating: 4.8,
-    reviews: 189,
-    image: "/swiss-alps-mountain-hiking.jpg",
+    reviewCount: 189,
+    images: [
+      "/swiss-alps-mountain-hiking.jpg",
+      "/swiss-alps-trail.jpg",
+      "/swiss-alps-viewpoint.jpg",
+    ],
     description:
       "Experience breathtaking views as you hike through pristine alpine meadows with an expert mountain guide.",
     itinerary: [
@@ -185,12 +197,18 @@ export const mockTours = [
   {
     id: "3",
     title: "Culinary Food Tour",
+    country: "Japan",
+    city: "Tokyo",
     location: "Tokyo, Japan",
     price: 95,
     duration: "4 hours",
     rating: 4.9,
-    reviews: 312,
-    image: "/tokyo-street-food-market.jpg",
+    reviewCount: 312,
+    images: [
+      "/tokyo-street-food-market.jpg",
+      "/tokyo-sushi.jpg",
+      "/tokyo-ramen-alley.jpg",
+    ],
     description:
       "Discover authentic Japanese cuisine as you visit local markets and hidden restaurants known only to locals.",
     itinerary: [
@@ -205,12 +223,18 @@ export const mockTours = [
   {
     id: "4",
     title: "Coastal Sunset Cruise",
+    country: "Greece",
+    city: "Santorini",
     location: "Santorini, Greece",
     price: 150,
     duration: "3 hours",
     rating: 5.0,
-    reviews: 428,
-    image: "/santorini-sunset-boat-cruise.jpg",
+    reviewCount: 428,
+    images: [
+      "/santorini-sunset-boat-cruise.jpg",
+      "/santorini-coastline.jpg",
+      "/santorini-caldera.jpg",
+    ],
     description:
       "Sail along the stunning Santorini coastline and witness the world-famous sunset from the best vantage point.",
     itinerary: [

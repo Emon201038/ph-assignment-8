@@ -33,7 +33,7 @@ export default async function TourDetailPage({
       {/* Tour Banner */}
       <div className="relative h-[400px] rounded-xl overflow-hidden mb-8">
         <Image
-          src={tour.image || "/placeholder.svg"}
+          src={tour.images[0] || "/placeholder.svg"}
           alt={tour.title}
           fill
           className="object-cover"
@@ -52,7 +52,7 @@ export default async function TourDetailPage({
             </div>
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-white" />
-              {tour.rating} ({tour.reviews} reviews)
+              {tour.rating} ({tour.reviewCount} reviews)
             </div>
             <div className="flex items-center gap-1">
               <Clock className="h-4 w-4" />

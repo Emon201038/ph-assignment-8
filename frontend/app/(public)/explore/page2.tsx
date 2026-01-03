@@ -38,7 +38,7 @@ export default function ExplorePage() {
       const matchesSearch =
         tour.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tour.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        tour.city.toLowerCase().includes(searchQuery.toLowerCase());
+        tour?.city?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCity = selectedCity === "all" || tour.city === selectedCity;
       const matchesCategory =
         selectedCategory === "all" ||
@@ -289,7 +289,7 @@ export default function ExplorePage() {
                           {tour.description}
                         </p>
                         <div className="flex items-center justify-between pt-4 border-t">
-                          <div className="flex items-center gap-2">
+                          {/* <div className="flex items-center gap-2">
                             <Avatar className="h-7 w-7">
                               <AvatarImage
                                 src={tour.guideAvatar || "/placeholder.svg"}
@@ -301,7 +301,7 @@ export default function ExplorePage() {
                             <span className="text-sm font-medium">
                               {tour.guideName}
                             </span>
-                          </div>
+                          </div> */}
                           <div className="text-right">
                             <p className="text-xl font-bold">${tour.price}</p>
                             <p className="text-xs text-muted-foreground">

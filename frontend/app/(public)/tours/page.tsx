@@ -114,7 +114,7 @@ export default function ToursPage() {
               >
                 <div className="relative h-56">
                   <Image
-                    src={tour.image || "/placeholder.svg"}
+                    src={tour.images[0] || "/placeholder.svg"}
                     alt={tour.title}
                     fill
                     className="object-cover"
@@ -139,7 +139,7 @@ export default function ToursPage() {
                       <Star className="h-4 w-4 fill-secondary text-secondary" />
                       <span className="font-semibold">{tour.rating}</span>
                       <span className="text-sm text-muted-foreground">
-                        ({tour.reviews})
+                        ({tour.reviewCount})
                       </span>
                     </div>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
