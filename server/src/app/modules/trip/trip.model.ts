@@ -10,7 +10,7 @@ const TripSchema = new Schema<ITrip>(
     },
     guideId: {
       type: Schema.Types.ObjectId,
-      ref: "Guide",
+      ref: "User",
       required: [true, "Guide is required"],
     },
 

@@ -4,14 +4,25 @@ import { DynamicQueryBuilder } from "../../lib/queryBuilderByPipline";
 import { Guide, GuideSchedule } from "../guide/guide.model";
 import { ITrip, TripStatus } from "./trip.interface";
 import { Trip } from "./trip.model";
+import { QueryBuilder } from "../../lib/queryBuilder";
 
 const getTrips = async () => {
-  const data = new DynamicQueryBuilder(Trip, {})
-    .paginate()
-    .sort()
-    .search([])
+  const data = new QueryBuilder(Trip, {})
     .filter()
-    .exec();
+    .search([])
+    .populate(
+      [
+        "guideId:name;role;email;profilePhoto",
+        "tourId:title;description;images;country;city",
+      ],
+      {
+        guideId: "guide",
+        tourId: "tour",
+      }
+    )
+    .sort()
+    .paginate()
+    .execWithMeta();
   return data;
 };
 

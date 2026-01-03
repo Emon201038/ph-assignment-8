@@ -2,20 +2,20 @@
 import ManagementTable from "@/components/shared/ManagementTable";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { toursColumns } from "./TourColumns";
-import { ITour } from "@/interfaces/tour.interface";
-import TourDialog from "./TourDialog";
+import { ITrip } from "@/interfaces/trip.interface";
+import TripFormDialog from "./TripFormDialog";
+import { tripsColumns } from "./TripColumns";
 
 interface ToursTableProps {
-  tours: ITour[];
+  trips: ITrip[];
 }
 
-const ToursTable = ({ tours }: ToursTableProps) => {
+const TripsTable = ({ trips }: ToursTableProps) => {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [deletingTour, setDeletingTour] = useState<ITour | null>(null);
-  const [viewingTour, setViewingTour] = useState<ITour | null>(null);
-  const [editingTour, setEditingTour] = useState<ITour | null>(null);
+  const [deletingTour, setDeletingTour] = useState<ITrip | null>(null);
+  const [viewingTour, setViewingTour] = useState<ITrip | null>(null);
+  const [editingTour, setEditingTour] = useState<ITrip | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRefresh = () => {
@@ -24,15 +24,15 @@ const ToursTable = ({ tours }: ToursTableProps) => {
     });
   };
 
-  const handleView = (doctor: ITour) => {
+  const handleView = (doctor: ITrip) => {
     setViewingTour(doctor);
   };
 
-  const handleEdit = (doctor: ITour) => {
+  const handleEdit = (doctor: ITrip) => {
     setEditingTour(doctor);
   };
 
-  const handleDelete = (doctor: ITour) => {
+  const handleDelete = (doctor: ITrip) => {
     setDeletingTour(doctor);
   };
 
@@ -55,19 +55,19 @@ const ToursTable = ({ tours }: ToursTableProps) => {
   return (
     <>
       <ManagementTable
-        data={tours}
-        columns={toursColumns}
+        data={trips}
+        columns={tripsColumns}
         onView={handleView}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        getRowKey={(guide) => guide._id!}
-        emptyMessage="No doctors found"
+        getRowKey={(trip) => trip._id!}
+        emptyMessage="No trips found"
       />
       {/* Edit Doctor Form Dialog */}
-      <TourDialog
+      <TripFormDialog
         open={!!editingTour}
         onClose={() => setEditingTour(null)}
-        tour={editingTour!}
+        trip={editingTour!}
         onSuccess={() => {
           setEditingTour(null);
           handleRefresh();
@@ -94,4 +94,4 @@ const ToursTable = ({ tours }: ToursTableProps) => {
   );
 };
 
-export default ToursTable;
+export default TripsTable;

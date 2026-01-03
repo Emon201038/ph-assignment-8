@@ -135,6 +135,23 @@ export const adminNavItems: INavSection[] = [
     ],
   },
   {
+    title: "Trip Management",
+    items: [
+      {
+        title: "Trips",
+        href: "/admin/dashboard/trips-management",
+        icon: "Clipboard",
+        roles: [UserRole.ADMIN],
+      },
+      {
+        title: "create",
+        href: "/admin/dashboard/trips-management/create-trip",
+        icon: "Clock",
+        roles: [UserRole.ADMIN],
+      },
+    ],
+  },
+  {
     title: "Others",
     items: [
       {
