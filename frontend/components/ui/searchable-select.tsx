@@ -52,6 +52,7 @@ export function SearchableSelect({
 }: SearchableSelectProps) {
   const [openPopover, setOpenPopover] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   React.useEffect(() => {
     if (openPopover) {
@@ -59,15 +60,22 @@ export function SearchableSelect({
     }
   }, [openPopover]);
 
+  // Load initial tours when popover opens
+  React.useEffect(() => {
+    if (open) {
+      setTimeout(() => inputRef.current?.focus(), 0);
+    }
+  }, [open]);
+
   const selectedOption = options.find((option) => option.value === value);
 
   return (
-    <Popover open={openPopover} onOpenChange={setOpenPopover}>
+    <Popover open={openPopover} onOpenChange={setOpenPopover} modal={true}>
       <PopoverTrigger asChild id={id}>
         <Button
           variant="outline"
           role="combobox"
-          aria-expanded={openPopover}
+          aria-expanded={open}
           className={cn("w-full justify-between", className)}
           disabled={disabled}
         >
@@ -87,27 +95,33 @@ export function SearchableSelect({
           inputRef.current?.focus();
         }}
       >
-        <Command shouldFilter={true}>
-          <CommandInput ref={inputRef} placeholder={searchPlaceholder} />
-          <CommandList className="max-h-[300px] overflow-y-auto">
+        <Command>
+          <CommandInput
+            ref={inputRef}
+            placeholder={searchPlaceholder}
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+          />
+          <CommandList className="max-h-75 overflow-y-auto">
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
-              {options.map((option) => (
+              {options.map((guide) => (
                 <CommandItem
-                  key={option.value}
-                  value={option.value}
+                  key={guide.value}
+                  value={guide.value}
                   onSelect={(currentValue) => {
                     onValueChange?.(currentValue === value ? "" : currentValue);
                     setOpenPopover(false);
                   }}
+                  className="cursor-pointer justify-start"
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === option.value ? "opacity-100" : "opacity-0"
+                      value === guide.value ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {option.label}
+                  {guide.label}
                 </CommandItem>
               ))}
             </CommandGroup>

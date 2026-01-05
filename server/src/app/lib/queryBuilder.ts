@@ -44,7 +44,7 @@ export class QueryBuilder<T extends Document> {
     excludedFields.forEach((field) => delete filters[field]);
 
     for (const key in filters) {
-      let value = filters[key];
+      let value = filters[key].toLowerCase();
 
       // Handle boolean strings
       if (value === "true" || value === "false") {
@@ -71,6 +71,7 @@ export class QueryBuilder<T extends Document> {
         // Use $in operator for array matching
         filters[key] = { $in: arrayValues };
       } else {
+        filters[key] = value.toLowerCase();
         filters[key] = value;
       }
     }

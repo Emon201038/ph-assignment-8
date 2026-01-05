@@ -3,6 +3,7 @@ import AppError from "../../helpers/appError";
 import Tour from "./tour.model";
 import { uploadFilesToCloudinary } from "../../utils/upload-files";
 import { QueryBuilder } from "../../lib/queryBuilder";
+import { DynamicQueryBuilder } from "../../lib/queryBuilderByPipline";
 
 const createTour = async (req: Request) => {
   const payload = req.body;
@@ -26,85 +27,126 @@ const updateTour = async (id: string, payload: any) => {
   return result;
 };
 
-const getAllTours = async (query: any) => {
-  const page = Number(query.page) || 1;
-  const limit = Number(query.limit) || 10;
-  const skip = (page - 1) * limit;
-  const searchTerm = query.searchTerm;
+const getAllTours = async (query: Record<string, string>) => {
+  // const page = Number(query.page) || 1;
+  // const limit = Number(query.limit) || 10;
+  // const skip = (page - 1) * limit;
+  // const {
+  //   searchTerm,
+  //   category,
+  //   city,
+  //   country,
+  //   minPrice,
+  //   maxPrice,
+  //   isFeatured,
+  //   language,
+  // } = query;
 
-  const matchStage: any = {};
+  // const matchStage: any = {};
 
-  if (searchTerm) {
-    const words = searchTerm.trim().split(/\s+/);
-    matchStage.$and = words.map((w: string) => ({
-      $or: [{ title: new RegExp(w, "i") }, { description: new RegExp(w, "i") }],
-    }));
-  }
+  // if (searchTerm) {
+  //   const words = searchTerm.trim().split(/\s+/);
 
-  const pipeline: any[] = [
-    { $match: matchStage },
-    {
-      $lookup: {
-        from: "trips",
-        localField: "_id",
-        foreignField: "tourId",
-        as: "trips",
-      },
-    },
+  //   matchStage.$and = words.map((word: string) => ({
+  //     $or: [
+  //       { title: { $regex: word, $options: "i" } },
+  //       { description: { $regex: word, $options: "i" } },
+  //     ],
+  //   }));
+  // }
 
-    {
-      $addFields: {
-        totalTrips: { $size: "$trips" },
-        totalReviews: { $sum: "$trips.totalReviews" },
-        averageRating: {
-          $cond: [
-            { $gt: [{ $sum: "$trips.totalReviews" }, 0] },
-            {
-              $divide: [
-                {
-                  $sum: {
-                    $map: {
-                      input: "$trips",
-                      as: "t",
-                      in: { $multiply: ["$$t.rating", "$$t.totalReviews"] },
-                    },
-                  },
-                },
-                { $sum: "$trips.totalReviews" },
-              ],
-            },
-            0,
-          ],
-        },
-      },
-    },
+  // if (category) {
+  //   matchStage.category = category;
+  // }
 
-    { $project: { trips: 0 } },
+  // if (city) {
+  //   matchStage.city = city;
+  // }
 
-    { $sort: { createdAt: -1 } },
+  // if (country) {
+  //   matchStage.country = country;
+  // }
 
-    {
-      $facet: {
-        data: [{ $skip: skip }, { $limit: limit }],
-        total: [{ $count: "count" }],
-      },
-    },
-  ];
+  // if (language) {
+  //   matchStage.language = language;
+  // }
 
-  const result = await Tour.aggregate(pipeline);
+  // if (isFeatured !== undefined) {
+  //   matchStage.isFeatured = isFeatured === "true";
+  // }
 
-  const tours = result[0].data;
-  const total = result[0].total[0]?.count || 0;
+  // if (minPrice || maxPrice) {
+  //   matchStage.price = {};
+  //   if (minPrice) matchStage.price.$gte = Number(minPrice);
+  //   if (maxPrice) matchStage.price.$lte = Number(maxPrice);
+  // }
 
-  return {
-    tours,
-    meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
+  // const pipeline: any[] = [
+  //   { $match: matchStage },
+
+  //   {
+  //     $lookup: {
+  //       from: "trips",
+  //       localField: "_id",
+  //       foreignField: "tourId",
+  //       as: "trips",
+  //     },
+  //   },
+
+  //   {
+  //     $addFields: {
+  //       totalTrips: { $size: "$trips" },
+  //       totalReviews: { $sum: "$trips.totalReviews" },
+  //       averageRating: {
+  //         $cond: [
+  //           { $gt: [{ $sum: "$trips.totalReviews" }, 0] },
+  //           {
+  //             $divide: [
+  //               {
+  //                 $sum: {
+  //                   $map: {
+  //                     input: "$trips",
+  //                     as: "t",
+  //                     in: {
+  //                       $multiply: ["$$t.rating", "$$t.totalReviews"],
+  //                     },
+  //                   },
+  //                 },
+  //               },
+  //               { $sum: "$trips.totalReviews" },
+  //             ],
+  //           },
+  //           0,
+  //         ],
+  //       },
+  //     },
+  //   },
+
+  //   { $project: { trips: 0 } },
+
+  //   { $sort: { createdAt: -1 } },
+
+  //   {
+  //     $facet: {
+  //       data: [{ $skip: skip }, { $limit: limit }],
+  //       total: [{ $count: "count" }],
+  //     },
+  //   },
+  // ];
+
+  // const result = await Tour.aggregate(pipeline);
+
+  // const tours = result[0].data;
+  // const total = result[0].total[0]?.count || 0;
+  const builder = new QueryBuilder(Tour, query);
+  const res = await builder
+    .filter()
+    .search(["title", "description"])
+    .paginate()
+    .sort()
+    .execWithMeta();
+
+  return res;
 };
 
 const getSingleTour = async (id: string) => {

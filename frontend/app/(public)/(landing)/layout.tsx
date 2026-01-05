@@ -54,7 +54,7 @@ const LandingLayout = ({
           {featuredTours}
           <div className="text-center mt-12">
             <Button size="lg" variant="outline" asChild>
-              <Link href="/explore">View All Tours</Link>
+              <Link href="/tours">View All Tours</Link>
             </Button>
           </div>
         </div>

@@ -62,7 +62,9 @@ const me = async (accessToken: string) => {
   if (typeof verifiedToken === "string") {
     throw new AppError(400, "Failed to verify token");
   }
-  return await User.findById(verifiedToken.userId).select("-password");
+  return await User.findById(verifiedToken.userId)
+    .select("-password")
+    .populate("profile");
 };
 
 const refreshToken = async (token: string, res: Response) => {

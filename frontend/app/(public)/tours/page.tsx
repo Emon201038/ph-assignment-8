@@ -51,7 +51,7 @@ const ToursPage = async ({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-6">
             {/* Mobile Filter Sheet Trigger */}
-            <Sheet>
+            <Sheet modal={false}>
               <SheetTrigger asChild>
                 <Button
                   variant="outline"
@@ -64,7 +64,7 @@ const ToursPage = async ({
               </SheetTrigger>
               <SheetContent
                 side="left"
-                className="w-[300px] sm:w-[400px] overflow-y-auto p-4"
+                className="w-75 sm:w-100 overflow-y-auto p-4"
               >
                 <SheetHeader>
                   <SheetTitle>Filters</SheetTitle>

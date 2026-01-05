@@ -1,6 +1,6 @@
-import { Types } from "mongoose";
+import { Document, Types } from "mongoose";
 
-export interface ITour {
+export interface ITour extends Document {
   title: string;
   description: string;
   category: string;

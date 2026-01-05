@@ -32,7 +32,9 @@ const CategoriesPage = () => {
         return (
           <Link
             key={category.name}
-            href={`/explore?category=${category.name.toLowerCase()}`}
+            href={`/tours?category=${category.name
+              .split(" ")[0]
+              .toLowerCase()}`}
           >
             <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105">
               <CardContent className="flex flex-col items-center justify-center p-8 text-center">

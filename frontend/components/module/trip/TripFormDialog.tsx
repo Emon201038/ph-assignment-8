@@ -41,7 +41,7 @@ const TripFormDialog = ({
   };
 
   return (
-    <Dialog open={internalOpen} onOpenChange={handleOpenChange} modal={true}>
+    <Dialog open={internalOpen} onOpenChange={handleOpenChange} modal={false}>
       <DialogContent
         className="max-h-[90vh] overflow-auto"
         onPointerDownOutside={(e) => {
