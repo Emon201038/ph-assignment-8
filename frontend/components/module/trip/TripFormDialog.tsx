@@ -1,8 +1,8 @@
 "use client";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ITrip } from "@/interfaces/trip.interface";
-import React from "react";
 import TripForm from "./TripForm";
+import { useEffect, useState } from "react";
 
 interface TripFormDialogProps {
   open: boolean;
@@ -17,9 +17,40 @@ const TripFormDialog = ({
   onSuccess,
   trip,
 }: TripFormDialogProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
+
+  console.log(trip);
+
+  useEffect(() => {
+    if (open) {
+      // Delay opening to prevent immediate closure
+      const timer = setTimeout(() => {
+        setInternalOpen(true);
+      }, 10);
+      return () => clearTimeout(timer);
+    } else {
+      setInternalOpen(false);
+    }
+  }, [open]);
+
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      setInternalOpen(false);
+      onClose();
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] overflow-auto">
+    <Dialog open={internalOpen} onOpenChange={handleOpenChange} modal={true}>
+      <DialogContent
+        className="max-h-[90vh] overflow-auto"
+        onPointerDownOutside={(e) => {
+          e.preventDefault();
+        }}
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
         <DialogTitle>{trip ? "Edit Trip" : "Create Trip"}</DialogTitle>
         <TripForm onSuccess={onSuccess} onClose={onClose} trip={trip} />
       </DialogContent>

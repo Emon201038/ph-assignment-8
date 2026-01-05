@@ -11,6 +11,7 @@ const globalErrorHandler = (err, req, res, next) => {
     let statusCode = 500;
     let message = "Something went wrong!";
     let errorSources = [];
+    console.log(err);
     // Mongoose Duplicate key error
     if (err.code === 11000) {
         statusCode = httpStatus_1.HTTP_STATUS.CONFLICT;
@@ -35,7 +36,7 @@ const globalErrorHandler = (err, req, res, next) => {
     // Zod Error
     else if (err.name === "ZodError") {
         statusCode = httpStatus_1.HTTP_STATUS.BAD_REQUEST;
-        message = "Zod validation error";
+        message = err.issues[0].message;
         errorSources = err.issues.map((error) => {
             return {
                 path: error.path[error.path.length - 1],

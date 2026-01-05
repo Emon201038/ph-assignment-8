@@ -23,47 +23,131 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
+exports.UserService = exports.createTourist = void 0;
 const appError_1 = __importDefault(require("../../helpers/appError"));
-const queryBuilder_1 = require("../../middlewares/queryBuilder");
 const httpStatus_1 = require("../../utils/httpStatus");
 const user_interface_1 = require("./user.interface");
 const user_model_1 = __importDefault(require("./user.model"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const getAllUsers = (queries) => __awaiter(void 0, void 0, void 0, function* () {
-    const builder = new queryBuilder_1.QueryBuilder(user_model_1.default, queries);
-    const res = yield builder
+const mongoose_1 = __importDefault(require("mongoose"));
+const tourist_model_1 = require("../tourist/tourist.model");
+const queryBuilderByPipline_1 = require("../../lib/queryBuilderByPipline");
+const guide_model_1 = require("../guide/guide.model");
+const getAllUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d;
+    const populatedArray = [];
+    if ((query === null || query === void 0 ? void 0 : query.role) === user_interface_1.UserRole.GUIDE) {
+        populatedArray.push({
+            model: guide_model_1.Guide,
+            localField: "_id",
+            foreignField: "userId",
+            filterKeys: ["expertise", "languages"],
+            as: "profile",
+        });
+    }
+    if ((query === null || query === void 0 ? void 0 : query.role) === user_interface_1.UserRole.TOURIST) {
+        populatedArray.push({
+            model: tourist_model_1.Tourist,
+            localField: "_id",
+            foreignField: "userId",
+            filterKeys: ["interests"],
+            as: "profile",
+        });
+    }
+    const qb = new queryBuilderByPipline_1.DynamicQueryBuilder(user_model_1.default, query, populatedArray);
+    const res = yield qb
+        .search(["name", "email", "phone"])
         .filter()
-        .search(["email", "name", "phone"])
+        .filterPopulated()
+        .sort()
         .paginate()
-        .select(["-password"])
-        .execWithMeta();
+        .exec();
+    if ((query === null || query === void 0 ? void 0 : query.role) === user_interface_1.UserRole.GUIDE) {
+        for (const user of res.data) {
+            const ratingAgg = yield user_model_1.default.aggregate([
+                { $match: { _id: user._id } },
+                {
+                    $lookup: {
+                        from: "reviews",
+                        localField: "_id",
+                        foreignField: "docId",
+                        as: "reviews",
+                    },
+                },
+                {
+                    $project: {
+                        rating: {
+                            $ifNull: [{ $avg: "$reviews.rating" }, 0],
+                        },
+                    },
+                },
+            ]);
+            const tripsAgg = yield user_model_1.default.aggregate([
+                { $match: { _id: user._id } },
+                {
+                    $lookup: {
+                        from: "bookings",
+                        localField: "_id",
+                        foreignField: "guideId",
+                        as: "bookings",
+                    },
+                },
+                {
+                    $project: {
+                        totalTrips: { $size: "$bookings" },
+                    },
+                },
+            ]);
+            user.profile.rating = (_b = (_a = ratingAgg[0]) === null || _a === void 0 ? void 0 : _a.rating) !== null && _b !== void 0 ? _b : 0;
+            user.profile.totalTrips = (_d = (_c = tripsAgg[0]) === null || _c === void 0 ? void 0 : _c.totalTrips) !== null && _d !== void 0 ? _d : 0;
+        }
+    }
     return { users: res.data, meta: res.meta };
 });
 const getUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.default.findById(userId).select("-password");
     return user;
 });
-const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email } = payload, res = __rest(payload, ["email"]);
-    // check if user already exist
-    const isExists = yield user_model_1.default.findOne({ email });
-    if (isExists && isExists.isDeleted) {
-        const updatedUser = yield user_model_1.default.findOneAndUpdate({ email }, res, {
-            context: "query",
-            new: true,
-        });
-        return updatedUser;
+const createTourist = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const session = yield mongoose_1.default.startSession();
+    session.startTransaction();
+    try {
+        const { email } = payload, rest = __rest(payload, ["email"]);
+        // Check if user already exists
+        const existingUser = yield user_model_1.default.findOne({ email }).session(session);
+        if (existingUser) {
+            if (existingUser.isDeleted) {
+                // Remove soft-deleted user and related Tourist profile
+                yield user_model_1.default.deleteOne({ _id: existingUser._id }).session(session);
+                yield tourist_model_1.Tourist.deleteOne({ userId: existingUser._id }).session(session);
+            }
+            else if (existingUser.isBlocked) {
+                throw new appError_1.default(httpStatus_1.HTTP_STATUS.BAD_REQUEST, "User account has been blocked. Please contact admin");
+            }
+            else {
+                throw new appError_1.default(httpStatus_1.HTTP_STATUS.CONFLICT, "User already exists with this email.");
+            }
+        }
+        // Create new User
+        const [user] = yield user_model_1.default.create([
+            Object.assign(Object.assign({ email }, rest), { role: user_interface_1.UserRole.TOURIST }),
+        ], { session });
+        // Create Tourist profile
+        yield tourist_model_1.Tourist.create([
+            Object.assign({ userId: user._id }, rest),
+        ], { session });
+        // Commit transaction
+        yield session.commitTransaction();
+        session.endSession();
+        return user;
     }
-    if (isExists && isExists.isBlocked) {
-        throw new appError_1.default(httpStatus_1.HTTP_STATUS.BAD_REQUEST, "User account has blocked. Please contact with admin");
+    catch (error) {
+        yield session.abortTransaction();
+        session.endSession();
+        throw error;
     }
-    if (isExists) {
-        throw new appError_1.default(httpStatus_1.HTTP_STATUS.CONFLICT, "User already exist with this email.");
-    }
-    const user = yield user_model_1.default.create(Object.assign({ email }, res));
-    return user;
 });
+exports.createTourist = createTourist;
 const updateUser = (userId, payload, loggedInUser) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.default.findById(userId);
     if (!user) {
@@ -112,7 +196,9 @@ const deleteUser = (loggedInUser, userId) => __awaiter(void 0, void 0, void 0, f
     if (!user) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.NOT_FOUND, "User not found.");
     }
-    if (user.role === user_interface_1.UserRole.ADMIN) {
+    if (user.role === user_interface_1.UserRole.ADMIN
+    // user.adminInfo?.permissions.includes("DELETE_USER")
+    ) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.FORBIDDEN, "You are not authorized to delete this user.");
     }
     if (loggedInUser.role !== user_interface_1.UserRole.ADMIN) {
@@ -128,7 +214,7 @@ const deleteUser = (loggedInUser, userId) => __awaiter(void 0, void 0, void 0, f
 exports.UserService = {
     getAllUsers,
     getUser,
-    createUser,
+    createUser: exports.createTourist,
     updateUser,
     updateUserRole,
     deleteUser,

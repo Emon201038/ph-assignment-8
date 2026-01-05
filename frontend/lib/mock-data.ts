@@ -344,6 +344,69 @@ export const mockBookings = [
   },
 ];
 
+export const mockTrips = [
+  {
+    id: "trip-1",
+    tourId: "1",
+    guideId: "1",
+    startDate: "2024-03-15",
+    endDate: "2024-03-15",
+    maxCapacity: 8,
+    currentBookings: 5,
+    status: "available" as const,
+  },
+  {
+    id: "trip-2",
+    tourId: "1",
+    guideId: "2",
+    startDate: "2024-03-18",
+    endDate: "2024-03-18",
+    maxCapacity: 10,
+    currentBookings: 8,
+    status: "available" as const,
+  },
+  {
+    id: "trip-3",
+    tourId: "1",
+    guideId: "3",
+    startDate: "2024-03-20",
+    endDate: "2024-03-20",
+    maxCapacity: 6,
+    currentBookings: 6,
+    status: "full" as const,
+  },
+  {
+    id: "trip-4",
+    tourId: "2",
+    guideId: "4",
+    startDate: "2024-03-22",
+    endDate: "2024-03-22",
+    maxCapacity: 8,
+    currentBookings: 3,
+    status: "available" as const,
+  },
+  {
+    id: "trip-5",
+    tourId: "3",
+    guideId: "3",
+    startDate: "2024-03-16",
+    endDate: "2024-03-16",
+    maxCapacity: 12,
+    currentBookings: 10,
+    status: "available" as const,
+  },
+  {
+    id: "trip-6",
+    tourId: "4",
+    guideId: "1",
+    startDate: "2024-03-25",
+    endDate: "2024-03-25",
+    maxCapacity: 15,
+    currentBookings: 12,
+    status: "available" as const,
+  },
+];
+
 export const mockUsers = [
   {
     id: "1",

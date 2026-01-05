@@ -10,9 +10,11 @@ import {
   Users,
   Calendar,
   CheckCircle,
+  CalendarDays,
 } from "lucide-react";
-import { mockTours, mockGuides } from "@/lib/mock-data";
+import { mockTours, mockGuides, mockTrips } from "@/lib/mock-data";
 import { notFound } from "next/navigation";
+import { getSingleTour } from "@/action/tour";
 
 export default async function TourDetailPage({
   params,
@@ -20,21 +22,23 @@ export default async function TourDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const paramsObj = await params;
-  const tour = mockTours.find((t) => t.id === paramsObj.id);
+  const tour = await getSingleTour(paramsObj.id);
 
   if (!tour) {
     notFound();
   }
 
-  const recommendedGuides = mockGuides.slice(0, 3);
+  if (!tour) {
+    notFound();
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
       {/* Tour Banner */}
       <div className="relative h-[400px] rounded-xl overflow-hidden mb-8">
         <Image
-          src={tour.images[0] || "/placeholder.svg"}
-          alt={tour.title}
+          src={tour?.data?.images[0] || "/placeholder.svg"}
+          alt={tour?.data?.title}
           fill
           className="object-cover"
           priority
@@ -42,21 +46,23 @@ export default async function TourDetailPage({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="absolute bottom-0 left-0 p-8 text-white">
           <Badge className="mb-3 bg-white text-foreground">
-            {tour.category}
+            {tour?.data?.category}
           </Badge>
-          <h1 className="text-4xl font-bold mb-2 text-balance">{tour.title}</h1>
+          <h1 className="text-4xl font-bold mb-2 text-balance">
+            {tour?.data?.title}
+          </h1>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
-              {tour.location}
+              {tour?.data?.city}, {tour?.data?.country}
             </div>
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-white" />
-              {tour.rating} ({tour.reviewCount} reviews)
+              {tour?.data?.averageRating} ({tour?.data?.totalReviews} reviews)
             </div>
             <div className="flex items-center gap-1">
               <Clock className="h-4 w-4" />
-              {tour.duration}
+              {tour?.data?.duration}
             </div>
           </div>
         </div>
@@ -70,7 +76,7 @@ export default async function TourDetailPage({
             <CardContent className="p-6">
               <h2 className="text-2xl font-bold mb-4">About This Tour</h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                {tour.description}
+                {tour?.data?.description}
               </p>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-2">
@@ -94,23 +100,25 @@ export default async function TourDetailPage({
           </Card>
 
           {/* Itinerary */}
-          <Card>
+          <Card
+            className={`${tour?.data?.itinerary.length > 0 ? "" : "hidden"}`}
+          >
             <CardContent className="p-6">
               <h2 className="text-2xl font-bold mb-6">Itinerary</h2>
               <div className="space-y-4">
-                {tour.itinerary.map((item, index) => (
+                {tour?.data?.itinerary.map((item, index) => (
                   <div key={index} className="flex gap-4">
                     <div className="flex flex-col items-center">
                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
                         {index + 1}
                       </div>
-                      {index < tour.itinerary.length - 1 && (
+                      {index < tour?.data?.itinerary.length - 1 && (
                         <div className="w-0.5 flex-1 bg-border mt-2" />
                       )}
                     </div>
                     <div className="flex-1 pb-8">
-                      <p className="font-semibold mb-1">{item.time}</p>
-                      <p className="text-muted-foreground">{item.activity}</p>
+                      <p className="font-semibold mb-1">{item.title}</p>
+                      <p className="text-muted-foreground">{item.details}</p>
                     </div>
                   </div>
                 ))}
@@ -142,15 +150,15 @@ export default async function TourDetailPage({
         </div>
 
         {/* Booking Sidebar */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 hidden">
           <Card className="sticky top-20">
             <CardContent className="p-6">
               <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-3xl font-bold">${tour.price}</span>
+                <span className="text-3xl font-bold">${tour?.data?.price}</span>
                 <span className="text-muted-foreground">per person</span>
               </div>
               <Button size="lg" className="w-full mb-4" asChild>
-                <Link href={`/book/${tour.id}`}>Book This Tour</Link>
+                <Link href={`/book/${tour?.data?._id}`}>Book This Tour</Link>
               </Button>
               <p className="text-xs text-center text-muted-foreground mb-6">
                 Free cancellation up to 24 hours before
@@ -177,64 +185,6 @@ export default async function TourDetailPage({
           </Card>
         </div>
       </div>
-
-      {/* Recommended Guides */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6">
-          Recommended Guides for This Tour
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {recommendedGuides.map((guide) => (
-            <Card
-              key={guide.id}
-              className="overflow-hidden hover:shadow-lg transition-shadow"
-            >
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="relative h-16 w-16 flex-shrink-0">
-                    <Image
-                      src={guide.avatar || "/placeholder.svg"}
-                      alt={guide.name}
-                      fill
-                      className="rounded-full object-cover"
-                    />
-                    {guide.available && (
-                      <div className="absolute bottom-0 right-0 h-5 w-5 bg-accent rounded-full border-2 border-card" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold truncate">{guide.name}</h3>
-                    <p className="text-sm text-muted-foreground truncate">
-                      {guide.location}
-                    </p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Star className="h-4 w-4 fill-secondary text-secondary" />
-                      <span className="text-sm font-semibold">
-                        {guide.rating}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {guide.languages.map((lang) => (
-                    <Badge key={lang} variant="secondary" className="text-xs">
-                      {lang}
-                    </Badge>
-                  ))}
-                </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="w-full bg-transparent"
-                  asChild
-                >
-                  <Link href={`/profile/${guide.id}`}>View Profile</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

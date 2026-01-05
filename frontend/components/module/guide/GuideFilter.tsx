@@ -222,7 +222,7 @@ const GuideFilter = () => {
           </PopoverContent>
         </Popover>
 
-        {/* Expertise Multi-Select */}
+        {/* Languages Multi-Select */}
         <Popover open={languagesModalOpen} onOpenChange={setLanguagesModalOpen}>
           <PopoverTrigger asChild>
             <Button

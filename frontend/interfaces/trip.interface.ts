@@ -20,10 +20,7 @@ export interface IFinalItinerary {
 export interface ITrip extends Document {
   _id: string;
   tourId: string;
-  guide: Pick<
-    IUser<IGuide>,
-    "name" | "phone" | "email" | "profileImage" | "_id"
-  >;
+  guide: IUser<IGuide>;
   tour: ITour;
   guideId: string;
   startDate: Date;

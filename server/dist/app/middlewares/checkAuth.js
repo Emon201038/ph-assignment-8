@@ -22,10 +22,6 @@ const checkAuth = (...roles) => (0, catchAsync_1.catchAsync)((req, res, next) =>
     if (!accessToken) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.UNAUTHORIZED, "You are not logged in.");
     }
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
-        throw new appError_1.default(httpStatus_1.HTTP_STATUS.UNAUTHORIZED, "You are not logged in.");
-    }
     const decoded = (0, jwt_1.verifyJwt)(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET);
     if (!decoded) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.UNAUTHORIZED, "You are not logged in.");

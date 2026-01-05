@@ -24,8 +24,13 @@ const TripManagementHeader = () => {
       />
 
       <ManagementPageHeader
-        title="Trjip Management"
+        title="Trip Management"
         description="Manage trips information and details"
+        actions={{
+          label: "Add Trip",
+          icon: Plus,
+          onClick: () => setIsDialogOpen(true),
+        }}
       />
     </>
   );

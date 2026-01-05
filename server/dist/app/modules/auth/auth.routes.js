@@ -7,4 +7,5 @@ const auth_validation_1 = require("./auth.validation");
 const authRouter = (0, express_1.Router)();
 authRouter.post("/login", (0, validateRequest_1.validateRequest)(auth_validation_1.loginSchema), auth_controller_1.AuthController.login);
 authRouter.get("/me", auth_controller_1.AuthController.getMe);
+authRouter.get("/refresh-token", auth_controller_1.AuthController.refreshToken);
 exports.default = authRouter;

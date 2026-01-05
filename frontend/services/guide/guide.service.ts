@@ -252,3 +252,8 @@ export const deleteGuide = async (
     };
   }
 };
+
+export const getSingleGuide = async (guideId: string) => {
+  const res = await serverFetch.get(`/guides/${guideId}`);
+  return await res.json();
+};

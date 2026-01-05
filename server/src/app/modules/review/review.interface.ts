@@ -1,9 +1,15 @@
 import mongoose, { Document } from "mongoose";
 
+export enum ReviewTargetType {
+  TOUR = "TOUR",
+  GUIDE = "GUIDE",
+}
+
 export interface IReview extends Document {
-  userId: mongoose.Types.ObjectId;
-  docId: mongoose.Types.ObjectId;
-  refPath: "Tour" | "User";
+  user: mongoose.Types.ObjectId;
+  target: mongoose.Types.ObjectId;
+  targetType: ReviewTargetType;
   rating: number;
   comment: string;
+  isDeleted: boolean;
 }

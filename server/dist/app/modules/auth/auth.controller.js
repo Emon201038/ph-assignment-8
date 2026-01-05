@@ -30,4 +30,12 @@ const getMe = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0,
         data: yield auth_service_1.AuthService.me(req.cookies.accessToken || req.headers.authorization),
     });
 }));
-exports.AuthController = { login, getMe };
+const refreshToken = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        message: "Profile retrived",
+        success: true,
+        data: yield auth_service_1.AuthService.refreshToken(req.cookies.refreshToken, res),
+    });
+}));
+exports.AuthController = { login, getMe, refreshToken };

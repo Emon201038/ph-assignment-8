@@ -1,6 +1,5 @@
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import Review from "./review.model";
 import { ReviewService } from "./review.service";
 
 const getReviews = catchAsync(async (req, res, next) => {

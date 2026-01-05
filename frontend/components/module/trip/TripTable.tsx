@@ -6,16 +6,16 @@ import { ITrip } from "@/interfaces/trip.interface";
 import TripFormDialog from "./TripFormDialog";
 import { tripsColumns } from "./TripColumns";
 
-interface ToursTableProps {
+interface TripsTableProps {
   trips: ITrip[];
 }
 
-const TripsTable = ({ trips }: ToursTableProps) => {
+const TripsTable = ({ trips }: TripsTableProps) => {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [deletingTour, setDeletingTour] = useState<ITrip | null>(null);
-  const [viewingTour, setViewingTour] = useState<ITrip | null>(null);
-  const [editingTour, setEditingTour] = useState<ITrip | null>(null);
+  const [deletingTrip, setDeletingTrip] = useState<ITrip | null>(null);
+  const [viewingTrip, setViewingTrip] = useState<ITrip | null>(null);
+  const [editingTrip, setEditingTrip] = useState<ITrip | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRefresh = () => {
@@ -24,20 +24,22 @@ const TripsTable = ({ trips }: ToursTableProps) => {
     });
   };
 
-  const handleView = (doctor: ITrip) => {
-    setViewingTour(doctor);
+  const handleView = (trip: ITrip) => {
+    setViewingTrip(trip);
   };
 
-  const handleEdit = (doctor: ITrip) => {
-    setEditingTour(doctor);
+  const handleEdit = (trip: ITrip) => {
+    setTimeout(() => {
+      setEditingTrip(trip);
+    }, 0);
   };
 
-  const handleDelete = (doctor: ITrip) => {
-    setDeletingTour(doctor);
+  const handleDelete = (trip: ITrip) => {
+    setDeletingTrip(trip);
   };
 
   const confirmDelete = async () => {
-    if (!deletingTour) return;
+    if (!deletingTrip) return;
 
     setIsDeleting(true);
     // const result = await softDeleteDoctor(deletingDoctor.id!);
@@ -48,7 +50,7 @@ const TripsTable = ({ trips }: ToursTableProps) => {
     //   setDeletingDoctor(null);
     //   handleRefresh();
     // } else {
-    //   toast.error(result.message || "Failed to delete doctor");
+    //   toast.error(result.message || "Failed to delete trip");
     // }
   };
 
@@ -65,11 +67,11 @@ const TripsTable = ({ trips }: ToursTableProps) => {
       />
       {/* Edit Doctor Form Dialog */}
       <TripFormDialog
-        open={!!editingTour}
-        onClose={() => setEditingTour(null)}
-        trip={editingTour!}
+        open={!!editingTrip}
+        onClose={() => setEditingTrip(null)}
+        trip={editingTrip!}
         onSuccess={() => {
-          setEditingTour(null);
+          setEditingTrip(null);
           handleRefresh();
         }}
       />
@@ -78,7 +80,7 @@ const TripsTable = ({ trips }: ToursTableProps) => {
       {/* <DoctorViewDetailDialog
         open={!!viewingDoctor}
         onClose={() => setViewingDoctor(null)}
-        doctor={viewingDoctor}
+        trip={viewingDoctor}
       /> */}
 
       {/* Delete Confirmation Dialog */}

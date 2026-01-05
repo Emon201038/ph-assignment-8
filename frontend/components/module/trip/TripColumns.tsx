@@ -14,6 +14,26 @@ export const tripsColumns: IColumn<ITrip>[] = [
     ),
   },
   {
+    header: "Booked Seat",
+    accessor(row) {
+      return (
+        <span className="text-sm font-semibold text-green-500">
+          {row.bookedSeats}
+        </span>
+      );
+    },
+  },
+  {
+    header: "Total Seat",
+    accessor(row) {
+      return (
+        <span className="text-sm font-semibold text-yellow-500">
+          {row.maxCapacity}
+        </span>
+      );
+    },
+  },
+  {
     header: "Location",
     accessor: (trip) => (
       <div className="flex flex-col">
@@ -47,7 +67,8 @@ export const tripsColumns: IColumn<ITrip>[] = [
     header: "Start Date",
     accessor: (trip) => (
       <span className="text-sm capitalize">
-        {trip?.startDate?.toString() || ""}
+        {new Date(trip?.startDate?.toString()).toLocaleDateString("en-GB") ||
+          ""}
       </span>
     ),
   },
@@ -55,7 +76,11 @@ export const tripsColumns: IColumn<ITrip>[] = [
     header: "End Date",
     accessor: (trip) => (
       <span className="text-sm capitalize">
-        {trip?.endDate?.toString() || ""}
+        {new Date(trip?.endDate?.toString()).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "numeric",
+          year: "numeric",
+        }) || ""}
       </span>
     ),
   },
@@ -63,7 +88,7 @@ export const tripsColumns: IColumn<ITrip>[] = [
     header: "Status",
     accessor: (trip) => (
       <StatusBadgeCell
-        isDeleted={!false}
+        isDeleted={false}
         deletedText="In-active"
         activeText={trip.status}
       />

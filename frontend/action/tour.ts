@@ -120,3 +120,14 @@ export const getTours = async (queryString?: string) => {
     return null;
   }
 };
+
+export const getSingleTour = async (id: string) => {
+  try {
+    const res = await serverFetch.get(`/tours/${id}`);
+    const data: IResponse<ITour> = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

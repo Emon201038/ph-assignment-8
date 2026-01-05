@@ -15,7 +15,7 @@ const sendResponse_1 = require("../../utils/sendResponse");
 const tour_service_1 = require("./tour.service");
 exports.TourController = {
     createTour: (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const result = yield tour_service_1.TourService.createTour(req.body);
+        const result = yield tour_service_1.TourService.createTour(req);
         (0, sendResponse_1.sendResponse)(res, {
             statusCode: 201,
             success: true,
@@ -38,7 +38,8 @@ exports.TourController = {
             success: true,
             statusCode: 200,
             message: "Tours fetched successfully",
-            data: result,
+            data: result.tours,
+            meta: result.meta,
         });
     })),
     getSingleTour: (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

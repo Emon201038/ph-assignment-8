@@ -2,6 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { ITrip, TripStatus } from "@/interfaces/trip.interface";
+import { createTrip, updateTrip } from "@/services/trip/trip.service";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { TourSearchSelect } from "./TourSelect";
+import { GuideSearchSelect } from "./GuideSelect";
+import InputFieldError from "@/components/shared/InputFieldError";
+import { IInputErrorState } from "@/lib/getInputFieldError";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -9,10 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ITrip } from "@/interfaces/trip.interface";
-import { mockGuides, mockTours } from "@/lib/mock-data";
-import { createTrip } from "@/services/trip/trip.service";
-import React, { useActionState, useState } from "react";
 
 interface TripFormProps {
   trip?: ITrip;
@@ -21,61 +25,97 @@ interface TripFormProps {
 }
 
 const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
-  const [selectedTourId, setSelectedTourId] = useState("");
-  const [selectedGuideId, setSelectedGuideId] = useState("");
+  const isEdit = !!trip;
+  const [selectedTourId, setSelectedTourId] = useState(trip?.tour?._id || "");
+  const [selectedGuideId, setSelectedGuideId] = useState(
+    trip?.guide?._id || ""
+  );
+  const [status, setStatus] = useState<TripStatus>(
+    trip?.status || TripStatus.OPEN
+  );
 
-  const [state, formAction, isPending] = useActionState(createTrip, null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const [state, formAction, isPending] = useActionState(
+    isEdit ? updateTrip : createTrip,
+    null
+  );
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state.message);
+      if (formRef?.current) {
+        formRef.current.reset();
+      }
+
+      onSuccess?.();
+      onClose?.();
+    } else if (state && !state.success) {
+      if ((state.errors && state.errors?.length === 0) || !state.errors)
+        toast.error(state.message);
+    }
+  }, [state]);
+
   return (
-    <form action={formAction} className="space-y-4 max-w-4xl w-full mx-auto ">
+    <form
+      ref={formRef}
+      action={formAction}
+      className="space-y-4 max-w-4xl w-full mx-auto "
+    >
+      {isEdit && <input type="hidden" name="tripId" value={trip?._id} />}
+      <input type="hidden" name="status" value={status} />
+      <input type="hidden" name="tourId" value={selectedTourId} />
+      <input type="hidden" name="guideId" value={selectedGuideId} />
       <Field>
         <FieldLabel htmlFor="tourId">Select Tour</FieldLabel>
         <FieldContent>
-          <Select
-            name="tourId"
-            value={selectedTourId}
+          <TourSearchSelect
+            value={trip?.tour?._id || selectedTourId}
             onValueChange={setSelectedTourId}
-            required
-            disabled={!!trip?.tourId}
-          >
-            <SelectTrigger id="tourId">
-              <SelectValue placeholder="Choose a tour" />
-            </SelectTrigger>
-            <SelectContent>
-              {mockTours.map((tour) => (
-                <SelectItem key={tour.id} value={tour.id}>
-                  {tour.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            id="tourId"
+          />
+          <InputFieldError state={state as IInputErrorState} field="tourId" />
         </FieldContent>
       </Field>
 
       <Field>
         <FieldLabel htmlFor="guideId">Assign Guide</FieldLabel>
         <FieldContent>
-          <Select
-            name="guideId"
-            value={selectedGuideId}
+          <GuideSearchSelect
+            value={trip?.guide?._id || selectedGuideId}
             onValueChange={setSelectedGuideId}
-            required
-          >
-            <SelectTrigger id="guideId">
-              <SelectValue placeholder="Choose a guide" />
-            </SelectTrigger>
-            <SelectContent className="relative mt-6">
-              <div className="absolute top-0 left-0">
-                <Input type="text" name="search" placeholder="search guide" />
-              </div>
-              {mockGuides.map((guide) => (
-                <SelectItem key={guide.id} value={guide.id}>
-                  {guide.name} - {guide.location}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            id="guideId"
+          />
+          <InputFieldError state={state as IInputErrorState} field="guideId" />
         </FieldContent>
       </Field>
+
+      {isEdit && (
+        <Field>
+          <FieldLabel htmlFor="status">Status</FieldLabel>
+          <FieldContent>
+            <Select
+              value={status}
+              onValueChange={(e) => setStatus(e as TripStatus)}
+            >
+              <SelectTrigger id="status" className="w-full">
+                <SelectValue placeholder="Select a status" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(TripStatus).map((status) => (
+                  <SelectItem
+                    key={status}
+                    value={status}
+                    // className="capitalize"
+                  >
+                    {status}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FieldContent>
+        </Field>
+      )}
 
       <Field>
         <FieldLabel htmlFor="startDate">Start Date</FieldLabel>
@@ -84,8 +124,19 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
             id="startDate"
             name="startDate"
             type="date"
-            required
             min={new Date().toISOString().split("T")[0]}
+            defaultValue={
+              state?.formData?.startDate
+                ? (state?.formData?.startDate?.toString() as string)
+                : "".split("T")[0] ||
+                  (isEdit
+                    ? new Date(trip.startDate).toISOString().split("T")[0]
+                    : "")
+            }
+          />
+          <InputFieldError
+            state={state as IInputErrorState}
+            field="startDate"
           />
         </FieldContent>
       </Field>
@@ -97,9 +148,17 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
             id="endDate"
             name="endDate"
             type="date"
-            required
             min={new Date().toISOString().split("T")[0]}
+            defaultValue={
+              state?.formData?.endDate
+                ? (state?.formData?.endDate?.toString() as string)
+                : "".split("T")[0] ||
+                  (isEdit
+                    ? new Date(trip.endDate).toISOString().split("T")[0]
+                    : "")
+            }
           />
+          <InputFieldError state={state as IInputErrorState} field="endDate" />
         </FieldContent>
       </Field>
 
@@ -111,22 +170,32 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
             name="maxCapacity"
             type="number"
             placeholder="e.g., 10"
-            required
-            min="1"
-            max="50"
+            // min="1"
+            // max="50"
+            defaultValue={
+              state?.formData?.maxCapacity
+                ? (state?.formData?.maxCapacity?.toString() as string)
+                : isEdit
+                ? trip.maxCapacity.toString()
+                : ""
+            }
+          />
+          <InputFieldError
+            state={state as IInputErrorState}
+            field="maxCapacity"
           />
         </FieldContent>
       </Field>
 
-      {state?.success && (
-        <div className="p-3 bg-accent/10 text-accent rounded-md text-sm">
-          {state.message}
-        </div>
-      )}
-
       <div className="flex gap-3 pt-4">
         <Button type="submit" className="flex-1" disabled={isPending}>
-          {isPending ? "Creating..." : "Create Trip"}
+          {isPending
+            ? isEdit
+              ? "Updating..."
+              : "Creating..."
+            : isEdit
+            ? "Update Trip"
+            : "Create Trip"}
         </Button>
       </div>
     </form>

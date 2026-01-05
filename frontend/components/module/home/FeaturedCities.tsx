@@ -39,7 +39,7 @@ const FeaturedCities = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {cities.map((city) => (
-        <Link key={city.name} href={`/explore?city=${city.name}`}>
+        <Link key={city.name} href={`/tours?city=${city.name}`}>
           <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300">
             <div className="relative h-48 overflow-hidden">
               <img

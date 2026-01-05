@@ -17,8 +17,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Dialog, DialogContent } from "./dialog";
-import { set } from "zod";
 
 export interface Option {
   value: string;
@@ -64,7 +62,7 @@ export function SearchableSelect({
   const selectedOption = options.find((option) => option.value === value);
 
   return (
-    <Popover open={openPopover} onOpenChange={setOpenPopover} modal={true}>
+    <Popover open={openPopover} onOpenChange={setOpenPopover}>
       <PopoverTrigger asChild id={id}>
         <Button
           variant="outline"
@@ -80,16 +78,18 @@ export function SearchableSelect({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-(--radix-popover-trigger-width) p-0 z-100"
+        className="w-[--radix-popover-trigger-width] p-0"
         align="start"
+        sideOffset={5}
+        style={{ zIndex: 9999 }}
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+          inputRef.current?.focus();
+        }}
       >
-        <Command>
-          <CommandInput
-            ref={inputRef}
-            placeholder={searchPlaceholder}
-            autoFocus
-          />
-          <CommandList className="max-h-75 overflow-y-auto">
+        <Command shouldFilter={true}>
+          <CommandInput ref={inputRef} placeholder={searchPlaceholder} />
+          <CommandList className="max-h-[300px] overflow-y-auto">
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (

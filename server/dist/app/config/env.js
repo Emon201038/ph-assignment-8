@@ -22,6 +22,9 @@ const loadEnv = () => {
         "CLOUDINARY_CLOUD_NAME",
         "CLOUDINARY_API_KEY",
         "CLOUDINARY_API_SECRET",
+        "ADMIN_NAME",
+        "ADMIN_EMAIL",
+        "ADMIN_PASSWORD",
         // "EXPRESS_SESSION_SECRET",
         // "GOOGLE_CLIENT_ID",
         // "GOOGLE_CLIENT_SECRET",
@@ -36,6 +39,8 @@ const loadEnv = () => {
         // "REDIS_PASSWORD",
         // "REDIS_HOST",
         // "REDIS_PORT",
+        "STRIPE_SECRET_KEY",
+        "STRIPE_WEBHOOK_SECRET",
     ];
     requiredEnv.forEach((envVar) => {
         if (!process.env[envVar]) {
@@ -61,6 +66,9 @@ const loadEnv = () => {
         CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
         CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
         CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+        ADMIN_NAME: process.env.ADMIN_NAME,
+        ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+        ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
         // GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
         // GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
         // GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
@@ -75,6 +83,8 @@ const loadEnv = () => {
         // REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
         // REDIS_HOST: process.env.REDIS_HOST as string,
         // REDIS_PORT: process.env.REDIS_PORT as string,
+        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     };
 };
 exports.envVars = loadEnv();

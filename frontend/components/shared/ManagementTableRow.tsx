@@ -62,7 +62,8 @@ const ManagementTableRow = ({
               )}
               {onEdit && (
                 <DropdownMenuItem
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onEdit(row);
                     setOpenDropdown(false);
                   }}

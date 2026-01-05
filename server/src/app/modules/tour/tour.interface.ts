@@ -20,6 +20,8 @@ export interface ITour {
   language: string;
   isActive: boolean;
   isFeatured: boolean;
+  averageRating: number;
+  totalReviews: number;
   createdBy: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;

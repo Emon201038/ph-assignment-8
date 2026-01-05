@@ -7,25 +7,31 @@ const itinerarySchema = new mongoose_1.Schema({
     details: String,
 }, { _id: false });
 const tourSchema = new mongoose_1.Schema({
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    category: { type: String, required: true },
-    city: { type: String, required: true },
-    country: { type: String, required: true },
-    price: { type: Number, required: true },
-    duration: { type: String, required: true },
+    title: { type: String, required: [true, "Title is required"] },
+    description: { type: String, required: [true, "Description is required"] },
+    category: { type: String, required: [true, "Category is required"] },
+    city: { type: String, required: [true, "City is required"] },
+    country: { type: String, required: [true, "Country is required"] },
+    price: { type: Number, required: [true, "Price is required"] },
+    duration: { type: String, required: [true, "Duration is required"] },
     itinerary: [itinerarySchema],
     images: [{ type: String }],
-    meetingPoint: { type: String, required: true },
-    maxGroupSize: { type: Number, default: 5 },
-    language: [{ type: String }],
-    guide: {
+    language: { type: String },
+    isActive: { type: Boolean, default: false },
+    isFeatured: { type: Boolean, default: false },
+    createdBy: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "User",
-        required: true,
+        required: [true, "User is required"],
     },
-    rating: { type: Number, default: 0 },
-    totalReviews: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true },
+    averageRating: {
+        type: Number,
+        default: 0,
+    },
+    totalReviews: {
+        type: Number,
+        default: 0,
+    },
 }, { timestamps: true });
-exports.default = (0, mongoose_1.model)("Tour", tourSchema);
+const Tour = (0, mongoose_1.model)("Tour", tourSchema);
+exports.default = Tour;

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("./app/config/db");
 const app_1 = __importDefault(require("./app"));
 const env_1 = require("./app/config/env");
+const seed_admin_1 = require("./app/config/seed-admin");
 // import { connectRedis } from "./app/config/redis.config";
 let server;
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,6 +33,7 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
 (() => __awaiter(void 0, void 0, void 0, function* () {
     // await connectRedis();
     yield startServer();
+    yield (0, seed_admin_1.seedAdmin)();
 }))();
 process.on("unhandledRejection", (error) => {
     if (server) {

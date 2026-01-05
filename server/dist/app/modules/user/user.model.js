@@ -28,29 +28,21 @@ const userSchema = new mongoose_1.Schema({
     // Common fields
     profileImage: String,
     bio: String,
-    languages: [String],
-    // Tourist specific fields
-    touristInfo: {
-        preferences: [String],
-        wishlist: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Tour" }],
+    address: String,
+    gender: {
+        type: String,
+        enum: Object.values(user_interface_1.Gender),
+        default: user_interface_1.Gender.MALE,
     },
-    // Guide specific fields
-    guideInfo: {
-        expertise: [String],
-        dailyRate: Number,
-        rating: { type: Number, default: 0 },
-        totalReviews: { type: Number, default: 0 },
-        verified: { type: Boolean, default: false },
-        availability: [
-            {
-                day: String,
-                slots: [String], // e.g ["09:00", "10:00"]
-            },
-        ],
+    phone: String,
+    profile: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        refPath: "roleProfileModel",
     },
-    // Admin specific fields
-    adminInfo: {
-        permissions: [String],
+    roleProfileModel: {
+        type: String,
+        required: true,
+        enum: ["Tourist", "Guide", "AdminProfile"],
     },
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },

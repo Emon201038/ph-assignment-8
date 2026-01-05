@@ -13,7 +13,7 @@ const getTrips = async () => {
     .populate(
       [
         "guideId:name;role;email;profilePhoto",
-        "tourId:title;description;images;country;city",
+        "tourId:title;description;images;country;city;category;price",
       ],
       {
         guideId: "guide",
@@ -27,27 +27,48 @@ const getTrips = async () => {
 };
 
 const getTourTrips = async (tourId: string) => {
-  const data = new DynamicQueryBuilder(Trip, { tourId })
-    .paginate()
-    .sort()
-    .search([])
+  const data = new QueryBuilder(Trip, { tourId })
     .filter()
-    .exec();
+    .search([])
+    .populate(
+      [
+        "guideId:name;role;email;profilePhoto",
+        "tourId:title;description;images;country;city;category;price",
+      ],
+      {
+        guideId: "guide",
+        tourId: "tour",
+      }
+    )
+    .sort()
+    .paginate()
+    .execWithMeta();
   return data;
 };
 
 const getSingleTripDetails = async (tripId: string) => {
-  const data = await Trip.findById(tripId).populate([
-    {
-      path: "guideId",
-      select: ["name", "email", "phone", "profileImage", "role"],
-    },
-    {
-      path: "tourId",
-      select: ["title", "description", "category", "images", "city", "country"],
-    },
-  ]);
-  return data;
+  const data = await Trip.findById(tripId)
+    .populate([
+      {
+        path: "guideId",
+        select: ["name", "email", "phone", "profileImage", "role"],
+      },
+      {
+        path: "tourId",
+      },
+    ])
+    .lean();
+
+  const finalObj = {
+    ...data,
+    guide: data?.guideId,
+    tour: data?.tourId,
+  };
+
+  delete finalObj.guideId;
+  delete finalObj.tourId;
+
+  return finalObj;
 };
 
 const createTrip = async (data: Partial<ITrip>) => {
@@ -62,7 +83,7 @@ const createTrip = async (data: Partial<ITrip>) => {
     }
 
     /* 1️⃣ Check guide exists */
-    const guide = await Guide.findById(guideId).session(session);
+    const guide = await Guide.findOne({ userId: guideId }).session(session);
     if (!guide) {
       throw new AppError(404, "Guide not found");
     }
@@ -120,8 +141,8 @@ const createTrip = async (data: Partial<ITrip>) => {
     const trip = await Trip.create(
       [
         {
-          ...data,
           status: TripStatus.UPCOMING,
+          ...data,
         },
       ],
       { session }

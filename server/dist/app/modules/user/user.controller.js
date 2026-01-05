@@ -23,7 +23,8 @@ const getUsers = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void
         success: true,
         statusCode: 200,
         message: "users retrieved successfully",
-        data: { users, meta },
+        data: users,
+        meta,
     });
 }));
 const createUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -39,7 +40,7 @@ const getUserById = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(v
     const isValidId = req.params.id.match(/^[0-9a-fA-F]{24}$/);
     if (!isValidId)
         throw new appError_1.default(400, "Invalid user id.");
-    const data = user_service_1.UserService.getUser(req.params.id);
+    const data = yield user_service_1.UserService.getUser(req.params.id);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 200,

@@ -32,8 +32,17 @@ const tourSchema = new Schema<ITour>(
       ref: "User",
       required: [true, "User is required"],
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    totalReviews: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
 
-export default model<ITour>("Tour", tourSchema);
+const Tour = model<ITour>("Tour", tourSchema);
+export default Tour;

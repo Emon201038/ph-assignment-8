@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadFilesToCloudinary = uploadFilesToCloudinary;
+exports.uploadFileToCloudinary = uploadFileToCloudinary;
 const streamifier_1 = __importDefault(require("streamifier"));
 const upload_cloudinary_1 = require("./upload-cloudinary");
 function uploadFilesToCloudinary(files, folder) {
@@ -33,5 +34,16 @@ function uploadFilesToCloudinary(files, folder) {
             : cleanUploads
                 ? cleanUploads === null || cleanUploads === void 0 ? void 0 : cleanUploads[0]
                 : null;
+    });
+}
+function uploadFileToCloudinary(file, folder) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // Upload each file with stream
+        if (!file)
+            return null;
+        const { mimetype } = file;
+        const resourceType = mimetype.startsWith("video") ? "video" : "image";
+        // Stream the buffer directly to Cloudinary
+        return (0, upload_cloudinary_1.uploadStreamToCloudinary)(streamifier_1.default.createReadStream(file.buffer), folder, resourceType);
     });
 }

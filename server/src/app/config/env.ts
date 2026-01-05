@@ -34,6 +34,8 @@ interface IEnvVars {
   // REDIS_PASSWORD: string;
   // REDIS_HOST: string;
   // REDIS_PORT: string;
+  STRIPE_SECRET_KEY: string;
+  STRIPE_WEBHOOK_SECRET: string;
 }
 
 const loadEnv = (): IEnvVars => {
@@ -69,6 +71,8 @@ const loadEnv = (): IEnvVars => {
     // "REDIS_PASSWORD",
     // "REDIS_HOST",
     // "REDIS_PORT",
+    "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET",
   ];
 
   requiredEnv.forEach((envVar) => {
@@ -113,6 +117,8 @@ const loadEnv = (): IEnvVars => {
     // REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
     // REDIS_HOST: process.env.REDIS_HOST as string,
     // REDIS_PORT: process.env.REDIS_PORT as string,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
   };
 };
 

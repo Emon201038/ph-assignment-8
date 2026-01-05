@@ -1,5 +1,7 @@
 "use server";
 
+import { IResponse } from "@/interfaces";
+import { ITour } from "@/interfaces/tour.interface";
 import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zod-validator";
 import { is } from "date-fns/locale";
@@ -145,4 +147,10 @@ export const updateTour = async (prevState: unknown, formData: FormData) => {
       errors: [],
     };
   }
+};
+
+export const getSingleTour = async (id: string) => {
+  const res = await serverFetch.get(`/tours/${id}`);
+  const data: IResponse<ITour> = await res.json();
+  return data;
 };

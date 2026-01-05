@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateRequest = void 0;
 const appError_1 = __importDefault(require("../helpers/appError"));
 const validateRequest = (zodSchema) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
         for (const key in req.body) {
             if (req.body[key] === "true") {
@@ -25,10 +24,10 @@ const validateRequest = (zodSchema) => (req, res, next) => __awaiter(void 0, voi
                 req.body[key] = false;
             }
         }
-        if (typeof ((_a = req.body) === null || _a === void 0 ? void 0 : _a.details) === "string")
-            req.body.details = JSON.parse(req.body.details);
         if (!req.body)
             throw new appError_1.default(400, "Request body is empty.");
+        if (req.body.body)
+            req.body.body = JSON.parse(req.body.body);
         req.body = yield zodSchema.parseAsync(req.body);
         next();
     }

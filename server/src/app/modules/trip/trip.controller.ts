@@ -12,11 +12,13 @@ const getAllTrips = catchAsync(async (req, res, next) => {
 });
 
 const getTourTrips = catchAsync(async (req, res, next) => {
+  const { data, meta } = await TripService.getTourTrips(req.params.id);
   sendResponse(res, {
     message: "Trips fetched successfully",
     statusCode: 200,
     success: true,
-    data: await TripService.getTourTrips(req.params.id),
+    data,
+    meta,
   });
 });
 
