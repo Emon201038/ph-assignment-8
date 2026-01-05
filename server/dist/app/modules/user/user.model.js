@@ -42,7 +42,7 @@ const userSchema = new mongoose_1.Schema({
     roleProfileModel: {
         type: String,
         required: true,
-        enum: ["Tourist", "Guide", "AdminProfile"],
+        enum: ["Tourist", "Guide", "Admin"],
     },
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },

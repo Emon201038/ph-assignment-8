@@ -15,6 +15,7 @@ export const seedAdmin = async () => {
       email: envVars.ADMIN_EMAIL,
       password: envVars.ADMIN_PASSWORD,
       role: UserRole.ADMIN,
+      roleProfileModel: "Admin",
     });
     console.log("admin created.");
   } catch (error) {

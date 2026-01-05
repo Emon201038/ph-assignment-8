@@ -28,6 +28,7 @@ const seedAdmin = () => __awaiter(void 0, void 0, void 0, function* () {
             email: env_1.envVars.ADMIN_EMAIL,
             password: env_1.envVars.ADMIN_PASSWORD,
             role: user_interface_1.UserRole.ADMIN,
+            roleProfileModel: "Admin",
         });
         console.log("admin created.");
     }

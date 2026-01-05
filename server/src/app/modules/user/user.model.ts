@@ -45,7 +45,7 @@ const userSchema = new Schema<IUser>(
     roleProfileModel: {
       type: String,
       required: true,
-      enum: ["Tourist", "Guide", "AdminProfile"],
+      enum: ["Tourist", "Guide", "Admin"],
     },
 
     isDeleted: { type: Boolean, default: false },
