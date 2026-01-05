@@ -7,7 +7,7 @@ import { INavSection } from "@/interfaces/dashboard.interface";
 import { getNavItemsByRole } from "@/lib/navitems.config";
 
 const DashboardSidebar = async () => {
-  const session = await auth();
+  const session = await auth<null>();
   if (!session) {
     redirect("/login");
   }
