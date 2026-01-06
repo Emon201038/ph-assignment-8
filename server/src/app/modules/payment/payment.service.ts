@@ -142,7 +142,12 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
   res.json({ received: true });
 };
 
+const getPayments = async () => {
+  return await Payment.find();
+};
+
 export const PaymentService = {
   createCheckoutSession,
   handleStripeWebhook,
+  getPayments,
 };

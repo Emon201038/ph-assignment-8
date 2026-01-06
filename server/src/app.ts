@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { notFound } from "./app/middlewares/notFound";
 import router from "./app/routes";
+import { envVars } from "./app/config/env";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(
       "http://localhost:5173",
       "https://parcel-delivery-system-tau.vercel.app",
       "https://assignment-6-snowy-nine.vercel.app",
+      envVars.CLIENT_URL,
     ],
     credentials: true,
   })

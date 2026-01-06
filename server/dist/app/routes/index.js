@@ -11,10 +11,10 @@ const admin_routes_1 = __importDefault(require("../modules/admin/admin.routes"))
 const guide_routes_1 = __importDefault(require("../modules/guide/guide.routes"));
 // import lookupRouter from "../modules/lookup/lookup.routes";
 const tourist_routes_1 = __importDefault(require("../modules/tourist/tourist.routes"));
-const review_routes_1 = __importDefault(require("../modules/review/review.routes"));
 const trip_routes_1 = __importDefault(require("../modules/trip/trip.routes"));
 const payment_routes_1 = require("../modules/payment/payment.routes");
 const booking_routes_1 = __importDefault(require("../modules/booking/booking.routes"));
+const review_routes_1 = __importDefault(require("../modules/review/review.routes"));
 const router = express_1.default.Router();
 const moduleRoutes = [
     {

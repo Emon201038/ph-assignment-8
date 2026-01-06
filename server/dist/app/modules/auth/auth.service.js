@@ -59,7 +59,9 @@ const me = (accessToken) => __awaiter(void 0, void 0, void 0, function* () {
     if (typeof verifiedToken === "string") {
         throw new appError_1.default(400, "Failed to verify token");
     }
-    return yield user_model_1.default.findById(verifiedToken.userId).select("-password");
+    return yield user_model_1.default.findById(verifiedToken.userId)
+        .select("-password")
+        .populate("profile");
 });
 const refreshToken = (token, res) => __awaiter(void 0, void 0, void 0, function* () {
     const verifiedToken = (0, jwt_1.verifyJwt)(token, env_1.envVars.JWT_REFRESH_TOKEN_SECRET);

@@ -119,7 +119,11 @@ const handleStripeWebhook = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
     res.json({ received: true });
 });
+const getPayments = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield payment_model_1.Payment.find();
+});
 exports.PaymentService = {
     createCheckoutSession,
     handleStripeWebhook,
+    getPayments,
 };

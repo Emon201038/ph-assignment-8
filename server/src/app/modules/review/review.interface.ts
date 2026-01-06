@@ -1,15 +1,14 @@
-import mongoose, { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
-export enum ReviewTargetType {
-  TOUR = "TOUR",
-  GUIDE = "GUIDE",
-}
+export type ReviewTargetType = "Tour" | "User";
 
 export interface IReview extends Document {
-  user: mongoose.Types.ObjectId;
-  target: mongoose.Types.ObjectId;
+  reviewerId: Types.ObjectId; // logged-in user
+  targetId: Types.ObjectId; // tourId or userId (guide)
   targetType: ReviewTargetType;
+
   rating: number;
-  comment: string;
+  comment?: string;
+
   isDeleted: boolean;
 }

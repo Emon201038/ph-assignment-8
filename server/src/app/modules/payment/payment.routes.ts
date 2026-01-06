@@ -27,4 +27,6 @@ router.post(
   PaymentController.stripeWebhook
 );
 
+router.get("/", PaymentController.getPayments);
+
 export const PaymentRoutes = router;

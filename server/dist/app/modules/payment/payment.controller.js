@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentController = void 0;
 const payment_service_1 = require("./payment.service");
+const httpStatus_1 = require("../../utils/httpStatus");
 const sendResponse_1 = require("../../utils/sendResponse");
 const catchAsync_1 = require("../../utils/catchAsync");
 const createCheckoutSession = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,7 +33,16 @@ const createCheckoutSession = (0, catchAsync_1.catchAsync)((req, res, next) => _
 const stripeWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield payment_service_1.PaymentService.handleStripeWebhook(req, res);
 });
+const getPayments = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: httpStatus_1.HTTP_STATUS.OK,
+        success: true,
+        message: "Payments fetched successfully",
+        data: yield payment_service_1.PaymentService.getPayments(),
+    });
+}));
 exports.PaymentController = {
     createCheckoutSession,
     stripeWebhook,
+    getPayments,
 };

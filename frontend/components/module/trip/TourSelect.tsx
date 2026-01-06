@@ -66,7 +66,7 @@ export function TourSearchSelect({
     if (value && !tours.some((tour) => tour._id === value)) {
       fetchTour();
     }
-  }, []);
+  }, [value]);
 
   // Fetch tours based on search query
   React.useEffect(() => {

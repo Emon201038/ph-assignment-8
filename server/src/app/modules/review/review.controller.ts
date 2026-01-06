@@ -1,23 +1,59 @@
+import { Request, Response } from "express";
+import { ReviewService } from "./review.service";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import { ReviewService } from "./review.service";
-
-const getReviews = catchAsync(async (req, res, next) => {
-  sendResponse(res, {
-    message: "Reviews fetched successfully",
-    statusCode: 200,
-    success: true,
-    data: await ReviewService.getReviews(),
-  });
-});
+import { HTTP_STATUS } from "../../utils/httpStatus";
 
 const createReview = catchAsync(async (req, res, next) => {
+  const reviewerId = req.user.userId; // from auth middleware
+
+  const review = await ReviewService.createReview({
+    reviewerId,
+    ...req.body,
+  });
+
   sendResponse(res, {
-    message: "Review created successfully",
-    statusCode: 201,
+    statusCode: HTTP_STATUS.CREATED,
     success: true,
-    data: await ReviewService.createReview(req.body),
+    message: "Review submitted successfully",
+    data: review,
   });
 });
 
-export const ReviewController = { getReviews, createReview };
+const getReviews = catchAsync(async (req, res, next) => {
+  const { targetId, targetType } = req.params;
+
+  const reviews = await ReviewService.getReviewsByTarget(
+    targetId,
+    targetType as "Tour" | "User"
+  );
+
+  sendResponse(res, {
+    statusCode: HTTP_STATUS.OK,
+    success: true,
+    message: "Reviews fetched successfully",
+    data: reviews,
+  });
+});
+
+const getReviewStats = catchAsync(async (req, res, next) => {
+  const { targetId, targetType } = req.params;
+
+  const stats = await ReviewService.getReviewStats(
+    targetId,
+    targetType as "Tour" | "User"
+  );
+
+  sendResponse(res, {
+    statusCode: HTTP_STATUS.OK,
+    success: true,
+    message: "Review stats fetched successfully",
+    data: stats,
+  });
+});
+
+export const ReviewController = {
+  createReview,
+  getReviews,
+  getReviewStats,
+};

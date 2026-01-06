@@ -20,4 +20,5 @@ router.post("/trip/checkout-session", (0, checkAuth_1.checkAuth)(...Object.value
  * NOTE: this route MUST use express.raw()
  */
 router.post("/webhook", express_1.default.raw({ type: "application/json" }), payment_controller_1.PaymentController.stripeWebhook);
+router.get("/", payment_controller_1.PaymentController.getPayments);
 exports.PaymentRoutes = router;

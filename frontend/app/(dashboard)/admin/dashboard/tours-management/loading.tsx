@@ -1,6 +1,6 @@
 import { ManagementPageLoading } from "@/components/shared/ManagementPageLoader";
 
-const TouristsManagementLoading = () => {
+const GuideManagementLoading = () => {
   return (
     <ManagementPageLoading
       columns={10}
@@ -11,4 +11,4 @@ const TouristsManagementLoading = () => {
   );
 };
 
-export default TouristsManagementLoading;
+export default GuideManagementLoading;

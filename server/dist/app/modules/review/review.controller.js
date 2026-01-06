@@ -10,23 +10,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReviewController = void 0;
+const review_service_1 = require("./review.service");
 const catchAsync_1 = require("../../utils/catchAsync");
 const sendResponse_1 = require("../../utils/sendResponse");
-const review_service_1 = require("./review.service");
-const getReviews = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    (0, sendResponse_1.sendResponse)(res, {
-        message: "Reviews fetched successfully",
-        statusCode: 200,
-        success: true,
-        data: yield review_service_1.ReviewService.getReviews(),
-    });
-}));
+const httpStatus_1 = require("../../utils/httpStatus");
 const createReview = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviewerId = req.user.userId; // from auth middleware
+    const review = yield review_service_1.ReviewService.createReview(Object.assign({ reviewerId }, req.body));
     (0, sendResponse_1.sendResponse)(res, {
-        message: "Review created successfully",
-        statusCode: 201,
+        statusCode: httpStatus_1.HTTP_STATUS.CREATED,
         success: true,
-        data: yield review_service_1.ReviewService.createReview(req.body),
+        message: "Review submitted successfully",
+        data: review,
     });
 }));
-exports.ReviewController = { getReviews, createReview };
+const getReviews = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { targetId, targetType } = req.params;
+    const reviews = yield review_service_1.ReviewService.getReviewsByTarget(targetId, targetType);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: httpStatus_1.HTTP_STATUS.OK,
+        success: true,
+        message: "Reviews fetched successfully",
+        data: reviews,
+    });
+}));
+const getReviewStats = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { targetId, targetType } = req.params;
+    const stats = yield review_service_1.ReviewService.getReviewStats(targetId, targetType);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: httpStatus_1.HTTP_STATUS.OK,
+        success: true,
+        message: "Review stats fetched successfully",
+        data: stats,
+    });
+}));
+exports.ReviewController = {
+    createReview,
+    getReviews,
+    getReviewStats,
+};

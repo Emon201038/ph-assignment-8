@@ -1,38 +1,36 @@
-import { Schema, model, Types } from "mongoose";
-import { IReview, ReviewTargetType } from "./review.interface";
+import { Schema, model } from "mongoose";
+import { IReview } from "./review.interface";
 
 const reviewSchema = new Schema<IReview>(
   {
-    user: {
-      type: Types.ObjectId,
+    reviewerId: {
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    target: {
-      type: Types.ObjectId,
+    targetId: {
+      type: Schema.Types.ObjectId,
       required: true,
-      index: true,
+      refPath: "targetType",
     },
 
     targetType: {
       type: String,
-      enum: Object.values(ReviewTargetType),
+      enum: ["Tour", "User"],
       required: true,
-      index: true,
     },
 
     rating: {
       type: Number,
+      required: true,
       min: 1,
       max: 5,
-      required: true,
     },
 
     comment: {
       type: String,
       trim: true,
-      maxlength: 1000,
     },
 
     isDeleted: {
@@ -40,9 +38,18 @@ const reviewSchema = new Schema<IReview>(
       default: false,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-reviewSchema.index({ user: 1, targetId: 1, targetType: 1 }, { unique: true });
+/**
+ * Prevent duplicate review:
+ * One user can review a Tour/User only once
+ */
+reviewSchema.index(
+  { reviewerId: 1, targetId: 1, targetType: 1 },
+  { unique: true }
+);
 
-export const Review = model("Review", reviewSchema);
+export const Review = model<IReview>("Review", reviewSchema);

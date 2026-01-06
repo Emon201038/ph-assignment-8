@@ -10,6 +10,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const globalErrorHandler_1 = require("./app/middlewares/globalErrorHandler");
 const notFound_1 = require("./app/middlewares/notFound");
 const routes_1 = __importDefault(require("./app/routes"));
+const env_1 = require("./app/config/env");
 const app = (0, express_1.default)();
 // middleware
 app.use((0, cors_1.default)({
@@ -18,6 +19,7 @@ app.use((0, cors_1.default)({
         "http://localhost:5173",
         "https://parcel-delivery-system-tau.vercel.app",
         "https://assignment-6-snowy-nine.vercel.app",
+        env_1.envVars.CLIENT_URL,
     ],
     credentials: true,
 }));

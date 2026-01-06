@@ -37,7 +37,7 @@ class QueryBuilder {
         const filters = Object.assign({}, this.queryParams);
         excludedFields.forEach((field) => delete filters[field]);
         for (const key in filters) {
-            let value = filters[key];
+            let value = filters[key].toLowerCase();
             // Handle boolean strings
             if (value === "true" || value === "false") {
                 filters[key] = value === "true";
@@ -60,6 +60,7 @@ class QueryBuilder {
                 filters[key] = { $in: arrayValues };
             }
             else {
+                filters[key] = value.toLowerCase();
                 filters[key] = value;
             }
         }

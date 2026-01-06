@@ -146,6 +146,12 @@ const getAllTours = async (query: Record<string, string>) => {
     .sort()
     .execWithMeta();
 
+  const tours = await Tour.find();
+  tours.forEach(async (t) => {
+    t.category = t.category.toLowerCase().trim();
+    await t.save();
+  });
+
   return res;
 };
 

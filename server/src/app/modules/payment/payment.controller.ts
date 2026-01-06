@@ -27,7 +27,17 @@ const stripeWebhook = async (req: Request, res: Response) => {
   await PaymentService.handleStripeWebhook(req, res);
 };
 
+const getPayments = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    statusCode: HTTP_STATUS.OK,
+    success: true,
+    message: "Payments fetched successfully",
+    data: await PaymentService.getPayments(),
+  });
+});
+
 export const PaymentController = {
   createCheckoutSession,
   stripeWebhook,
+  getPayments,
 };

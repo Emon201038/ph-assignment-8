@@ -34,11 +34,12 @@ exports.TourController = {
     })),
     getAllTours: (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const result = yield tour_service_1.TourService.getAllTours(req.query);
+        console.log(result);
         (0, sendResponse_1.sendResponse)(res, {
             success: true,
             statusCode: 200,
             message: "Tours fetched successfully",
-            data: result.tours,
+            data: result.data,
             meta: result.meta,
         });
     })),

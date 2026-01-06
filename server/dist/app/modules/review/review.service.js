@@ -10,11 +10,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReviewService = void 0;
+const mongoose_1 = require("mongoose");
 const review_model_1 = require("./review.model");
-const getReviews = () => __awaiter(void 0, void 0, void 0, function* () {
-    return yield review_model_1.Review.find();
+const createReview = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield review_model_1.Review.create(payload);
 });
-const createReview = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield review_model_1.Review.create(data);
+const getReviewsByTarget = (targetId, targetType) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield review_model_1.Review.find({
+        targetId,
+        targetType,
+        isDeleted: false,
+    })
+        .populate("reviewerId", "name profileImage")
+        .sort({ createdAt: -1 });
 });
-exports.ReviewService = { getReviews, createReview };
+const getReviewStats = (targetId, targetType) => __awaiter(void 0, void 0, void 0, function* () {
+    const stats = yield review_model_1.Review.aggregate([
+        {
+            $match: {
+                targetId: new mongoose_1.Types.ObjectId(targetId),
+                targetType,
+                isDeleted: false,
+            },
+        },
+        {
+            $group: {
+                _id: null,
+                averageRating: { $avg: "$rating" },
+                totalReviews: { $sum: 1 },
+            },
+        },
+    ]);
+    return (stats[0] || {
+        averageRating: 0,
+        totalReviews: 0,
+    });
+});
+exports.ReviewService = {
+    createReview,
+    getReviewsByTarget,
+    getReviewStats,
+};

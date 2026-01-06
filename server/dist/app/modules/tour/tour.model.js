@@ -9,7 +9,12 @@ const itinerarySchema = new mongoose_1.Schema({
 const tourSchema = new mongoose_1.Schema({
     title: { type: String, required: [true, "Title is required"] },
     description: { type: String, required: [true, "Description is required"] },
-    category: { type: String, required: [true, "Category is required"] },
+    category: {
+        type: String,
+        required: [true, "Category is required"],
+        lowercase: true,
+        trim: true,
+    },
     city: { type: String, required: [true, "City is required"] },
     country: { type: String, required: [true, "Country is required"] },
     price: { type: Number, required: [true, "Price is required"] },

@@ -15,7 +15,12 @@ const tourSchema = new Schema<ITour>(
     title: { type: String, required: [true, "Title is required"] },
     description: { type: String, required: [true, "Description is required"] },
 
-    category: { type: String, required: [true, "Category is required"] },
+    category: {
+      type: String,
+      required: [true, "Category is required"],
+      lowercase: true,
+      trim: true,
+    },
     city: { type: String, required: [true, "City is required"] },
     country: { type: String, required: [true, "Country is required"] },
 

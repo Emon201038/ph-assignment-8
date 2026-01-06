@@ -6,10 +6,10 @@ import adminRouter from "../modules/admin/admin.routes";
 import guideRouter from "../modules/guide/guide.routes";
 // import lookupRouter from "../modules/lookup/lookup.routes";
 import touristRouter from "../modules/tourist/tourist.routes";
-import reviewRouter from "../modules/review/review.routes";
 import tripRouter from "../modules/trip/trip.routes";
 import { PaymentRoutes } from "../modules/payment/payment.routes";
 import bookingRouter from "../modules/booking/booking.routes";
+import reviewRouter from "../modules/review/review.routes";
 
 const router = express.Router();
 
