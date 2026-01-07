@@ -56,11 +56,17 @@ export const TOUR_CATEGORIES = [
 ];
 
 export const TOUR_DURATIONS = [
-  { label: "1–2 Hours", value: "1-2_hours" },
-  { label: "2–4 Hours", value: "2-4_hours" },
-  { label: "Half Day (4–6 Hours)", value: "half_day" },
-  { label: "Full Day (6–8 Hours)", value: "full_day" },
-  { label: "Multi-Day", value: "multi_day" },
+  { label: "3 Hours", value: 180 },
+  { label: "4 Hours", value: 240 },
+  { label: "5 Hours", value: 300 },
+  { label: "6 Hours", value: 360 },
+  { label: "8 Hours", value: 480 },
+  { label: "12 Hours", value: 720 },
+  { label: "1 Day", value: 1440 },
+  { label: "2 Days", value: 2880 },
+  { label: "3 Days", value: 4320 },
+  { label: "5 Days", value: 7200 },
+  { label: "7 Days", value: 10080 },
 ];
 
 export const GROUP_SIZES = [

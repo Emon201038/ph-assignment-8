@@ -20,15 +20,34 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const appError_1 = __importDefault(require("../../helpers/appError"));
 const guide_model_1 = require("./guide.model");
 const httpStatus_1 = require("../../utils/httpStatus");
+const queryBuilderByPipline_1 = require("../../lib/queryBuilderByPipline");
+const booking_model_1 = require("../booking/booking.model");
 const getGuides = (queryString) => __awaiter(void 0, void 0, void 0, function* () {
-    const builder = new queryBuilder_1.QueryBuilder(user_model_1.default, Object.assign(Object.assign({}, queryString), { isDeleted: "false", role: "GUIDE" }));
+    const builder = new queryBuilder_1.QueryBuilder(guide_model_1.Guide, Object.assign({}, queryString));
     const res = yield builder
         .filter()
         .search(["email", "name", "phone"])
         .paginate()
         .select(["-password"])
         .execWithMeta();
-    return { guides: res.data, meta: res.meta };
+    const builder2 = new queryBuilderByPipline_1.DynamicQueryBuilder(guide_model_1.Guide, Object.assign({}, queryString), [
+        {
+            model: user_model_1.default,
+            localField: "userId",
+            foreignField: "_id",
+            as: "profile",
+            filterKeys: ["gender", "role"],
+            searchFields: ["name", "email", "phone"],
+        },
+    ]);
+    const res2 = yield builder2
+        .searchPopulated() // Search populated models (includes documents)
+        .filter() // Filter main model
+        .filterPopulated() // Filter populated models (reuses same populated docs)
+        .sort()
+        .paginate()
+        .exec();
+    return { guides: res2.data, meta: res.meta };
 });
 const getGuide = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const guide = yield guide_model_1.Guide.findOne({ userId: id }).populate("userId", "-password");
@@ -133,10 +152,21 @@ const deleteGuide = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw error;
     }
 });
+const getActiveTours = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield booking_model_1.Booking.find({
+        user: id,
+    }).populate({
+        path: "trip",
+        populate: {
+            path: "tourId",
+        },
+    });
+});
 exports.GuideService = {
     getGuides,
     getGuide,
     createGuide,
     updateGuide,
     deleteGuide,
+    getActiveTours,
 };

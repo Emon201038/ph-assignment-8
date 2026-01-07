@@ -9,16 +9,15 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { use, useState, useTransition } from "react";
-import countries from "@/data/iso/countries.json";
-import { SearchableSelect } from "@/components/ui/searchable-select";
+import { useState, useTransition } from "react";
 import { TOUR_CATEGORIES } from "@/constants/user";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 const TourFilterSection = () => {
   const [priceRange, setPriceRange] = useState([0, 200]);
-  const [location, setLocation] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
   const [category, setCategory] = useState("");
 
   const searchParams = useSearchParams();
@@ -28,10 +27,15 @@ const TourFilterSection = () => {
   const handleApplyFilter = () => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (location) {
-      params.set("country", location);
+    if (country) {
+      params.set("country", country);
     } else {
       params.delete("country");
+    }
+    if (city) {
+      params.set("city", city);
+    } else {
+      params.delete("city");
     }
 
     if (category) {
@@ -40,7 +44,6 @@ const TourFilterSection = () => {
       params.delete("category");
     }
 
-    params.delete("city");
     startTransition(() => {
       router.push(`?${params.toString()}`);
     });
@@ -48,11 +51,12 @@ const TourFilterSection = () => {
 
   const removeFilter = () => {
     const params = new URLSearchParams(searchParams.toString());
-    setLocation("");
+    setCountry("");
+    setCity("");
     setCategory("");
-    params.delete("location");
-    params.delete("category");
+    params.delete("country");
     params.delete("city");
+    params.delete("category");
     startTransition(() => {
       router.push(`?${params.toString()}`);
     });
@@ -66,13 +70,27 @@ const TourFilterSection = () => {
         </p>
       </div>
 
-      <div className="space-y-2">
-        <Label>Location</Label>
-        <SearchableSelect
-          options={countries.map((c) => ({ label: c.name, value: c.name }))}
-          value={location}
-          onValueChange={(e) => setLocation(e)}
-        />
+      <div className="flex items-center gap-1">
+        <div className="space-y-2">
+          <Label htmlFor="country">Country</Label>
+          <Input
+            name="country"
+            id="country"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            placeholder="Country (exact match)"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="city">City</Label>
+          <Input
+            name="city"
+            id="city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="City (exact match)"
+          />
+        </div>
       </div>
 
       {/* <div className="space-y-3">

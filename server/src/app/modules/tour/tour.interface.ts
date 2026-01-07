@@ -8,8 +8,6 @@ export interface ITour extends Document {
   country: string;
 
   price: number; // per tour
-  duration: string; // e.g. "3 hours", "1 day"
-
   itinerary: {
     step: number;
     title: string;

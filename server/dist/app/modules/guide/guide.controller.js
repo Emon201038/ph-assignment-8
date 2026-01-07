@@ -31,6 +31,14 @@ const getGuide = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void
         data: yield guide_service_1.GuideService.getGuide(req.params.id),
     });
 }));
+const getGuideTours = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "Guide tours fetched successfully",
+        statusCode: 200,
+        success: true,
+        data: yield guide_service_1.GuideService.getActiveTours(req.params.id),
+    });
+}));
 const createGuide = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     (0, sendResponse_1.sendResponse)(res, {
         message: "Guide created successfully",
@@ -58,6 +66,7 @@ const deleteGuide = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(v
 exports.GuideController = {
     getGuides,
     getGuide,
+    getGuideTours,
     createGuide,
     updateGuide,
     deleteGuide,

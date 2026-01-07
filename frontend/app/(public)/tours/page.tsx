@@ -3,8 +3,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import {
   Sheet,
   SheetContent,
@@ -13,10 +11,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MapPin, Star, Clock, SlidersHorizontal } from "lucide-react";
-import { mockTours } from "@/lib/mock-data";
 import TourFilterSection from "@/components/module/tour/TourFilterSection";
 import { getTours } from "@/action/tour";
 import { queryStringFormatter } from "@/lib/formatters";
+import TourSorting from "@/components/module/tour/TourSorting";
+import { Input } from "@/components/ui/input";
+import SearchTour from "@/components/module/tour/SearchTour";
 
 const ToursPage = async ({
   searchParams,
@@ -24,15 +24,22 @@ const ToursPage = async ({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
   const searchParamsObj = await searchParams;
+  if (!searchParamsObj.sortBy && !searchParamsObj.sortOrder) {
+    searchParamsObj.sortBy = "averageRating";
+    searchParamsObj.sortOrder = "desc";
+  }
   const queryString = queryStringFormatter(searchParamsObj);
   const tours = await getTours(queryString);
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Explore Tours</h1>
-        <p className="text-muted-foreground">
-          Find your perfect adventure from our curated collection
-        </p>
+      <div className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-4xl font-bold mb-2">Explore Tours</h1>
+          <p className="text-muted-foreground">
+            Find your perfect adventure from our curated collection
+          </p>
+        </div>
+        <SearchTour />
       </div>
 
       <div className="flex gap-8">
@@ -49,42 +56,39 @@ const ToursPage = async ({
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-6">
-            {/* Mobile Filter Sheet Trigger */}
-            <Sheet modal={false}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="lg:hidden bg-transparent"
+          <div className="flex justify-between w-full items-center gap-3 mb-6">
+            <div className="flex gap-2 items-center">
+              {/* Mobile Filter Sheet Trigger */}
+              <Sheet modal={false}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="lg:hidden bg-transparent"
+                  >
+                    <SlidersHorizontal className="h-4 w-4 mr-2" />
+                    Filters
+                  </Button>
+                </SheetTrigger>
+                <SheetContent
+                  side="left"
+                  className="w-75 sm:w-100 overflow-y-auto p-4"
                 >
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  Filters
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                side="left"
-                className="w-75 sm:w-100 overflow-y-auto p-4"
-              >
-                <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6">
-                  <TourFilterSection />
-                </div>
-              </SheetContent>
-            </Sheet>
+                  <SheetHeader className="sr-only">
+                    <SheetTitle>Filters</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6">
+                    <TourFilterSection />
+                  </div>
+                </SheetContent>
+              </Sheet>
 
-            <p className="text-sm text-muted-foreground">
-              {tours?.data.length} tours found
-            </p>
+              <p className="text-sm text-muted-foreground">
+                {tours?.data.length} tours found
+              </p>
+            </div>
 
-            <select className="ml-auto p-2 border border-input rounded-md bg-background text-sm">
-              <option>Most Popular</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
-              <option>Rating</option>
-            </select>
+            <TourSorting />
           </div>
 
           {/* Tour Cards Grid */}
@@ -109,6 +113,9 @@ const ToursPage = async ({
                   <Badge className="absolute top-3 right-3 bg-white text-foreground font-semibold">
                     ${tour.price}
                   </Badge>
+                  <Badge className="absolute top-3 left-3 bg-white text-foreground font-semibold capitalize">
+                    {tour.category}
+                  </Badge>
                 </div>
                 <CardContent className="p-5">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
@@ -130,10 +137,6 @@ const ToursPage = async ({
                       <span className="text-sm text-muted-foreground">
                         ({tour.totalReviews})
                       </span>
-                    </div>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Clock className="h-4 w-4" />
-                      {tour.duration}
                     </div>
                   </div>
                   <Button className="w-full" asChild>

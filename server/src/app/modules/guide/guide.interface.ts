@@ -32,6 +32,10 @@ export interface IGuide extends Document {
     country: string; // ISO-3166
   };
 
+  // Reviews
+  totalReviews: number;
+  averageRating: number;
+
   // System
   languages: string[];
   createdAt: Date;

@@ -76,26 +76,35 @@ const createTrip = async (data: Partial<ITrip>) => {
   session.startTransaction();
 
   try {
-    const { guideId, startDate, endDate } = data;
+    const { guideId, startDate, duration } = data;
 
-    if (!guideId || !startDate || !endDate) {
-      throw new AppError(400, "Guide, start date and end date are required");
+    if (!guideId || !startDate || !duration) {
+      throw new AppError(400, "Guide, start date and duration are required");
     }
 
-    /* 1️⃣ Check guide exists */
+    /* 1️⃣ Validate duration */
+    if (duration < 180 || duration > 10080) {
+      throw new AppError(400, "Duration must be between 3 hours and 7 days");
+    }
+
+    /* 2️⃣ Check guide exists */
     const guide = await Guide.findOne({ userId: guideId }).session(session);
     if (!guide) {
       throw new AppError(404, "Guide not found");
     }
 
-    /* 2️⃣ Calculate buffer-aware range */
+    /* 3️⃣ Parse startDate */
     const parsedStartDate = new Date(String(startDate));
-    const parsedEndDate = new Date(String(endDate));
-
-    if (isNaN(parsedStartDate.getTime()) || isNaN(parsedEndDate.getTime())) {
-      throw new AppError(400, "Invalid startDate or endDate");
+    if (isNaN(parsedStartDate.getTime())) {
+      throw new AppError(400, "Invalid startDate");
     }
 
+    /* 4️⃣ Derive endDate from duration */
+    const derivedEndDate = new Date(
+      parsedStartDate.getTime() + duration * 60 * 1000
+    );
+
+    /* 5️⃣ Apply guide buffer days */
     const bufferDays =
       Number.isFinite(guide.bufferDays) && guide.bufferDays > 0
         ? guide.bufferDays
@@ -104,15 +113,22 @@ const createTrip = async (data: Partial<ITrip>) => {
     const bufferedStart = new Date(parsedStartDate);
     bufferedStart.setDate(bufferedStart.getDate() - bufferDays);
 
-    const bufferedEnd = new Date(parsedEndDate);
+    const bufferedEnd = new Date(derivedEndDate);
     bufferedEnd.setDate(bufferedEnd.getDate() + bufferDays);
 
-    /* 3️⃣ Check overlapping trips */
+    /* 6️⃣ Check overlapping trips */
     const conflictingTrip = await Trip.findOne({
       guideId,
-      status: { $in: [TripStatus.OPEN, TripStatus.ONGOING] },
+      status: { $in: [TripStatus.UPCOMING, TripStatus.ONGOING] },
       startDate: { $lte: bufferedEnd },
-      endDate: { $gte: bufferedStart },
+      $expr: {
+        $gte: [
+          {
+            $add: ["$startDate", { $multiply: ["$duration", 60000] }],
+          },
+          bufferedStart,
+        ],
+      },
     }).session(session);
 
     if (conflictingTrip) {
@@ -122,7 +138,7 @@ const createTrip = async (data: Partial<ITrip>) => {
       );
     }
 
-    /* 4️⃣ Check guide schedule (manual unavailability) */
+    /* 7️⃣ Check guide manual unavailability */
     const guideSchedule = await GuideSchedule.findOne({ guideId }).session(
       session
     );
@@ -137,18 +153,18 @@ const createTrip = async (data: Partial<ITrip>) => {
       }
     }
 
-    /* 5️⃣ Create Trip */
+    /* 8️⃣ Create trip */
     const trip = await Trip.create(
       [
         {
           status: TripStatus.UPCOMING,
-          ...data,
+          ...data, // contains startDate & duration
         },
       ],
       { session }
     );
 
-    /* 6️⃣ Lock guide schedule */
+    /* 9️⃣ Lock guide schedule */
     await GuideSchedule.findOneAndUpdate(
       { guideId },
       {

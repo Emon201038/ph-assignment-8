@@ -92,8 +92,22 @@ const getAllUsers = async (query?: Record<string, string>) => {
 };
 
 const getUser = async (userId: string) => {
-  const user = await User.findById(userId).select("-password");
-  return user;
+  const mainProfile = await User.findById(userId).lean();
+  if (!mainProfile) {
+    throw new AppError(HTTP_STATUS.NOT_FOUND, "User not found.");
+  }
+  let user;
+  if (!user) {
+    user = await Guide.findOne({ userId }).lean();
+  }
+
+  if (!user) {
+    user = await Tourist.findOne({ userId }).lean();
+  }
+
+  const doc = { ...user, profile: mainProfile };
+
+  return doc;
 };
 
 export const createTourist = async (payload: any) => {

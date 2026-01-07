@@ -1,6 +1,8 @@
 "use server";
 
-import { Gender } from "@/interfaces/user.interface";
+import { IResponse } from "@/interfaces";
+import { IGuide } from "@/interfaces/guide.interface";
+import { Gender, ITourist, IUser } from "@/interfaces/user.interface";
 import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zod-validator";
 import z from "zod";
@@ -28,6 +30,11 @@ const createTouristSchema = z.object({
 export const getUsers = async (queryString?: string) => {
   const res = await serverFetch.get(`/users?${queryString}`);
   return await res.json();
+};
+export const getUserById = async (id: string) => {
+  const res = await serverFetch.get(`/users/${id}`);
+  const data: IResponse<IGuide<IUser> | ITourist<IUser>> = await res.json();
+  return data;
 };
 
 export const createTouristAction = async (

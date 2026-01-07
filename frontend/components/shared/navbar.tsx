@@ -9,17 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Menu } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { MapPin } from "lucide-react";
 import { auth } from "@/lib/session";
 import { logout } from "@/action";
 import { UserRole } from "@/interfaces/user.interface";
-import DashboardMobileNav from "../module/dashboard/DashboardMobileNav";
 import MobileNav from "./MobileNav";
 
 export async function Navbar({
@@ -80,13 +73,13 @@ export async function Navbar({
             Admin Dashboard
           </Link>
           <Link
-            href="/admin/dashboard/tours"
+            href="/admin/dashboard/tours-management"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Manage Listing
           </Link>
           <Link
-            href="/admin/dashboard/users"
+            href="/admin/dashboard/tourists-management"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Manage Users
@@ -174,7 +167,7 @@ export async function Navbar({
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/profile/${session?._id}`}>Profile</Link>
+                    <Link href={`/profile`}>Profile</Link>
                   </DropdownMenuItem>
                   {session?.role === UserRole.GUIDE && (
                     <DropdownMenuItem asChild>

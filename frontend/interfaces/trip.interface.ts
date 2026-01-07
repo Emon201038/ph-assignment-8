@@ -17,14 +17,14 @@ export interface IFinalItinerary {
   notes?: string;
 }
 
-export interface ITrip extends Document {
+export interface ITrip<T = string> {
   _id: string;
-  tourId: string;
+  tourId: T;
   guide: IUser<IGuide>;
   tour: ITour;
   guideId: string;
   startDate: Date;
-  endDate: Date;
+  duration: number;
   maxCapacity: number;
   bookedSeats: number;
   finalItinerary: IFinalItinerary[];

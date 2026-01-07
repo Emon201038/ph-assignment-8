@@ -14,7 +14,7 @@ exports.tripSchema = zod_1.default.object({
         .string("Guide is required")
         .regex(/^[0-9a-fA-F]{24}$/, "Invalid guide ID"),
     startDate: zod_1.default.coerce.date("Start date is required"),
-    endDate: zod_1.default.coerce.date("End date is required"),
+    duration: zod_1.default.coerce.number("Duration is required"),
     maxCapacity: zod_1.default.number("Max capacity is required"),
     finalItinerary: zod_1.default
         .array(zod_1.default

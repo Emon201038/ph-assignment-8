@@ -151,6 +151,7 @@ export const editTourist = async (
       .enum(Object.values(Gender), "Invalide gender")
       .default(Gender.MALE),
     address: z.string().optional() || "",
+    bio: z.string().optional() || "",
   });
 
   const payload = {

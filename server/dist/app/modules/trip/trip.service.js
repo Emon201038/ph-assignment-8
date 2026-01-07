@@ -72,39 +72,52 @@ const createTrip = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield mongoose_1.default.startSession();
     session.startTransaction();
     try {
-        const { guideId, startDate, endDate } = data;
-        if (!guideId || !startDate || !endDate) {
-            throw new appError_1.default(400, "Guide, start date and end date are required");
+        const { guideId, startDate, duration } = data;
+        if (!guideId || !startDate || !duration) {
+            throw new appError_1.default(400, "Guide, start date and duration are required");
         }
-        /* 1️⃣ Check guide exists */
+        /* 1️⃣ Validate duration */
+        if (duration < 180 || duration > 10080) {
+            throw new appError_1.default(400, "Duration must be between 3 hours and 7 days");
+        }
+        /* 2️⃣ Check guide exists */
         const guide = yield guide_model_1.Guide.findOne({ userId: guideId }).session(session);
         if (!guide) {
             throw new appError_1.default(404, "Guide not found");
         }
-        /* 2️⃣ Calculate buffer-aware range */
+        /* 3️⃣ Parse startDate */
         const parsedStartDate = new Date(String(startDate));
-        const parsedEndDate = new Date(String(endDate));
-        if (isNaN(parsedStartDate.getTime()) || isNaN(parsedEndDate.getTime())) {
-            throw new appError_1.default(400, "Invalid startDate or endDate");
+        if (isNaN(parsedStartDate.getTime())) {
+            throw new appError_1.default(400, "Invalid startDate");
         }
+        /* 4️⃣ Derive endDate from duration */
+        const derivedEndDate = new Date(parsedStartDate.getTime() + duration * 60 * 1000);
+        /* 5️⃣ Apply guide buffer days */
         const bufferDays = Number.isFinite(guide.bufferDays) && guide.bufferDays > 0
             ? guide.bufferDays
             : 0;
         const bufferedStart = new Date(parsedStartDate);
         bufferedStart.setDate(bufferedStart.getDate() - bufferDays);
-        const bufferedEnd = new Date(parsedEndDate);
+        const bufferedEnd = new Date(derivedEndDate);
         bufferedEnd.setDate(bufferedEnd.getDate() + bufferDays);
-        /* 3️⃣ Check overlapping trips */
+        /* 6️⃣ Check overlapping trips */
         const conflictingTrip = yield trip_model_1.Trip.findOne({
             guideId,
-            status: { $in: [trip_interface_1.TripStatus.OPEN, trip_interface_1.TripStatus.ONGOING] },
+            status: { $in: [trip_interface_1.TripStatus.UPCOMING, trip_interface_1.TripStatus.ONGOING] },
             startDate: { $lte: bufferedEnd },
-            endDate: { $gte: bufferedStart },
+            $expr: {
+                $gte: [
+                    {
+                        $add: ["$startDate", { $multiply: ["$duration", 60000] }],
+                    },
+                    bufferedStart,
+                ],
+            },
         }).session(session);
         if (conflictingTrip) {
             throw new appError_1.default(409, "Guide is already assigned to another trip in this date range");
         }
-        /* 4️⃣ Check guide schedule (manual unavailability) */
+        /* 7️⃣ Check guide manual unavailability */
         const guideSchedule = yield guide_model_1.GuideSchedule.findOne({ guideId }).session(session);
         if (guideSchedule) {
             const isUnavailable = guideSchedule.unavailableRanges.some((range) => {
@@ -114,11 +127,11 @@ const createTrip = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 throw new appError_1.default(409, "Guide is unavailable during this date range");
             }
         }
-        /* 5️⃣ Create Trip */
+        /* 8️⃣ Create trip */
         const trip = yield trip_model_1.Trip.create([
             Object.assign({ status: trip_interface_1.TripStatus.UPCOMING }, data),
         ], { session });
-        /* 6️⃣ Lock guide schedule */
+        /* 9️⃣ Lock guide schedule */
         yield guide_model_1.GuideSchedule.findOneAndUpdate({ guideId }, {
             $push: {
                 unavailableRanges: {

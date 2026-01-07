@@ -19,15 +19,9 @@ const NavigationTabs = () => {
   const routes = [
     {
       id: 1,
-      name: "Active Tours",
+      name: "Tours",
       href: basePath,
       current: pathname === basePath,
-    },
-    {
-      id: 2,
-      name: "Schedules",
-      href: `${basePath}/schedules`,
-      current: pathname === `${basePath}/schedules`,
     },
     {
       id: 3,

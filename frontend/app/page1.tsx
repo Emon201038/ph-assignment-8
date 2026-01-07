@@ -33,7 +33,7 @@ export default async function HomePage() {
       <FeaturedCities />
 
       {/* Featured Tours */}
-      <FeaturedTours />
+      {/* <FeaturedTours /> */}
 
       {/* Categories */}
       <section className="py-16 bg-muted/30">

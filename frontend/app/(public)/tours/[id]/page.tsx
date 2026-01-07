@@ -35,7 +35,7 @@ export default async function TourDetailPage({
   return (
     <>
       {/* Tour Banner */}
-      <div className="relative h-[400px] rounded-xl overflow-hidden mb-8">
+      <div className="relative h-100 rounded-xl overflow-hidden mb-8">
         <Image
           src={tour?.data?.images[0] || "/placeholder.svg"}
           alt={tour?.data?.title}
@@ -43,9 +43,9 @@ export default async function TourDetailPage({
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
         <div className="absolute bottom-0 left-0 p-8 text-white">
-          <Badge className="mb-3 bg-white text-foreground">
+          <Badge className="mb-3 bg-white text-foreground capitalize">
             {tour?.data?.category}
           </Badge>
           <h1 className="text-4xl font-bold mb-2 text-balance">
@@ -70,32 +70,14 @@ export default async function TourDetailPage({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-3 space-y-8">
           {/* Description */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="">
               <h2 className="text-2xl font-bold mb-4">About This Tour</h2>
-              <p className="text-muted-foreground leading-relaxed mb-6">
+              <p className="text-muted-foreground leading-relaxed">
                 {tour?.data?.description}
               </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Group Size</p>
-                    <p className="font-semibold">Max 8 people</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      Availability
-                    </p>
-                    <p className="font-semibold">Daily</p>
-                  </div>
-                </div>
-              </div>
             </CardContent>
           </Card>
 
@@ -130,7 +112,7 @@ export default async function TourDetailPage({
           <Card>
             <CardContent className="p-6">
               <h2 className="text-2xl font-bold mb-4">{"What's Included"}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {[
                   "Professional guide",
                   "All entrance fees",

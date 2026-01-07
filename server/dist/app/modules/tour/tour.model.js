@@ -18,7 +18,6 @@ const tourSchema = new mongoose_1.Schema({
     city: { type: String, required: [true, "City is required"] },
     country: { type: String, required: [true, "Country is required"] },
     price: { type: Number, required: [true, "Price is required"] },
-    duration: { type: String, required: [true, "Duration is required"] },
     itinerary: [itinerarySchema],
     images: [{ type: String }],
     language: { type: String },

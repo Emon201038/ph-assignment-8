@@ -2,9 +2,10 @@
 
 import { IResponse } from "@/interfaces";
 import { ITour } from "@/interfaces/tour.interface";
+import { ITrip } from "@/interfaces/trip.interface";
 import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zod-validator";
-import { is } from "date-fns/locale";
+import { id, is } from "date-fns/locale";
 import z from "zod";
 
 const tourSchema = {
@@ -13,29 +14,30 @@ const tourSchema = {
     .string("description is required")
     .min(3, "description should minimum 3 charecters"),
   category: z.string("category is required"),
-  city: z.string("city is required"),
-  country: z.string("country is required"),
+  city: z.string("city is required").min(1, "City is required"),
+  country: z.string("country is required").min(1, "Country is required"),
   price: z.string("price is required").min(0),
-  duration: z.string("duration is required").min(2),
   language: z
     .string("language is required")
     .min(1, "At least one language is required"),
+  isActive: z.any().transform((z) => z === "on"),
+  isFeatured: z.any().transform((z) => z === "on"),
 };
 
 export const createTour = async (prevState: unknown, formData: FormData) => {
+  const payload = {
+    title: formData.get("title"),
+    images: formData.get("images"),
+    description: formData.get("description"),
+    category: formData.get("category"),
+    city: formData.get("city"),
+    country: formData.get("country"),
+    price: formData.get("price"),
+    language: formData.get("language"),
+    isActive: formData.get("isActive"),
+    isFeatured: formData.get("isFeatured"),
+  };
   try {
-    const payload = {
-      title: formData.get("title"),
-      images: formData.get("images"),
-      description: formData.get("description"),
-      category: formData.get("category"),
-      city: formData.get("city"),
-      country: formData.get("country"),
-      price: formData.get("price"),
-      duration: formData.get("duration"),
-      language: formData.get("language"),
-    };
-
     const validationResult = zodValidator(
       payload,
       z.object({ ...tourSchema, images: z.file("image is required") })
@@ -69,7 +71,6 @@ export const createTour = async (prevState: unknown, formData: FormData) => {
     modifiedFormData.append("city", payload.city as string);
     modifiedFormData.append("country", payload.country as string);
     modifiedFormData.append("price", payload.price as string);
-    modifiedFormData.append("duration", payload.duration as string);
     modifiedFormData.append("language", payload.language as string);
 
     const res = await serverFetch.post("/tours", {
@@ -81,7 +82,7 @@ export const createTour = async (prevState: unknown, formData: FormData) => {
     return {
       success: false,
       message: error?.message || "Failed to create tour",
-      formData: null,
+      formData: payload,
       errors: [],
     };
   }
@@ -97,7 +98,6 @@ export const updateTour = async (prevState: unknown, formData: FormData) => {
       city: formData.get("city"),
       country: formData.get("country"),
       price: formData.get("price"),
-      duration: formData.get("duration"),
       language: formData.get("language"),
       isActive: formData.get("isActive"),
       isFeatured: formData.get("isFeatured"),
@@ -148,9 +148,29 @@ export const updateTour = async (prevState: unknown, formData: FormData) => {
     };
   }
 };
-
+export const getTours = async (queryString?: string) => {
+  try {
+    const res = await serverFetch.get(`/tours?${queryString}`);
+    const data: IResponse<ITour[]> = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
 export const getSingleTour = async (id: string) => {
-  const res = await serverFetch.get(`/tours/${id}`);
-  const data: IResponse<ITour> = await res.json();
+  try {
+    const res = await serverFetch.get(`/tours/${id}`);
+    const data: IResponse<ITour> = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+export const getUserTours = async (id: string) => {
+  const res = await serverFetch.get(`/guides/tours/${id}`);
+  const data: IResponse<{ trip: ITrip<ITour>; _id: string }[]> =
+    await res.json();
   return data;
 };

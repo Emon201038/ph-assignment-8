@@ -89,8 +89,10 @@ const handleStripeWebhook = (req, res) => __awaiter(void 0, void 0, void 0, func
     let event;
     try {
         event = stripe.webhooks.constructEvent(req.body, signature, env_1.envVars.STRIPE_WEBHOOK_SECRET);
+        console.log(event, "stripe event");
     }
     catch (err) {
+        console.log("webhook error:", err);
         return res.status(400).send("Webhook signature verification failed");
     }
     // ✅ Payment success
@@ -110,6 +112,7 @@ const handleStripeWebhook = (req, res) => __awaiter(void 0, void 0, void 0, func
             yield mongoSession.commitTransaction();
         }
         catch (error) {
+            console.log(error, "update error");
             yield mongoSession.abortTransaction();
             throw error;
         }

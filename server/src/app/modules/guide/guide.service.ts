@@ -6,12 +6,13 @@ import mongoose from "mongoose";
 import AppError from "../../helpers/appError";
 import { Guide } from "./guide.model";
 import { HTTP_STATUS } from "../../utils/httpStatus";
+import { IGuide } from "./guide.interface";
+import { DynamicQueryBuilder } from "../../lib/queryBuilderByPipline";
+import { Booking } from "../booking/booking.model";
 
 const getGuides = async (queryString?: Record<string, string>) => {
-  const builder = new QueryBuilder<IUser>(User, {
+  const builder = new QueryBuilder<IGuide>(Guide, {
     ...queryString,
-    isDeleted: "false",
-    role: "GUIDE",
   });
   const res = await builder
     .filter()
@@ -20,7 +21,31 @@ const getGuides = async (queryString?: Record<string, string>) => {
     .select(["-password"])
     .execWithMeta();
 
-  return { guides: res.data, meta: res.meta };
+  const builder2 = new DynamicQueryBuilder<IGuide>(
+    Guide,
+    {
+      ...queryString,
+    },
+    [
+      {
+        model: User,
+        localField: "userId",
+        foreignField: "_id",
+        as: "profile",
+        filterKeys: ["gender", "role"],
+        searchFields: ["name", "email", "phone"],
+      },
+    ]
+  );
+  const res2 = await builder2
+    .searchPopulated() // Search populated models (includes documents)
+    .filter() // Filter main model
+    .filterPopulated() // Filter populated models (reuses same populated docs)
+    .sort()
+    .paginate()
+    .exec();
+
+  return { guides: res2.data, meta: res.meta };
 };
 
 const getGuide = async (id: string) => {
@@ -167,10 +192,22 @@ const deleteGuide = async (id: string) => {
   }
 };
 
+const getActiveTours = async (id: string) => {
+  return await Booking.find({
+    user: id,
+  }).populate({
+    path: "trip",
+    populate: {
+      path: "tourId",
+    },
+  });
+};
+
 export const GuideService = {
   getGuides,
   getGuide,
   createGuide,
   updateGuide,
   deleteGuide,
+  getActiveTours,
 };

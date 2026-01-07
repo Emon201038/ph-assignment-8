@@ -25,7 +25,6 @@ const tourSchema = new Schema<ITour>(
     country: { type: String, required: [true, "Country is required"] },
 
     price: { type: Number, required: [true, "Price is required"] },
-    duration: { type: String, required: [true, "Duration is required"] },
     itinerary: [itinerarySchema],
     images: [{ type: String }],
     language: { type: String },

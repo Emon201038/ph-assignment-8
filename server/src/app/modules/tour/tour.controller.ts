@@ -25,12 +25,10 @@ export const TourController = {
     });
   }),
 
-  getAllTours: catchAsync(async (req, res) => {
+  getAllTours: catchAsync(async (req, res, next) => {
     const result = await TourService.getAllTours(
       req.query as Record<string, string>
     );
-
-    console.log(result);
 
     sendResponse(res, {
       success: true,

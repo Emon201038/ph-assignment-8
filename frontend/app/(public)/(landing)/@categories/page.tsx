@@ -1,4 +1,4 @@
-import { Camera, Globe, Landmark, UtensilsCrossed } from "lucide-react";
+import { Camera, Globe, Landmark, Trees, UtensilsCrossed } from "lucide-react";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
@@ -8,8 +8,8 @@ const CategoriesPage = () => {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {[
         {
-          name: "Food & Wine",
-          icon: UtensilsCrossed,
+          name: "Nature",
+          icon: Trees,
           color: "bg-accent/10 text-accent",
         },
         {
@@ -23,7 +23,7 @@ const CategoriesPage = () => {
           color: "bg-secondary/20 text-secondary-foreground",
         },
         {
-          name: "Culture",
+          name: "Cultural",
           icon: Globe,
           color: "bg-muted text-muted-foreground",
         },

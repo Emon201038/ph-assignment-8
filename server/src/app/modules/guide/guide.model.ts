@@ -62,6 +62,14 @@ const guideSchema = new Schema<IGuide>(
       type: Boolean,
       default: false,
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    totalReviews: {
+      type: Number,
+      default: 0,
+    },
     deletedAt: Date,
   },
   { timestamps: true }

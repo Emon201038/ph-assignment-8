@@ -8,8 +8,8 @@ export const tripSchema = z.object({
   guideId: z
     .string("Guide is required")
     .regex(/^[0-9a-fA-F]{24}$/, "Invalid guide ID"),
-  startDate: z.coerce.date("Start date is required"),
-  endDate: z.coerce.date("End date is required"),
+  startDate: z.coerce.date<Date>("Start date is required"),
+  duration: z.coerce.number<number>("Duration is required"),
   maxCapacity: z.number("Max capacity is required"),
   finalItinerary: z
     .array(

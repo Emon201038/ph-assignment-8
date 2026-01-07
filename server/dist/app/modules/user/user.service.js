@@ -105,8 +105,19 @@ const getAllUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
     return { users: res.data, meta: res.meta };
 });
 const getUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.default.findById(userId).select("-password");
-    return user;
+    const mainProfile = yield user_model_1.default.findById(userId).lean();
+    if (!mainProfile) {
+        throw new appError_1.default(httpStatus_1.HTTP_STATUS.NOT_FOUND, "User not found.");
+    }
+    let user;
+    if (!user) {
+        user = yield guide_model_1.Guide.findOne({ userId }).lean();
+    }
+    if (!user) {
+        user = yield tourist_model_1.Tourist.findOne({ userId }).lean();
+    }
+    const doc = Object.assign(Object.assign({}, user), { profile: mainProfile });
+    return doc;
 });
 const createTourist = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield mongoose_1.default.startSession();

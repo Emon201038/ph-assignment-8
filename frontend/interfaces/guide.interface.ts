@@ -1,6 +1,6 @@
 import { IUser } from "./user.interface";
 
-export interface IGuide {
+export interface IGuide<T = null> {
   _id: string;
 
   // Professional profile
@@ -31,9 +31,12 @@ export interface IGuide {
     country: string; // ISO-3166
   };
 
-  rating: number;
+  averageRating: number;
   totalTrips: number;
+  totalReviews: number;
   totalEarnings: number;
+
+  profile: T;
 
   // System
   createdAt: Date;

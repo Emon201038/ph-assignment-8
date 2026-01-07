@@ -5,6 +5,7 @@ import { Button } from "../../ui/button";
 import Link from "next/link";
 import { Badge } from "../../ui/badge";
 import Image from "next/image";
+import HeroSectionSearch from "./HeroSectionSearch";
 
 const HeroSection = () => {
   return (
@@ -37,18 +38,7 @@ const HeroSection = () => {
             adventures guided by passionate locals who know their cities best.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                placeholder="Where do you want to go?"
-                className="pl-10 h-12 text-base text-primary-foreground placeholder:text-primary-foreground/50"
-              />
-            </div>
-            <Button size="lg" className="h-12 px-8" asChild>
-              <Link href="/explore">Explore Tours</Link>
-            </Button>
-          </div>
+          <HeroSectionSearch />
         </div>
       </div>
     </section>

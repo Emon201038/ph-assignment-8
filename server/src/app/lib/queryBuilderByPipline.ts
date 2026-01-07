@@ -15,6 +15,7 @@ export interface PopulatedModelConfig {
   localField: string;
   foreignField?: string;
   filterKeys: string[]; // query keys that belong to this populated model
+  searchFields?: string[]; // fields to search in this populated model
   as?: string; // optional output array name
 }
 
@@ -25,10 +26,11 @@ export class DynamicQueryBuilder<T extends Document> {
   private page: number;
   private limit: number;
   private sortBy: string;
-  private sortOrder: 1 | -1;
+  private sortOrder: "asc" | "desc" | 1 | -1;
   private filters: Record<string, any>;
 
   private populatedConfigs: PopulatedModelConfig[];
+  private populatedModels: Set<string>; // Track which models have been populated
 
   constructor(
     model: Model<T>,
@@ -38,6 +40,7 @@ export class DynamicQueryBuilder<T extends Document> {
     this.model = model;
     this.query = query;
     this.pipeline = [];
+    this.populatedModels = new Set();
 
     this.page = Number(query.page || 1);
     this.limit = Number(query.limit || 10);
@@ -48,6 +51,35 @@ export class DynamicQueryBuilder<T extends Document> {
     this.filters = rest;
 
     this.populatedConfigs = populatedConfigs;
+  }
+
+  /** Helper method to perform lookup and unwind for a populated model */
+  private populateModel(cfg: PopulatedModelConfig): void {
+    const { model, localField, foreignField, as } = cfg;
+    const collectionName = as || model.collection.collectionName;
+
+    // Skip if already populated
+    if (this.populatedModels.has(collectionName)) return;
+
+    // $lookup
+    this.pipeline.push({
+      $lookup: {
+        from: model.collection.collectionName,
+        localField,
+        foreignField: foreignField || "_id",
+        as: collectionName,
+      },
+    });
+
+    // $unwind
+    this.pipeline.push({
+      $unwind: {
+        path: `$${collectionName}`,
+        preserveNullAndEmptyArrays: true,
+      },
+    });
+
+    this.populatedModels.add(collectionName);
   }
 
   /** Search in multiple fields */
@@ -61,6 +93,46 @@ export class DynamicQueryBuilder<T extends Document> {
         })),
       },
     });
+
+    return this;
+  }
+
+  /** Search in populated model fields */
+  searchPopulated(): this {
+    if (!this.query.searchTerm) return this;
+
+    const searchConditions: any[] = [];
+
+    this.populatedConfigs.forEach((cfg) => {
+      const { model, searchFields, as } = cfg;
+
+      // Skip if no search fields defined for this config
+      if (!searchFields || searchFields.length === 0) return;
+
+      const collectionName = as || model.collection.collectionName;
+
+      // Populate the model first
+      this.populateModel(cfg);
+
+      // Collect search conditions for this populated model
+      searchFields.forEach((field) => {
+        searchConditions.push({
+          [`${collectionName}.${field}`]: {
+            $regex: this.query.searchTerm,
+            $options: "i",
+          },
+        });
+      });
+    });
+
+    // Apply all search conditions with $or
+    if (searchConditions.length > 0) {
+      this.pipeline.push({
+        $match: {
+          $or: searchConditions,
+        },
+      });
+    }
 
     return this;
   }
@@ -86,26 +158,11 @@ export class DynamicQueryBuilder<T extends Document> {
   /** Apply filters for all populated models dynamically */
   filterPopulated(): this {
     this.populatedConfigs.forEach((cfg) => {
-      const { model, localField, foreignField, filterKeys, as } = cfg;
+      const { model, filterKeys, as } = cfg;
       const collectionName = as || model.collection.collectionName;
 
-      // $lookup
-      this.pipeline.push({
-        $lookup: {
-          from: model.collection.collectionName,
-          localField,
-          foreignField: foreignField || "_id",
-          as: collectionName,
-        },
-      });
-
-      // $unwind
-      this.pipeline.push({
-        $unwind: {
-          path: `$${collectionName}`,
-          preserveNullAndEmptyArrays: true,
-        },
-      });
+      // Populate the model first
+      this.populateModel(cfg);
 
       // Apply filters dynamically
       filterKeys.forEach((key) => {
@@ -124,7 +181,14 @@ export class DynamicQueryBuilder<T extends Document> {
   /** Sorting */
   sort(): this {
     this.pipeline.push({
-      $sort: { [this.sortBy]: this.sortOrder },
+      $sort: {
+        [this.sortBy]:
+          this.sortOrder === "asc"
+            ? 1
+            : this.sortOrder === "desc"
+            ? -1
+            : this.sortOrder,
+      },
     });
     return this;
   }

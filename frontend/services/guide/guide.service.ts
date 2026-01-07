@@ -9,7 +9,8 @@ import { login } from "../auth/auth.service";
 
 export const getGuides = async (queryString?: string) => {
   const res = await serverFetch.get(`/users?role=GUIDE&${queryString}`);
-  return await res.json();
+  const data: IResponse<IUser<IGuide>[]> = await res.json();
+  return data;
 };
 
 const guideSchema = z.object({
@@ -256,4 +257,9 @@ export const deleteGuide = async (
 export const getSingleGuide = async (guideId: string) => {
   const res = await serverFetch.get(`/guides/${guideId}`);
   return await res.json();
+};
+export const getFilteredGuide = async (queryString?: string) => {
+  const res = await serverFetch.get(`/guides?${queryString}`);
+  const data: IResponse<IGuide<IUser>[]> = await res.json();
+  return data;
 };

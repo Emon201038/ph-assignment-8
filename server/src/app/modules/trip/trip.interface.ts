@@ -20,7 +20,7 @@ export interface ITrip extends Document {
   tourId: Types.ObjectId;
   guideId: Types.ObjectId;
   startDate: Date;
-  endDate: Date;
+  duration: number;
   maxCapacity: number;
   bookedSeats: number;
   finalItinerary: IFinalItinerary[];

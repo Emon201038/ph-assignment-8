@@ -10,7 +10,7 @@ export enum Gender {
   OTHER = "OTHER",
 }
 
-export interface IUser<T> {
+export interface IUser<T = null> {
   _id: string;
   name: string;
   email: string;
@@ -33,12 +33,13 @@ export interface IUser<T> {
   isBlocked?: boolean;
 }
 
-export interface ITourist {
+export interface ITourist<T = null> {
   _id: string;
   user: IUser<ITourist>;
   interests: string[];
   preferredLanguage: string;
   preferredCurrency: string;
+  profile: T;
   totalTrips: number;
   totalSpent: number;
   wishlistTours: string[];

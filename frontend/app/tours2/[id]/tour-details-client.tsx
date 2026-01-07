@@ -230,7 +230,7 @@ export default function TourDetailsClient({ tour }: TourDetailsClientProps) {
                     <div>
                       <p className="text-sm text-muted-foreground">Languages</p>
                       <p className="font-semibold">
-                        {tour.language.join(", ")}
+                        {/* {tour.language.join(", ")} */}
                       </p>
                     </div>
                   </div>

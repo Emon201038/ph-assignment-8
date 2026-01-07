@@ -26,7 +26,6 @@ import {
   createTouristAction,
   editTourist,
 } from "@/services/tourist/tourist.service";
-import { createTourAction } from "@/action/tour";
 
 interface TouristFormProps {
   onClose?: (e: boolean) => void;
@@ -55,10 +54,11 @@ const TouristForm = ({
   const [gender, setGender] = useState<Gender>(tourist?.gender || Gender.MALE);
 
   const [state, createTourist, isLoading] = useActionState(
-    isEdit ? editTourist.bind(null, tourist._id) : createTourAction,
+    isEdit ? editTourist.bind(null, tourist.profile._id) : createTouristAction,
     null
   );
 
+  console.log(state);
   useEffect(() => {
     if (state?.success) {
       toast.success(state.message);
@@ -111,6 +111,21 @@ const TouristForm = ({
           />
         </FieldContent>
         <InputFieldError state={state as IInputErrorState} field="name" />
+      </Field>
+      <Field className="space-y-1 gap-px">
+        <FieldLabel htmlFor="bio">Bio</FieldLabel>
+        <FieldContent>
+          <Input
+            id="bio"
+            type="text"
+            placeholder="Write something about yourself"
+            name="bio"
+            defaultValue={
+              state?.formData?.bio || (isEdit ? tourist.bio : undefined)
+            }
+          />
+        </FieldContent>
+        <InputFieldError state={state as IInputErrorState} field="bio" />
       </Field>
       <div className="flex justify-between items-center gap-3">
         <Field className="space-y-1 gap-px">

@@ -105,10 +105,10 @@ export function SearchableSelect({
           <CommandList className="max-h-75 overflow-y-auto">
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
-              {options.map((guide) => (
+              {options.map((v, index) => (
                 <CommandItem
-                  key={guide.value}
-                  value={guide.value}
+                  key={index}
+                  value={v.value}
                   onSelect={(currentValue) => {
                     onValueChange?.(currentValue === value ? "" : currentValue);
                     setOpenPopover(false);
@@ -118,10 +118,10 @@ export function SearchableSelect({
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === guide.value ? "opacity-100" : "opacity-0"
+                      value === v.value ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {guide.label}
+                  {v.label}
                 </CommandItem>
               ))}
             </CommandGroup>

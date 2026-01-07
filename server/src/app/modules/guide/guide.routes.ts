@@ -16,6 +16,8 @@ guideRouter
     GuideController.createGuide
   );
 
+guideRouter.get("/tours/:id", GuideController.getGuideTours);
+
 guideRouter
   .route("/:id")
   .get(GuideController.getGuide)

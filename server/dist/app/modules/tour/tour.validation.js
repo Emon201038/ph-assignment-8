@@ -15,7 +15,6 @@ exports.TourValidation = {
         city: zod_1.z.string("city is required"),
         country: zod_1.z.string("country is required"),
         price: zod_1.z.string("price is required").min(0),
-        duration: zod_1.z.string("duration is required").min(2),
         itinerary: itinerarySchema.optional(),
         images: zod_1.z.array(zod_1.z.string()).optional(),
         language: zod_1.z
@@ -32,7 +31,6 @@ exports.TourValidation = {
             city: zod_1.z.string("city is required"),
             country: zod_1.z.string("country is required"),
             price: zod_1.z.string("price is required").min(0),
-            duration: zod_1.z.string("duration is required").min(2),
             itinerary: itinerarySchema.optional(),
             images: zod_1.z.array(zod_1.z.string()).optional(),
             language: zod_1.z

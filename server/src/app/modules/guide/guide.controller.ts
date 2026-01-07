@@ -24,6 +24,15 @@ const getGuide = catchAsync(async (req, res, next) => {
   });
 });
 
+const getGuideTours = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    message: "Guide tours fetched successfully",
+    statusCode: 200,
+    success: true,
+    data: await GuideService.getActiveTours(req.params.id),
+  });
+});
+
 const createGuide = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     message: "Guide created successfully",
@@ -54,6 +63,7 @@ const deleteGuide = catchAsync(async (req, res, next) => {
 export const GuideController = {
   getGuides,
   getGuide,
+  getGuideTours,
   createGuide,
   updateGuide,
   deleteGuide,

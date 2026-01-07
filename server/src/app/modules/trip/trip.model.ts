@@ -15,7 +15,7 @@ const TripSchema = new Schema<ITrip>(
     },
 
     startDate: { type: Date, required: [true, "Start date is required"] },
-    endDate: { type: Date, required: [true, "End date is required"] },
+    duration: { type: Number, required: [true, "Duration is required"] },
 
     maxCapacity: { type: Number, required: [true, "Max capacity is required"] },
     bookedSeats: { type: Number, default: 0 },

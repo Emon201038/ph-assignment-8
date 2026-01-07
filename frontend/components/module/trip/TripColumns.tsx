@@ -5,6 +5,7 @@ import { IColumn } from "@/components/shared/ManagementTable";
 import { Star } from "lucide-react";
 import { ITrip } from "@/interfaces/trip.interface";
 import { TourInfoCell } from "../tour/TourInfoCell";
+import { formatDuration } from "@/lib/formatters";
 
 export const tripsColumns: IColumn<ITrip>[] = [
   {
@@ -73,14 +74,10 @@ export const tripsColumns: IColumn<ITrip>[] = [
     ),
   },
   {
-    header: "End Date",
+    header: "Duration",
     accessor: (trip) => (
       <span className="text-sm capitalize">
-        {new Date(trip?.endDate?.toString()).toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "numeric",
-          year: "numeric",
-        }) || ""}
+        {formatDuration(trip.duration)}
       </span>
     ),
   },

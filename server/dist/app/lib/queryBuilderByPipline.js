@@ -26,6 +26,7 @@ class DynamicQueryBuilder {
         this.model = model;
         this.query = query;
         this.pipeline = [];
+        this.populatedModels = new Set();
         this.page = Number(query.page || 1);
         this.limit = Number(query.limit || 10);
         this.sortBy = query.sortBy || "createdAt";
@@ -33,6 +34,31 @@ class DynamicQueryBuilder {
         const { page, limit, sortBy, sortOrder, searchTerm } = query, rest = __rest(query, ["page", "limit", "sortBy", "sortOrder", "searchTerm"]);
         this.filters = rest;
         this.populatedConfigs = populatedConfigs;
+    }
+    /** Helper method to perform lookup and unwind for a populated model */
+    populateModel(cfg) {
+        const { model, localField, foreignField, as } = cfg;
+        const collectionName = as || model.collection.collectionName;
+        // Skip if already populated
+        if (this.populatedModels.has(collectionName))
+            return;
+        // $lookup
+        this.pipeline.push({
+            $lookup: {
+                from: model.collection.collectionName,
+                localField,
+                foreignField: foreignField || "_id",
+                as: collectionName,
+            },
+        });
+        // $unwind
+        this.pipeline.push({
+            $unwind: {
+                path: `$${collectionName}`,
+                preserveNullAndEmptyArrays: true,
+            },
+        });
+        this.populatedModels.add(collectionName);
     }
     /** Search in multiple fields */
     search(fields) {
@@ -45,6 +71,39 @@ class DynamicQueryBuilder {
                 })),
             },
         });
+        return this;
+    }
+    /** Search in populated model fields */
+    searchPopulated() {
+        if (!this.query.searchTerm)
+            return this;
+        const searchConditions = [];
+        this.populatedConfigs.forEach((cfg) => {
+            const { model, searchFields, as } = cfg;
+            // Skip if no search fields defined for this config
+            if (!searchFields || searchFields.length === 0)
+                return;
+            const collectionName = as || model.collection.collectionName;
+            // Populate the model first
+            this.populateModel(cfg);
+            // Collect search conditions for this populated model
+            searchFields.forEach((field) => {
+                searchConditions.push({
+                    [`${collectionName}.${field}`]: {
+                        $regex: this.query.searchTerm,
+                        $options: "i",
+                    },
+                });
+            });
+        });
+        // Apply all search conditions with $or
+        if (searchConditions.length > 0) {
+            this.pipeline.push({
+                $match: {
+                    $or: searchConditions,
+                },
+            });
+        }
         return this;
     }
     /** Apply filters for main model */
@@ -66,24 +125,10 @@ class DynamicQueryBuilder {
     /** Apply filters for all populated models dynamically */
     filterPopulated() {
         this.populatedConfigs.forEach((cfg) => {
-            const { model, localField, foreignField, filterKeys, as } = cfg;
+            const { model, filterKeys, as } = cfg;
             const collectionName = as || model.collection.collectionName;
-            // $lookup
-            this.pipeline.push({
-                $lookup: {
-                    from: model.collection.collectionName,
-                    localField,
-                    foreignField: foreignField || "_id",
-                    as: collectionName,
-                },
-            });
-            // $unwind
-            this.pipeline.push({
-                $unwind: {
-                    path: `$${collectionName}`,
-                    preserveNullAndEmptyArrays: true,
-                },
-            });
+            // Populate the model first
+            this.populateModel(cfg);
             // Apply filters dynamically
             filterKeys.forEach((key) => {
                 if (this.filters[key] !== undefined) {
@@ -99,7 +144,13 @@ class DynamicQueryBuilder {
     /** Sorting */
     sort() {
         this.pipeline.push({
-            $sort: { [this.sortBy]: this.sortOrder },
+            $sort: {
+                [this.sortBy]: this.sortOrder === "asc"
+                    ? 1
+                    : this.sortOrder === "desc"
+                        ? -1
+                        : this.sortOrder,
+            },
         });
         return this;
     }

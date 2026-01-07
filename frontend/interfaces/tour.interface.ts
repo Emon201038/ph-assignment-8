@@ -22,7 +22,7 @@ export interface ITour {
   meetingPoint: string;
   maxGroupSize: number;
 
-  language: string[];
+  language: string;
 
   guide: IUser<IGuide>; // reference to User (guide)
 

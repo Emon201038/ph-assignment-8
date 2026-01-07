@@ -94,7 +94,9 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
       signature,
       envVars.STRIPE_WEBHOOK_SECRET
     );
+    console.log(event, "stripe event");
   } catch (err) {
+    console.log("webhook error:", err);
     return res.status(400).send("Webhook signature verification failed");
   }
 
@@ -132,6 +134,7 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
 
       await mongoSession.commitTransaction();
     } catch (error) {
+      console.log(error, "update error");
       await mongoSession.abortTransaction();
       throw error;
     } finally {

@@ -20,6 +20,8 @@ import Image from "next/image";
 import { useActionState, useEffect, useRef, useState } from "react";
 import languages from "@/data/iso/languages.json";
 import { toast } from "sonner";
+import { ITour } from "@/interfaces/tour.interface";
+import { TOUR_CATEGORIES } from "@/constants/user";
 
 interface Country {
   id: number;
@@ -29,7 +31,7 @@ interface Country {
 }
 
 interface TourFormProps {
-  tourData?: any;
+  tourData?: ITour;
   onSuccess?: () => void;
   onClose?: () => void;
 }
@@ -38,20 +40,18 @@ const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
   const isEdit = !!tourData;
   const [category, setCategory] = useState(tourData?.category || "");
   const [tourImage, setTourImage] = useState<File | null>(null);
-  const [countries, setCountries] = useState<Country[]>(
-    tourData?.countries || []
-  );
+  const [countries, setCountries] = useState<Country[]>([]);
   const [cities, setCities] = useState<
     { name: string; country_name: string }[]
-  >(tourData?.cities || []);
-  const [selectedCity, setSelectedCity] = useState<string>(
-    tourData?.city || null
+  >([]);
+  const [selectedCity, setSelectedCity] = useState<string | null>(
+    tourData?.city || ""
   );
-  const [selectedCountry, setSelectedCountry] = useState<string>(
-    tourData?.country || null
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(
+    tourData?.country || ""
   );
-  const [selectedLanguage, setSelectedLanguage] = useState<string>(
-    tourData?.language || null
+  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
+    tourData?.language || ""
   );
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -72,21 +72,35 @@ const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
   }, []);
 
   useEffect(() => {
-    const fetchContries = async () => {
+    const fetchCities = async () => {
+      if (!selectedCountry || !countries.length) return;
+
       const countryId = countries.find(
         (country) => country.name === selectedCountry
       )?.id;
-      if (countryId) {
-        const res = await fetch(
-          `https://country-state-city-nine.vercel.app/api/v1/city/country/${countryId}`
-        );
-        const data = await res.json();
-        setCities(data?.data);
-      }
+
+      if (!countryId) return;
+
+      const res = await fetch(
+        `https://country-state-city-nine.vercel.app/api/v1/city/country/${countryId}`
+      );
+      const data = await res.json();
+
+      setCities(data?.data || []);
     };
 
-    fetchContries();
-  }, [selectedCountry]);
+    fetchCities();
+  }, [selectedCountry, countries]);
+
+  useEffect(() => {
+    if (!cities.length || !tourData?.city) return;
+
+    const cityExists = cities.some((city) => city.name === tourData.city);
+
+    if (cityExists) {
+      setSelectedCity(tourData.city);
+    }
+  }, [cities, tourData]);
 
   useEffect(() => {
     if (state?.success) {
@@ -118,9 +132,9 @@ const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
         <input type="hidden" name="tourId" value={tourData._id} />
       )}
       <input type="hidden" name="category" value={category} />
-      <input type="hidden" name="country" value={selectedCountry} />
-      <input type="hidden" name="city" value={selectedCity} />
-      <input type="hidden" name="language" value={selectedLanguage} />
+      {/* <input type="hidden" name="country" value={selectedCountry as string} /> */}
+      {/* <input type="hidden" name="city" value={selectedCity as string} /> */}
+      <input type="hidden" name="language" value={selectedLanguage as string} />
 
       {/* Basic Information */}
       <div className="space-y-4">
@@ -156,36 +170,27 @@ const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>
             <FieldLabel>Country *</FieldLabel>
-            <SearchableSelect
-              options={countries
-                .map((c) => ({
-                  value: c.name,
-                  label: c.emoji + " " + c.name,
-                }))
-                .sort((a, b) => a.value.localeCompare(b.value))}
-              value={selectedCountry as string}
-              onValueChange={(v) => {
-                setSelectedCountry(v);
-              }}
+            <Input
+              name="country"
+              placeholder="e.g. Japan"
+              defaultValue={
+                state?.formData?.country ||
+                (isEdit ? tourData.country : undefined)
+              }
             />
             <InputFieldError
               state={state as IInputErrorState}
-              field="category"
+              field="country"
             />
           </Field>
           <Field>
             <FieldLabel>City *</FieldLabel>
-            <SearchableSelect
-              options={cities
-                .map((c) => ({
-                  value: c.name,
-                  label: c.name,
-                }))
-                .sort((a, b) => a.value.localeCompare(b.value))}
-              value={selectedCity as string}
-              onValueChange={(v) => {
-                setSelectedCity(v);
-              }}
+            <Input
+              name="city"
+              placeholder="e.g. Tokyo"
+              defaultValue={
+                state?.formData?.city || (isEdit ? tourData.city : undefined)
+              }
             />
             <InputFieldError state={state as IInputErrorState} field="city" />
           </Field>
@@ -222,6 +227,11 @@ const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
+                {TOUR_CATEGORIES.map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
                 <SelectItem value="cultural">Cultural</SelectItem>
                 <SelectItem value="adventure">Adventure</SelectItem>
                 <SelectItem value="food">Food & Culinary</SelectItem>
@@ -252,7 +262,7 @@ const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
             <InputFieldError state={state as IInputErrorState} field="price" />
           </Field>
 
-          <Field>
+          {/* <Field>
             <FieldLabel>Duration *</FieldLabel>
             <Input
               name="duration"
@@ -266,7 +276,7 @@ const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
               state={state as IInputErrorState}
               field="duration"
             />
-          </Field>
+          </Field> */}
         </div>
       </div>
 

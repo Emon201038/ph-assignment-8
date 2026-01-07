@@ -12,20 +12,15 @@ export const TourValidation = {
   create: z.object({
     title: z.string("title is required").min(3),
     description: z.string("description is required").min(3),
-
     category: z.string("category is required"),
     city: z.string("city is required"),
     country: z.string("country is required"),
-
     price: z.string("price is required").min(0),
-    duration: z.string("duration is required").min(2),
-
     itinerary: itinerarySchema.optional(),
     images: z.array(z.string()).optional(),
     language: z
       .string("language is required")
       .min(1, "At least one language is required"),
-
     isActive: z.boolean().optional().default(true),
     isFeatured: z.boolean().optional().default(false),
   }),
@@ -40,7 +35,6 @@ export const TourValidation = {
       country: z.string("country is required"),
 
       price: z.string("price is required").min(0),
-      duration: z.string("duration is required").min(2),
 
       itinerary: itinerarySchema.optional(),
       images: z.array(z.string()).optional(),

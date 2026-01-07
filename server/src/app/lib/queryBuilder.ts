@@ -44,7 +44,7 @@ export class QueryBuilder<T extends Document> {
     excludedFields.forEach((field) => delete filters[field]);
 
     for (const key in filters) {
-      let value = filters[key].toLowerCase();
+      let value = filters[key];
 
       // Handle boolean strings
       if (value === "true" || value === "false") {
@@ -71,13 +71,14 @@ export class QueryBuilder<T extends Document> {
         // Use $in operator for array matching
         filters[key] = { $in: arrayValues };
       } else {
-        filters[key] = value.toLowerCase();
         filters[key] = value;
       }
     }
 
     this.filters = { ...this.filters, ...filters };
     this.mongooseQuery = this.model.find(this.filters);
+
+    console.log(this.filters, this.queryParams, filters);
     return this;
   }
 

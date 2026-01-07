@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TOUR_DURATIONS } from "@/constants/user";
 
 interface TripFormProps {
   trip?: ITrip;
@@ -30,6 +31,7 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
   const [selectedGuideId, setSelectedGuideId] = useState(
     trip?.guide?._id || ""
   );
+  const [duration, setDuration] = useState<number>();
   const [status, setStatus] = useState<TripStatus>(
     trip?.status || TripStatus.OPEN
   );
@@ -66,6 +68,7 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
       <input type="hidden" name="status" value={status} />
       <input type="hidden" name="tourId" value={selectedTourId} />
       <input type="hidden" name="guideId" value={selectedGuideId} />
+      <input type="hidden" name="duration" value={duration} />
       <Field>
         <FieldLabel htmlFor="tourId">Select Tour</FieldLabel>
         <FieldContent>
@@ -142,23 +145,28 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="endDate">End Date</FieldLabel>
+        <FieldLabel htmlFor="duration">Duration</FieldLabel>
         <FieldContent>
-          <Input
-            id="endDate"
-            name="endDate"
-            type="date"
-            min={new Date().toISOString().split("T")[0]}
-            defaultValue={
-              state?.formData?.endDate
-                ? (state?.formData?.endDate?.toString() as string)
-                : "".split("T")[0] ||
-                  (isEdit
-                    ? new Date(trip.endDate).toISOString().split("T")[0]
-                    : "")
-            }
-          />
-          <InputFieldError state={state as IInputErrorState} field="endDate" />
+          <Select
+            value={duration?.toString()}
+            onValueChange={(e) => setDuration(parseInt(e))}
+          >
+            <SelectTrigger id="duration" className="w-full">
+              <SelectValue placeholder="Select a duration" />
+            </SelectTrigger>
+            <SelectContent>
+              {TOUR_DURATIONS.map((duration) => (
+                <SelectItem
+                  key={duration.value}
+                  value={duration.value.toString()}
+                  // className="capitalize"
+                >
+                  {duration.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <InputFieldError state={state} field="duration" />
         </FieldContent>
       </Field>
 
@@ -170,7 +178,7 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
             name="maxCapacity"
             type="number"
             placeholder="e.g., 10"
-            // min="1"
+            min="1"
             // max="50"
             defaultValue={
               state?.formData?.maxCapacity

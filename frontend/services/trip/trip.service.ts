@@ -14,7 +14,11 @@ const tripSchema = z
       .string("Guide is required")
       .regex(/^[0-9a-fA-F]{24}$/, "Invalid guide ID"),
     startDate: z.coerce.date("Start date is required"),
-    endDate: z.coerce.date("End date is required"),
+    duration: z.coerce
+      .string("Duration is required")
+      .transform((d) => parseInt(d)),
+    // .min(180, "Duration should minimum 3 hours")
+    // .max(10080, "Duration should maximum 7 days"),
     maxCapacity: z
       .string("Max capacity is required")
       .min(1, "Max capacity is required")
@@ -31,17 +35,23 @@ const tripSchema = z
       }),
     status: z.enum(Object.values(TripStatus)).default(TripStatus.OPEN),
   })
-  .refine((data) => data.endDate >= data.startDate, {
-    message: "End date cannot be earlier than start date",
-    path: ["endDate"],
-  });
+  .refine(
+    (data) => {
+      console.log(data);
+      return data.duration >= 180 && data.duration <= 10080;
+    },
+    {
+      message: "Duration must be between 3 hours and 7 days",
+      path: ["duration"],
+    }
+  );
 
 export const createTrip = async (prevState: unknown, formData: FormData) => {
   const payload = {
     tourId: formData.get("tourId"),
     guideId: formData.get("guideId"),
     startDate: formData.get("startDate"),
-    endDate: formData.get("endDate"),
+    duration: formData.get("duration"),
     maxCapacity: formData.get("maxCapacity"),
   };
   try {
@@ -96,7 +106,7 @@ export const updateTrip = async (prevState: unknown, formData: FormData) => {
     tourId: formData.get("tourId"),
     guideId: formData.get("guideId"),
     startDate: formData.get("startDate"),
-    endDate: formData.get("endDate"),
+    duration: formData.get("duration"),
     maxCapacity: formData.get("maxCapacity"),
     status: formData.get("status"),
   };
@@ -128,9 +138,6 @@ export const updateTrip = async (prevState: unknown, formData: FormData) => {
     });
 
     const data = await res.json();
-
-    console.log(data);
-
     if (!data?.success) {
       return {
         success: false,
@@ -172,7 +179,6 @@ export const getSingleTripDetails = async (tripId: string) => {
 
 export const bookTrip = async (payload: { tripId: string; seats: number }) => {
   try {
-    console.log(payload);
     const validationResult = zodValidator(
       payload,
       z.object({

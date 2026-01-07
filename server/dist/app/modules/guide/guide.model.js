@@ -51,6 +51,14 @@ const guideSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+    averageRating: {
+        type: Number,
+        default: 0,
+    },
+    totalReviews: {
+        type: Number,
+        default: 0,
+    },
     deletedAt: Date,
 }, { timestamps: true });
 exports.Guide = (0, mongoose_1.model)("Guide", guideSchema);
