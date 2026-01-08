@@ -9,6 +9,9 @@ import TableSkeleton from "@/components/shared/TableSkeleton";
 import { ITour } from "@/interfaces/tour.interface";
 import { queryStringFormatter } from "@/lib/formatters";
 import React, { Suspense } from "react";
+import languages from "@/data/iso/languages.json";
+import { TOUR_CATEGORIES } from "@/constants/user";
+import TourFilter from "@/components/module/tour/TourFilter";
 
 const page = async ({
   searchParams,
@@ -21,14 +24,7 @@ const page = async ({
   return (
     <div className="space-y-4 p-6">
       <TourManagementHeader />
-      <div className="flex gap-2">
-        <SearchFilter />
-        <SelectFilter
-          options={[{ label: "Booked", value: "BOOKED" }]}
-          paramsName="status"
-        />
-        <RefreshButton />
-      </div>
+      <TourFilter />
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
         <ToursTable tours={data?.data as ITour[]} />
         <TablePagination

@@ -11,6 +11,7 @@ import {
   Calendar,
   CheckCircle,
   CalendarDays,
+  Languages,
 } from "lucide-react";
 import { mockTours, mockGuides, mockTrips } from "@/lib/mock-data";
 import { notFound } from "next/navigation";
@@ -61,8 +62,8 @@ export default async function TourDetailPage({
               {tour?.data?.averageRating} ({tour?.data?.totalReviews} reviews)
             </div>
             <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              {tour?.data?.duration}
+              <Languages className="h-4 w-4" />
+              {tour?.data?.language}
             </div>
           </div>
         </div>

@@ -2,13 +2,14 @@ import { Request } from "express";
 import { QueryBuilder } from "../../lib/queryBuilder";
 import { IUser, UserRole } from "../user/user.interface";
 import User from "../user/user.model";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import AppError from "../../helpers/appError";
 import { Guide } from "./guide.model";
 import { HTTP_STATUS } from "../../utils/httpStatus";
 import { IGuide } from "./guide.interface";
 import { DynamicQueryBuilder } from "../../lib/queryBuilderByPipline";
 import { Booking } from "../booking/booking.model";
+import { Trip } from "../trip/trip.model";
 
 const getGuides = async (queryString?: Record<string, string>) => {
   const builder = new QueryBuilder<IGuide>(Guide, {
@@ -193,14 +194,63 @@ const deleteGuide = async (id: string) => {
 };
 
 const getActiveTours = async (id: string) => {
-  return await Booking.find({
-    user: id,
-  }).populate({
-    path: "trip",
-    populate: {
-      path: "tourId",
-    },
-  });
+  const user = await User.findById(id).lean();
+
+  if (!user) {
+    throw new AppError(HTTP_STATUS.NOT_FOUND, "User not found");
+  }
+
+  if (user.role === UserRole.GUIDE) {
+    return await Booking.find({
+      isDeleted: false,
+    })
+      .populate({
+        path: "trip",
+        match: {
+          guideId: new Types.ObjectId(id),
+          isDeleted: false,
+        },
+        populate: [
+          {
+            path: "tourId",
+            select:
+              "title city country price duration images averageRating totalReviews",
+          },
+          {
+            path: "guideId",
+            select: "name email phone profileImage",
+          },
+        ],
+      })
+      // remove bookings where trip didn't match
+      .then((bookings) => bookings.filter((b) => b.trip !== null))
+      .then((bookings) => bookings.map((b) => b.toObject()));
+  }
+  if (user.role === UserRole.TOURIST) {
+    return await Booking.find({
+      user: new Types.ObjectId(id),
+      isDeleted: false,
+    })
+      .populate({
+        path: "trip",
+        match: {
+          isDeleted: false,
+        },
+        populate: [
+          {
+            path: "tourId",
+            select: "title city country price duration images",
+          },
+          {
+            path: "guideId",
+            select: "name email phone profileImage",
+          },
+        ],
+      })
+      .lean();
+  }
+
+  return [];
 };
 
 export const GuideService = {

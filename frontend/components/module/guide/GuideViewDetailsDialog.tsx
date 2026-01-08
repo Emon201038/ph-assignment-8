@@ -3,30 +3,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { IGuide } from "@/interfaces/guide.interface";
+import { IUser } from "@/interfaces/user.interface";
 import { Award, Globe, MapPin, Star, Users } from "lucide-react";
-import React from "react";
-
-const profile = {
-  name: "Sofia Martinez",
-  title: "Professional Tour Guide",
-  email: "sofia.martinez@email.com",
-  location: "Barcelona, Spain",
-  bio: "Passionate local guide with 8+ years of experience showcasing the beauty and culture of Barcelona. I love sharing my city's hidden gems and creating unforgettable experiences for travelers.",
-  specialties: ["Architecture", "History", "Food & Wine", "Art"],
-  languages: ["Spanish", "English", "French", "Catalan"],
-  phone: "+34 612 345 678",
-  hourlyRate: "€50",
-  experience: "8 years",
-  certifications: ["Licensed Tour Guide", "First Aid Certified"],
-};
+import languages from "@/data/iso/languages.json";
 
 const GuideViewDetailsDialog = ({
   open,
   onOpenChange,
+  guide,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  guide: IUser<IGuide>;
 }) => {
+  if (!guide) return null;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-auto max-w-6xl sm:max-w-3xl w-full">
@@ -40,11 +31,8 @@ const GuideViewDetailsDialog = ({
                 className="absolute top-0 left-0 w-full h-full bg-no-repeat bg-cover bg-center bg-linear-to-r from-primary/20 via-chart-2/20 to-chart-3/20 backdrop-blur-3xl filter-blur-3xl -z-10"
               ></div>
               <Avatar className="h-32 w-32 border-4 border-primary/30 shadow-xl">
-                <AvatarImage
-                  src="/professional-tour-guide-portrait.jpg"
-                  alt="Sofia Martinez"
-                />
-                <AvatarFallback>SMS</AvatarFallback>
+                <AvatarImage src={guide?.profileImage} alt="Sofia Martinez" />
+                <AvatarFallback>{guide?.name.charAt(0)}</AvatarFallback>
               </Avatar>
             </div>
 
@@ -52,21 +40,21 @@ const GuideViewDetailsDialog = ({
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <h1 className="text-3xl font-bold text-foreground mb-1">
-                    {profile.name}
+                    {guide?.name}
                   </h1>
                   <p className="text-lg text-muted-foreground mb-2">
-                    {profile.title}
+                    Professional Tour Guide
                   </p>
                   <div className="flex items-center gap-2 text-muted-foreground mb-3">
                     <MapPin className="h-4 w-4" />
-                    <span>{profile.location}</span>
+                    <span>{guide.address}</span>
                   </div>
-                  <p className="text-foreground/80 max-w-2xl">{profile.bio}</p>
+                  <p className="text-foreground/80 max-w-2xl">{guide.bio}</p>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-2 mt-4">
-                {profile.specialties.map((specialty) => (
+                {guide.profile.expertise.map((specialty) => (
                   <Badge
                     key={specialty}
                     variant="secondary"
@@ -84,26 +72,35 @@ const GuideViewDetailsDialog = ({
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
-                <span className="text-2xl font-bold text-foreground">4.9</span>
+                <span className="text-2xl font-bold text-foreground">
+                  {guide.profile?.averageRating || 0.0}
+                </span>
               </div>
               <div className="text-sm text-muted-foreground">
                 Average Rating
               </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">350+</div>
+              <div className="text-2xl font-bold text-primary">
+                {guide.profile?.totalTrips || 0}{" "}
+                {guide.profile?.totalTrips > 0 ? "+" : ""}
+              </div>
               <div className="text-sm text-muted-foreground">
                 Tours Completed
               </div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-chart-2">
-                {profile.experience}
+                {guide.profile.experienceYears || 0}
               </div>
-              <div className="text-sm text-muted-foreground">Experience</div>
+              <div className="text-sm text-muted-foreground">
+                Experience (years)
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-chart-3">245</div>
+              <div className="text-2xl font-bold text-chart-3">
+                {guide.profile.totalReviews || 0}
+              </div>
               <div className="text-sm text-muted-foreground">Reviews</div>
             </div>
           </div>
@@ -119,7 +116,12 @@ const GuideViewDetailsDialog = ({
               <div>
                 <div className="text-sm text-muted-foreground">Languages</div>
                 <div className="font-semibold">
-                  {profile.languages.join(", ")}
+                  {languages
+                    .filter((lang) =>
+                      guide.profile?.languages.includes(lang.code)
+                    )
+                    .map((lang) => lang.name)
+                    .join(", ")}
                 </div>
               </div>
             </div>
@@ -131,7 +133,9 @@ const GuideViewDetailsDialog = ({
               </div>
               <div>
                 <div className="text-sm text-muted-foreground">Certified</div>
-                <div className="font-semibold">{profile.certifications[0]}</div>
+                <div className="font-semibold">
+                  {guide?.profile?.certifications?.[0] || "N/A"}
+                </div>
               </div>
             </div>
           </Card>
@@ -142,7 +146,9 @@ const GuideViewDetailsDialog = ({
               </div>
               <div>
                 <div className="text-sm text-muted-foreground">Rate</div>
-                <div className="font-semibold">{profile.hourlyRate}/hour</div>
+                <div className="font-semibold">
+                  {guide.profile.hourlyRate}/hour
+                </div>
               </div>
             </div>
           </Card>

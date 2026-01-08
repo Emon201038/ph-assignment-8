@@ -2,6 +2,7 @@
 import mongoose, { Document, Model } from "mongoose";
 import { QueryFilter } from "mongoose";
 import { IMeta } from "../utils/sendResponse";
+import { de } from "zod/locales";
 
 interface QueryParams {
   search?: string;
@@ -360,6 +361,45 @@ export class QueryBuilder<T extends Document> {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  /**
+   * Add price range filtering
+   * Accepts minPrice and maxPrice query parameters
+   * Usage: ?minPrice=100&maxPrice=500
+   */
+  priceRange(priceField: string = "price"): this {
+    const minPrice = this.queryParams.minPrice;
+    const maxPrice = this.queryParams.maxPrice;
+    const priceFilter: Record<string, any> = {};
+
+    if (minPrice !== undefined && minPrice !== null && minPrice !== "") {
+      const min = Number(minPrice);
+      if (!isNaN(min)) {
+        priceFilter.$gte = min;
+      }
+    }
+
+    if (maxPrice !== undefined && maxPrice !== null && maxPrice !== "") {
+      const max = Number(maxPrice);
+      if (!isNaN(max)) {
+        priceFilter.$lte = max;
+      }
+    }
+
+    delete this.filters.minPrice;
+    delete this.filters.maxPrice;
+    // Only add filter if at least one range is specified
+    if (Object.keys(priceFilter).length > 0) {
+      this.filters = {
+        ...this.filters,
+        [priceField]: priceFilter,
+      };
+
+      this.mongooseQuery = this.model.find(this.filters);
+    }
+
+    return this;
   }
 
   /**

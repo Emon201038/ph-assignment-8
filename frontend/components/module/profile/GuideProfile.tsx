@@ -14,10 +14,10 @@ const GuideProfile = ({ profile }: { profile: IGuide<IUser> }) => {
         <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
           <Avatar className="h-32 w-32 border-4 border-primary/30 shadow-xl">
             <AvatarImage
-              src="/professional-tour-guide-portrait.jpg"
+              src={profile?.profile?.profileImage}
               alt="Sofia Martinez"
             />
-            <AvatarFallback>{profile?.profile?.name as string}</AvatarFallback>
+            <AvatarFallback>{profile?.profile?.name.charAt(0)}</AvatarFallback>
           </Avatar>
 
           <div className="flex-1">

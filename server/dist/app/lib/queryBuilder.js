@@ -295,6 +295,36 @@ class QueryBuilder {
         });
     }
     /**
+     * Add price range filtering
+     * Accepts minPrice and maxPrice query parameters
+     * Usage: ?minPrice=100&maxPrice=500
+     */
+    priceRange(priceField = "price") {
+        const minPrice = this.queryParams.minPrice;
+        const maxPrice = this.queryParams.maxPrice;
+        const priceFilter = {};
+        if (minPrice !== undefined && minPrice !== null && minPrice !== "") {
+            const min = Number(minPrice);
+            if (!isNaN(min)) {
+                priceFilter.$gte = min;
+            }
+        }
+        if (maxPrice !== undefined && maxPrice !== null && maxPrice !== "") {
+            const max = Number(maxPrice);
+            if (!isNaN(max)) {
+                priceFilter.$lte = max;
+            }
+        }
+        delete this.filters.minPrice;
+        delete this.filters.maxPrice;
+        // Only add filter if at least one range is specified
+        if (Object.keys(priceFilter).length > 0) {
+            this.filters = Object.assign(Object.assign({}, this.filters), { [priceField]: priceFilter });
+            this.mongooseQuery = this.model.find(this.filters);
+        }
+        return this;
+    }
+    /**
      * Apply field renaming to results based on renameFields configuration
      */
     applyFieldRenames(results) {

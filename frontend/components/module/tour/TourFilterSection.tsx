@@ -13,12 +13,15 @@ import { useState, useTransition } from "react";
 import { TOUR_CATEGORIES } from "@/constants/user";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import languages from "@/data/iso/languages.json";
+import { Slider } from "@/components/ui/slider";
 
 const TourFilterSection = () => {
   const [priceRange, setPriceRange] = useState([0, 200]);
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [category, setCategory] = useState("");
+  const [language, setLanguage] = useState("");
 
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
@@ -43,6 +46,19 @@ const TourFilterSection = () => {
     } else {
       params.delete("category");
     }
+    if (language) {
+      params.set("language", language);
+    } else {
+      params.delete("language");
+    }
+
+    if (priceRange[1] !== 0) {
+      params.set("minPrice", priceRange[0].toString());
+      params.set("maxPrice", priceRange[1].toString());
+    } else {
+      params.delete("minPrice");
+      params.delete("maxPrice");
+    }
 
     startTransition(() => {
       router.push(`?${params.toString()}`);
@@ -57,6 +73,10 @@ const TourFilterSection = () => {
     params.delete("country");
     params.delete("city");
     params.delete("category");
+    params.delete("language");
+    params.delete("minPrice");
+    params.delete("maxPrice");
+
     startTransition(() => {
       router.push(`?${params.toString()}`);
     });
@@ -93,7 +113,7 @@ const TourFilterSection = () => {
         </div>
       </div>
 
-      {/* <div className="space-y-3">
+      <div className="space-y-3">
         <Label>
           Price Range: ${priceRange[0]} - ${priceRange[1]}
         </Label>
@@ -104,45 +124,46 @@ const TourFilterSection = () => {
           step={10}
           className="w-full"
         />
-      </div> */}
-
-      <div className="space-y-2">
-        <Label htmlFor="category">Category</Label>
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger id="category" className="w-full">
-            <SelectValue placeholder="Select Category" />
-          </SelectTrigger>
-          <SelectContent>
-            {TOUR_CATEGORIES.map((c) => (
-              <SelectItem key={c.value} value={c.value}>
-                {c.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
-      {/* <div className="space-y-2">
-        <Label>Category</Label>
+      <div className="space-y-2 flex justify-between items-center w-full">
         <div className="space-y-2">
-          {["All", "Cultural", "Adventure", "Food", "Leisure"].map(
-            (category) => (
-              <label
-                key={category}
-                className="flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  className="rounded"
-                  defaultChecked={category === "All"}
-                />
-                <span className="text-sm">{category}</span>
-              </label>
-            )
-          )}
+          <Label htmlFor="category">Category</Label>
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger
+              id="category"
+              className="w-auto  max-w-33.25 text-ellipsis"
+            >
+              <SelectValue placeholder="Select Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {TOUR_CATEGORIES.map((c) => (
+                <SelectItem key={c.value} value={c.value}>
+                  {c.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-      </div> */}
-
+        <div className="space-y-2">
+          <Label htmlFor="language">Language</Label>
+          <Select value={language} onValueChange={setLanguage}>
+            <SelectTrigger
+              id="language"
+              className="w-auto! min-w-auto max-w-33.25 text-sm!"
+            >
+              <SelectValue placeholder="Select Language" />
+            </SelectTrigger>
+            <SelectContent>
+              {languages.map((c) => (
+                <SelectItem key={c.name} value={c.name}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       <Button onClick={() => handleApplyFilter()} className="w-full">
         Apply Filters
       </Button>

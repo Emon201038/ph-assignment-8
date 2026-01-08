@@ -61,7 +61,7 @@ const ToursTable = ({ tours }: ToursTableProps) => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         getRowKey={(guide) => guide._id!}
-        emptyMessage="No doctors found"
+        emptyMessage="No tours found"
       />
       {/* Edit Doctor Form Dialog */}
       <TourDialog

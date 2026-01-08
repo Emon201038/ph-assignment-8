@@ -12,12 +12,16 @@ export default async function GuideProfile({
 }) {
   const { id } = await params;
   const data = await getUserTours(id);
-  console.log(data);
   return (
     <div className="space-y-4 mb-6">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Tours</h3>
       </div>
+      {data.data.length === 0 && (
+        <p className="w-full text-center my-6 font-semibold text-lg">
+          No tours found
+        </p>
+      )}
 
       {data.data.map((tour) => (
         <Card
@@ -58,13 +62,6 @@ export default async function GuideProfile({
                 </div>
               </div>
               <div className="flex gap-2">
-                {/* <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-primary/30 bg-transparent"
-                >
-                  Edit Tour
-                </Button> */}
                 <Button variant="ghost" size="sm" asChild>
                   <Link href={`/tours/${tour.trip.tourId._id}`}>
                     View Bookings

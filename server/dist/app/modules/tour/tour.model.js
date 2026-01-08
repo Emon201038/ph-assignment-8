@@ -37,5 +37,14 @@ const tourSchema = new mongoose_1.Schema({
         default: 0,
     },
 }, { timestamps: true });
+tourSchema.virtual("totalTrips", {
+    ref: "Trip",
+    localField: "_id",
+    foreignField: "tourId",
+    count: true, // Only get the count
+});
+// Ensure virtuals are included when converting to JSON/Object
+tourSchema.set("toJSON", { virtuals: true });
+tourSchema.set("toObject", { virtuals: true });
 const Tour = (0, mongoose_1.model)("Tour", tourSchema);
 exports.default = Tour;

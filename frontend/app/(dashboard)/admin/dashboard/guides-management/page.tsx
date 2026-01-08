@@ -26,14 +26,6 @@ const page = async ({
     <div className="space-y-4 p-6">
       <GuideManagementHeader />
       <GuideFilter />
-      {/* <div className="flex gap-2">
-        <SearchFilter />
-        <SelectFilter
-          options={[{ label: "Booked", value: "BOOKED" }]}
-          paramsName="status"
-        />
-        <RefreshButton />
-      </div> */}
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
         <GuidesTable guides={data.data} />
         <TablePagination

@@ -6,6 +6,7 @@ import { ITourist, IUser, UserRole } from "@/interfaces/user.interface";
 import GuideProfile from "@/components/module/profile/GuideProfile";
 import TouristProfile from "@/components/module/profile/TouristProfile";
 import AdminProfile from "@/components/module/profile/AdminProfile";
+import Image from "next/image";
 
 const ProfileLayout = async ({
   params,
@@ -20,10 +21,11 @@ const ProfileLayout = async ({
     <div className="min-h-screen bg-linear-to-b from-background via-primary/5 to-background">
       {/* Cover Section */}
       <div className="relative h-64 bg-linear-to-r from-primary/20 via-chart-2/20 to-chart-3/20">
-        <img
+        <Image
           src="/images/barcelona.jpeg"
           alt="Barcelona"
           className="w-full h-full object-cover opacity-40"
+          fill
         />
         <div className="absolute inset-0 bg-linear-to-t from-background/80 to-transparent" />
       </div>
@@ -38,7 +40,7 @@ const ProfileLayout = async ({
           <AdminProfile />
         )}
 
-        <NavigationTabs />
+        <NavigationTabs role={user.data.profile.role} />
 
         {children}
       </div>

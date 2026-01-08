@@ -36,7 +36,9 @@ const getAllTours = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const builder = new queryBuilder_1.QueryBuilder(tour_model_1.default, query);
     const res = yield builder
         .filter()
+        .priceRange("price")
         .search(["title", "description"])
+        .populate("totalTrips")
         .paginate()
         .sort()
         .execWithMeta();

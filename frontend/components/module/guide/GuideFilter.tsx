@@ -40,7 +40,6 @@ const GuideFilter = () => {
 
   const [expertise, setExpertise] = React.useState<string[]>([]);
   const [languages, setLanguages] = React.useState<string[]>([]);
-  const [preferredCurrency, setPreferredCurrency] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
   const [phone, setPhone] = React.useState<string>("");

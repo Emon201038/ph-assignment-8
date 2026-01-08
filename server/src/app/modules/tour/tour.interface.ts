@@ -20,6 +20,7 @@ export interface ITour extends Document {
   isFeatured: boolean;
   averageRating: number;
   totalReviews: number;
+  totalTrips: number;
   createdBy: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;

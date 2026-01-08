@@ -28,7 +28,6 @@ const profile = {
 const ProfileLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth<ITourist | IGuide>();
 
-  console.log(session);
   if (session?.role === "ADMIN") {
     return (
       <div>
@@ -182,7 +181,7 @@ const ProfileLayout = async ({ children }: { children: React.ReactNode }) => {
           </Card>
         </div>
 
-        <NavigationTabs />
+        <NavigationTabs role={session?.role as UserRole} />
 
         {children}
       </div>

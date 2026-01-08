@@ -85,6 +85,7 @@ const GuidesTable = ({ guides }: GuidesTableProps) => {
       <GuideViewDetailsDialog
         open={!!viewingGuide}
         onOpenChange={() => setViewingGuide(null)}
+        guide={viewingGuide!}
       />
 
       {/* Delete Confirmation Dialog */}

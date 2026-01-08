@@ -31,7 +31,9 @@ const getAllTours = async (query: Record<string, string>) => {
   const builder = new QueryBuilder(Tour, query);
   const res = await builder
     .filter()
+    .priceRange("price")
     .search(["title", "description"])
+    .populate("totalTrips")
     .paginate()
     .sort()
     .execWithMeta();

@@ -48,5 +48,16 @@ const tourSchema = new Schema<ITour>(
   { timestamps: true }
 );
 
+tourSchema.virtual("totalTrips", {
+  ref: "Trip",
+  localField: "_id",
+  foreignField: "tourId",
+  count: true, // Only get the count
+});
+
+// Ensure virtuals are included when converting to JSON/Object
+tourSchema.set("toJSON", { virtuals: true });
+tourSchema.set("toObject", { virtuals: true });
+
 const Tour = model<ITour>("Tour", tourSchema);
 export default Tour;

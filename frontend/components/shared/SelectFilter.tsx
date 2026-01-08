@@ -18,7 +18,7 @@ interface SelectFilterProps {
 const SelectFilter = ({
   options,
   paramsName,
-  placeholder,
+  placeholder = "Filter by",
 }: SelectFilterProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -46,11 +46,13 @@ const SelectFilter = ({
       onValueChange={handleChange}
       disabled={isPending}
     >
-      <SelectTrigger>
-        <SelectValue placeholder={placeholder} />
+      <SelectTrigger id={paramsName}>
+        <SelectValue placeholder={placeholder || "Filter by"} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="All">All</SelectItem>
+        <SelectItem key={"all"} value="All">
+          All
+        </SelectItem>
         {options.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}

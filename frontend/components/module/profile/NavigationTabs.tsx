@@ -1,11 +1,12 @@
 "use client";
+import { UserRole } from "@/interfaces/user.interface";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
 const allowedRoutes = ["schedules", "bookings", "reviews", "earnings"];
 
-const NavigationTabs = () => {
+const NavigationTabs = ({ role }: { role: UserRole }) => {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
 
@@ -23,26 +24,38 @@ const NavigationTabs = () => {
       href: basePath,
       current: pathname === basePath,
     },
+
     {
-      id: 3,
-      name: "Bookings",
-      href: `${basePath}/bookings`,
-      current: pathname === `${basePath}/bookings`,
-    },
-    {
-      id: 4,
-      name: "Reviews",
-      href: `${basePath}/reviews`,
-      current: pathname === `${basePath}/reviews`,
+      id: 6,
+      name: "Connections",
+      href: `${basePath}/connections`,
+      current: pathname === `${basePath}/connections`,
     },
   ];
 
   if (basePath === "/profile") {
+    routes.push(
+      {
+        id: 5,
+        name: "Earnings",
+        href: `${basePath}/earnings`,
+        current: pathname === `${basePath}/earnings`,
+      },
+      {
+        id: 3,
+        name: "Bookings",
+        href: `${basePath}/bookings`,
+        current: pathname === `${basePath}/bookings`,
+      }
+    );
+  }
+
+  if (role === UserRole.GUIDE) {
     routes.push({
-      id: 5,
-      name: "Earnings",
-      href: `${basePath}/earnings`,
-      current: pathname === `${basePath}/earnings`,
+      id: 4,
+      name: "Reviews",
+      href: `${basePath}/reviews`,
+      current: pathname === `${basePath}/reviews`,
     });
   }
 
