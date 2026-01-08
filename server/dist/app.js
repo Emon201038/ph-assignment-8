@@ -11,7 +11,10 @@ const globalErrorHandler_1 = require("./app/middlewares/globalErrorHandler");
 const notFound_1 = require("./app/middlewares/notFound");
 const routes_1 = __importDefault(require("./app/routes"));
 const env_1 = require("./app/config/env");
+const payment_service_1 = require("./app/modules/payment/payment.service");
 const app = (0, express_1.default)();
+// stripe webhook
+app.post("/api/v1/payments/webhook", express_1.default.raw({ type: "application/json" }), payment_service_1.PaymentService.handleStripeWebhook);
 // middleware
 app.use((0, cors_1.default)({
     origin: [

@@ -4,6 +4,7 @@ import { checkAuth } from "../../middlewares/checkAuth";
 import { UserRole } from "../user/user.interface";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { paymentZodSchema } from "./payment.validation";
+import { PaymentService } from "./payment.service";
 
 const router = express.Router();
 
@@ -15,16 +16,6 @@ router.post(
   checkAuth(...Object.values(UserRole)),
   validateRequest(paymentZodSchema),
   PaymentController.createCheckoutSession
-);
-
-/**
- * Stripe Webhook
- * NOTE: this route MUST use express.raw()
- */
-router.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  PaymentController.stripeWebhook
 );
 
 router.get("/", PaymentController.getPayments);

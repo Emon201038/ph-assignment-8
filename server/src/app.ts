@@ -6,8 +6,16 @@ import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { notFound } from "./app/middlewares/notFound";
 import router from "./app/routes";
 import { envVars } from "./app/config/env";
+import { PaymentService } from "./app/modules/payment/payment.service";
 
 const app = express();
+
+// stripe webhook
+app.post(
+  "/api/v1/payments/webhook",
+  express.raw({ type: "application/json" }),
+  PaymentService.handleStripeWebhook
+);
 
 // middleware
 app.use(
