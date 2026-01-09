@@ -4,6 +4,8 @@ import AppError from "../../helpers/appError";
 import User from "../user/user.model";
 import { generateJwt, verifyJwt } from "../../utils/jwt";
 import { envVars } from "../../config/env";
+import { Otp } from "../otp/otp.model";
+import { sendEmail } from "../../utils/sendEmail";
 
 const login = async (res: Response, email: string, password: string) => {
   const isExists = await User.findOne({ email });
@@ -108,4 +110,89 @@ const refreshToken = async (token: string, res: Response) => {
   return { refreshToken, accessToken };
 };
 
-export const AuthService = { login, me, refreshToken };
+const forgotPassword = async (email: string) => {
+  const isExists = await User.findOne({ email });
+  if (!isExists) {
+    throw new AppError(404, "No user found");
+  }
+
+  // create 6 digit random number for otp
+  const otp = Math.floor(100000 + Math.random() * 900000);
+
+  const otpDoc = await Otp.create({
+    userId: isExists._id,
+    otp,
+    expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+  });
+
+  if (!otpDoc) {
+    throw new AppError(400, "Failed to create otp");
+  }
+
+  // send otp to user's email
+  await sendEmail({
+    to: isExists.email,
+    subject: "Forgot Password",
+    templateName: "reset-password",
+    templateData: { otp, name: isExists.name, email: isExists.email },
+  });
+  return otpDoc;
+};
+
+const resetPassword = async (
+  token: string,
+  newPassword: string,
+  confirmPassword: string
+) => {
+  console.log(token, confirmPassword, newPassword);
+  const verifiedToken = verifyJwt(token, envVars.JWT_ACCESS_TOKEN_SECRET);
+  if (typeof verifiedToken === "string") {
+    throw new AppError(400, "Failed to verify token");
+  }
+
+  const isExists = await User.findById(verifiedToken.userId);
+  if (!isExists) {
+    throw new AppError(404, "No user found");
+  }
+
+  const isPassMatched = await bcrypt.compare(
+    confirmPassword,
+    isExists.password
+  );
+  if (!isPassMatched) {
+    throw new AppError(400, "Incorrect password");
+  }
+
+  isExists.password = newPassword;
+  await isExists.save();
+  return isExists;
+};
+
+const changePassword = async (
+  userId: string,
+  oldPassword: string,
+  newPassword: string
+) => {
+  const isExists = await User.findById(userId);
+  if (!isExists) {
+    throw new AppError(404, "No user found");
+  }
+
+  const isPassMatched = await bcrypt.compare(oldPassword, isExists.password);
+  if (!isPassMatched) {
+    throw new AppError(400, "Incorrect password");
+  }
+
+  isExists.password = newPassword;
+  await isExists.save();
+  return isExists;
+};
+
+export const AuthService = {
+  login,
+  me,
+  refreshToken,
+  forgotPassword,
+  resetPassword,
+  changePassword,
+};

@@ -1,10 +1,11 @@
+"use client";
 import { Card } from "@/components/ui/card";
 import { Award, Globe, MapPin, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import ProfileEditModal from "./ProfileEditModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IGuide } from "@/interfaces/guide.interface";
-import { IUser } from "@/interfaces/user.interface";
+import { ITourist, IUser } from "@/interfaces/user.interface";
 import languages from "@/data/iso/languages.json";
 
 const GuideProfile = ({ profile }: { profile: IGuide<IUser> }) => {
@@ -37,7 +38,9 @@ const GuideProfile = ({ profile }: { profile: IGuide<IUser> }) => {
                   {profile?.profile?.bio}
                 </p>
               </div>
-              <ProfileEditModal profile={profile} />
+              <ProfileEditModal
+                profile={profile as unknown as IUser<ITourist | IGuide>}
+              />
             </div>
 
             <div className="flex flex-wrap gap-2 mt-4">

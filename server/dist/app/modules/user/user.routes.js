@@ -14,6 +14,7 @@ userRouter
     .route("/")
     .get((0, checkAuth_1.checkAuth)("ADMIN"), user_controller_1.UserController.getUsers)
     .post(uploadFile_1.uploadImage.single("image"), (0, validateRequest_1.validateRequest)(user_validation_1.UserValidation.create), user_controller_1.UserController.createUser);
+userRouter.get("/find/:email", user_controller_1.UserController.getUserByEmail);
 userRouter
     .route("/:id")
     .get(user_controller_1.UserController.getUserById)

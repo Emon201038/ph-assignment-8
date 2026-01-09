@@ -15,7 +15,7 @@ export const getCommonNavitems = (role: UserRole) => {
         },
         {
           title: "My Profile",
-          href: "/my-profile",
+          href: "/profile",
           icon: "User",
           roles: Object.values(UserRole),
         },
@@ -26,7 +26,7 @@ export const getCommonNavitems = (role: UserRole) => {
       items: [
         {
           title: "Change Password",
-          href: "/my-profile/change-password",
+          href: "/profile/change-password",
           icon: "Settings",
           roles: Object.values(UserRole),
         },

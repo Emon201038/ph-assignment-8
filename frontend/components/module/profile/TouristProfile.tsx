@@ -31,6 +31,7 @@ import NavigationTabs from "./NavigationTabs";
 import ProfileEditModal from "./ProfileEditModal";
 import { ITourist, IUser } from "@/interfaces/user.interface";
 import { formatDate } from "date-fns";
+import { IGuide } from "@/interfaces/guide.interface";
 
 const profile = {
   name: "Sofia Martinez",
@@ -78,7 +79,9 @@ export default function GuideProfile({
                 {profile?.profile?.bio}
               </p>
             </div>
-            <ProfileEditModal profile={profile} />
+            <ProfileEditModal
+              profile={profile as unknown as IUser<ITourist | IGuide>}
+            />
           </div>
 
           <div className="flex flex-wrap gap-2 mt-4">

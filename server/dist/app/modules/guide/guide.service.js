@@ -144,6 +144,13 @@ const updateGuide = (req) => __awaiter(void 0, void 0, void 0, function* () {
                 hourlyRate: data.hourlyRate,
             },
         }, { new: true }).session(session);
+        console.log({
+            name: data.name,
+            phone: data.phone,
+            address: data.address,
+            gender: data.gender,
+            bio: data.bio,
+        });
         // Update user
         yield user_model_1.default.findOneAndUpdate({ _id: id }, {
             $set: {

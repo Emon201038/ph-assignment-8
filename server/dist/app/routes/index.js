@@ -15,6 +15,7 @@ const trip_routes_1 = __importDefault(require("../modules/trip/trip.routes"));
 const payment_routes_1 = require("../modules/payment/payment.routes");
 const booking_routes_1 = __importDefault(require("../modules/booking/booking.routes"));
 const review_routes_1 = __importDefault(require("../modules/review/review.routes"));
+const otp_routes_1 = __importDefault(require("../modules/otp/otp.routes"));
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -45,10 +46,10 @@ const moduleRoutes = [
         path: "/tourists",
         route: tourist_routes_1.default,
     },
-    // {
-    //   path: "/lookup",
-    //   route: lookupRouter,
-    // },
+    {
+        path: "/otp",
+        route: otp_routes_1.default,
+    },
     {
         path: "/reviews",
         route: review_routes_1.default,

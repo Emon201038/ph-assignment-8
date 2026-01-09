@@ -5,6 +5,7 @@ import React, { useActionState, useEffect } from "react";
 import { login } from "./action";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const LoginForm = ({ redirect }: { redirect?: string }) => {
   const [data, loginAction, isPending] = useActionState(login, null);
@@ -40,7 +41,15 @@ const LoginForm = ({ redirect }: { redirect?: string }) => {
         )}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <div className="flex justify-between items-center">
+          <Label htmlFor="password">Password</Label>
+          <Link
+            href={"/forgot-password"}
+            className="text-blue-400 underline cursor-pointer text-sm"
+          >
+            Forgott password?
+          </Link>
+        </div>
         <Input
           id="password"
           type="password"

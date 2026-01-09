@@ -275,6 +275,14 @@ const deleteUser = async (loggedInUser: JwtPayload, userId: string) => {
   );
 };
 
+const getUserByEmail = async (email: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(HTTP_STATUS.NOT_FOUND, "User not found.");
+  }
+  return user;
+};
+
 export const UserService = {
   getAllUsers,
   getUser,
@@ -282,4 +290,5 @@ export const UserService = {
   updateUser,
   updateUserRole,
   deleteUser,
+  getUserByEmail,
 };

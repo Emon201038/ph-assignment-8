@@ -19,7 +19,6 @@ const page = async ({
   const paramsObj = await params;
   const tourTrips = await getTourTrips(paramsObj.id);
 
-  console.log(tourTrips);
   return (
     <div className="mt-12">
       <h2 className="text-2xl font-bold mb-6">Available Trips</h2>

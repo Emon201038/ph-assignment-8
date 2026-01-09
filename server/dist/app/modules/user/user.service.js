@@ -222,6 +222,13 @@ const deleteUser = (loggedInUser, userId) => __awaiter(void 0, void 0, void 0, f
     }
     return yield user_model_1.default.findByIdAndUpdate(userId, { isDeleted: true }, { new: true, runValidators: true });
 });
+const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findOne({ email });
+    if (!user) {
+        throw new appError_1.default(httpStatus_1.HTTP_STATUS.NOT_FOUND, "User not found.");
+    }
+    return user;
+});
 exports.UserService = {
     getAllUsers,
     getUser,
@@ -229,4 +236,5 @@ exports.UserService = {
     updateUser,
     updateUserRole,
     deleteUser,
+    getUserByEmail,
 };

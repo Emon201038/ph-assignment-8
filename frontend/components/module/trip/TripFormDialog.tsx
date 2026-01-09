@@ -19,8 +19,6 @@ const TripFormDialog = ({
 }: TripFormDialogProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
 
-  console.log(trip);
-
   useEffect(() => {
     if (open) {
       // Delay opening to prevent immediate closure

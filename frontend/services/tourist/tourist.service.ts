@@ -5,6 +5,7 @@ import z from "zod";
 import { login } from "../auth/auth.service";
 import { serverFetch } from "@/lib/server-fetch";
 import { IResponse } from "@/interfaces";
+import { revalidateTag } from "next/cache";
 
 const touristSchema = z.object({
   name: z.string("name is required").min(2, "name is required"),
@@ -182,6 +183,8 @@ export const editTourist = async (
         "Content-Type": "application/json",
       },
     });
+
+    revalidateTag("me", "max");
 
     return await res.json();
   } catch (error: any) {

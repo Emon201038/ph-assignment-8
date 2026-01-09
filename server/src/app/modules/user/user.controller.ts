@@ -58,10 +58,21 @@ const deleteUser = catchAsync(async (req, res, next) => {
   });
 });
 
+const getUserByEmail = catchAsync(async (req, res, next) => {
+  const data = await UserService.getUserByEmail(req.params.email);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "user found successfully",
+    data,
+  });
+});
+
 export const UserController = {
   getUsers,
   createUser,
   getUserById,
   updateUser,
   deleteUser,
+  getUserByEmail,
 };

@@ -10,6 +10,7 @@ import tripRouter from "../modules/trip/trip.routes";
 import { PaymentRoutes } from "../modules/payment/payment.routes";
 import bookingRouter from "../modules/booking/booking.routes";
 import reviewRouter from "../modules/review/review.routes";
+import otpRouter from "../modules/otp/otp.routes";
 
 const router = express.Router();
 
@@ -42,10 +43,10 @@ const moduleRoutes: { path: string; route: Router }[] = [
     path: "/tourists",
     route: touristRouter,
   },
-  // {
-  //   path: "/lookup",
-  //   route: lookupRouter,
-  // },
+  {
+    path: "/otp",
+    route: otpRouter,
+  },
   {
     path: "/reviews",
     route: reviewRouter,

@@ -37,7 +37,6 @@ const tripSchema = z
   })
   .refine(
     (data) => {
-      console.log(data);
       return data.duration >= 180 && data.duration <= 10080;
     },
     {
@@ -190,7 +189,6 @@ export const bookTrip = async (payload: { tripId: string; seats: number }) => {
           .min(1, "seats is required. Quantity missmatch"),
       })
     );
-    console.log(validationResult);
     if (!validationResult.success && validationResult.errors) {
       return {
         success: false,

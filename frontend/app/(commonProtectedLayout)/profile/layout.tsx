@@ -72,7 +72,9 @@ const ProfileLayout = async ({ children }: { children: React.ReactNode }) => {
                   </div>
                   <p className="text-foreground/80 max-w-2xl">{session?.bio}</p>
                 </div>
-                <ProfileEditModal profile={profile} />
+                <ProfileEditModal
+                  profile={session as IUser<ITourist | IGuide>}
+                />
               </div>
 
               {session?.role === UserRole.GUIDE && (
@@ -181,7 +183,7 @@ const ProfileLayout = async ({ children }: { children: React.ReactNode }) => {
           </Card>
         </div>
 
-        <NavigationTabs role={session?.role as UserRole} />
+        {/* <NavigationTabs role={session?.role as UserRole} /> */}
 
         {children}
       </div>

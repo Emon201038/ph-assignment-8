@@ -15,6 +15,8 @@ userRouter
     UserController.createUser
   );
 
+userRouter.get("/find/:email", UserController.getUserByEmail);
+
 userRouter
   .route("/:id")
   .get(UserController.getUserById)

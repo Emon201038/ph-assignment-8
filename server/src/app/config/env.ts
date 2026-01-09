@@ -25,11 +25,11 @@ interface IEnvVars {
   // GOOGLE_CLIENT_SECRET: string;
   // GOOGLE_CALLBACK_URL: string;
   // SALT_ROUNDS: string;
-  // SMTP_HOST: string;
-  // SMTP_PORT: string;
-  // SMTP_USER: string;
-  // SMTP_FROM: string;
-  // SMTP_PASSWORD: string;
+  SMTP_HOST: string;
+  SMTP_PORT: string;
+  SMTP_USER: string;
+  SMTP_FROM: string;
+  SMTP_PASSWORD: string;
   // REDIS_USERNAME: string;
   // REDIS_PASSWORD: string;
   // REDIS_HOST: string;
@@ -62,11 +62,11 @@ const loadEnv = (): IEnvVars => {
     // "GOOGLE_CLIENT_SECRET",
     // "GOOGLE_CALLBACK_URL",
     // "SALT_ROUNDS",
-    // "SMTP_HOST",
-    // "SMTP_PORT",
-    // "SMTP_USER",
-    // "SMTP_FROM",
-    // "SMTP_PASSWORD",
+    "SMTP_HOST",
+    "SMTP_PORT",
+    "SMTP_USER",
+    "SMTP_FROM",
+    "SMTP_PASSWORD",
     // "REDIS_USERNAME",
     // "REDIS_PASSWORD",
     // "REDIS_HOST",
@@ -108,11 +108,11 @@ const loadEnv = (): IEnvVars => {
     // GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
     // EXPRESS_SESSION_SECRET: process.env.EXPRESS_SESSION_SECRET as string,
     // SALT_ROUNDS: process.env.SALT_ROUNDS as string,
-    // SMTP_HOST: process.env.SMTP_HOST as string,
-    // SMTP_PORT: process.env.SMTP_PORT as string,
-    // SMTP_USER: process.env.SMTP_USER as string,
-    // SMTP_FROM: process.env.SMTP_FROM as string,
-    // SMTP_PASSWORD: process.env.SMTP_PASSWORD as string,
+    SMTP_HOST: process.env.SMTP_HOST as string,
+    SMTP_PORT: process.env.SMTP_PORT as string,
+    SMTP_USER: process.env.SMTP_USER as string,
+    SMTP_FROM: process.env.SMTP_FROM as string,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD as string,
     // REDIS_USERNAME: process.env.REDIS_USERNAME as string,
     // REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
     // REDIS_HOST: process.env.REDIS_HOST as string,

@@ -38,4 +38,35 @@ const refreshToken = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(
         data: yield auth_service_1.AuthService.refreshToken(req.cookies.refreshToken, res),
     });
 }));
-exports.AuthController = { login, getMe, refreshToken };
+const forgotPassword = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        message: "Profile retrived",
+        success: true,
+        data: yield auth_service_1.AuthService.forgotPassword(req.body.email),
+    });
+}));
+const resetPassword = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        message: "Profile retrived",
+        success: true,
+        data: yield auth_service_1.AuthService.resetPassword(req.body.token, req.body.newPassword, req.body.confirmPassword),
+    });
+}));
+const changePassword = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        message: "Profile retrived",
+        success: true,
+        data: yield auth_service_1.AuthService.changePassword(req.user.userId, req.body.currentPassword, req.body.newPassword),
+    });
+}));
+exports.AuthController = {
+    login,
+    getMe,
+    refreshToken,
+    forgotPassword,
+    resetPassword,
+    changePassword,
+};

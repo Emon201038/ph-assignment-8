@@ -66,10 +66,20 @@ const deleteUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
         data: {},
     });
 }));
+const getUserByEmail = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.UserService.getUserByEmail(req.params.email);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "user found successfully",
+        data,
+    });
+}));
 exports.UserController = {
     getUsers,
     createUser,
     getUserById,
     updateUser,
     deleteUser,
+    getUserByEmail,
 };

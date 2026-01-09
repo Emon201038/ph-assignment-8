@@ -18,6 +18,8 @@ const appError_1 = __importDefault(require("../../helpers/appError"));
 const user_model_1 = __importDefault(require("../user/user.model"));
 const jwt_1 = require("../../utils/jwt");
 const env_1 = require("../../config/env");
+const otp_model_1 = require("../otp/otp.model");
+const sendEmail_1 = require("../../utils/sendEmail");
 const login = (res, email, password) => __awaiter(void 0, void 0, void 0, function* () {
     const isExists = yield user_model_1.default.findOne({ email });
     if (!isExists || isExists.isDeleted) {
@@ -92,4 +94,66 @@ const refreshToken = (token, res) => __awaiter(void 0, void 0, void 0, function*
     });
     return { refreshToken, accessToken };
 });
-exports.AuthService = { login, me, refreshToken };
+const forgotPassword = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExists = yield user_model_1.default.findOne({ email });
+    if (!isExists) {
+        throw new appError_1.default(404, "No user found");
+    }
+    // create 6 digit random number for otp
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const otpDoc = yield otp_model_1.Otp.create({
+        userId: isExists._id,
+        otp,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    if (!otpDoc) {
+        throw new appError_1.default(400, "Failed to create otp");
+    }
+    // send otp to user's email
+    yield (0, sendEmail_1.sendEmail)({
+        to: isExists.email,
+        subject: "Forgot Password",
+        templateName: "reset-password",
+        templateData: { otp, name: isExists.name, email: isExists.email },
+    });
+    return otpDoc;
+});
+const resetPassword = (token, newPassword, confirmPassword) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(token, confirmPassword, newPassword);
+    const verifiedToken = (0, jwt_1.verifyJwt)(token, env_1.envVars.JWT_ACCESS_TOKEN_SECRET);
+    if (typeof verifiedToken === "string") {
+        throw new appError_1.default(400, "Failed to verify token");
+    }
+    const isExists = yield user_model_1.default.findById(verifiedToken.userId);
+    if (!isExists) {
+        throw new appError_1.default(404, "No user found");
+    }
+    const isPassMatched = yield bcryptjs_1.default.compare(confirmPassword, isExists.password);
+    if (!isPassMatched) {
+        throw new appError_1.default(400, "Incorrect password");
+    }
+    isExists.password = newPassword;
+    yield isExists.save();
+    return isExists;
+});
+const changePassword = (userId, oldPassword, newPassword) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExists = yield user_model_1.default.findById(userId);
+    if (!isExists) {
+        throw new appError_1.default(404, "No user found");
+    }
+    const isPassMatched = yield bcryptjs_1.default.compare(oldPassword, isExists.password);
+    if (!isPassMatched) {
+        throw new appError_1.default(400, "Incorrect password");
+    }
+    isExists.password = newPassword;
+    yield isExists.save();
+    return isExists;
+});
+exports.AuthService = {
+    login,
+    me,
+    refreshToken,
+    forgotPassword,
+    resetPassword,
+    changePassword,
+};

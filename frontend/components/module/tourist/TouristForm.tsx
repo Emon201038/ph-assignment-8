@@ -58,7 +58,6 @@ const TouristForm = ({
     null
   );
 
-  console.log(state);
   useEffect(() => {
     if (state?.success) {
       toast.success(state.message);

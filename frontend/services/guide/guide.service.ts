@@ -6,6 +6,7 @@ import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zod-validator";
 import z from "zod";
 import { login } from "../auth/auth.service";
+import { revalidateTag } from "next/cache";
 
 export const getGuides = async (queryString?: string) => {
   const res = await serverFetch.get(`/users?role=GUIDE&${queryString}`);
@@ -225,6 +226,7 @@ export const editGuide = async (
     if (!data?.success) {
       throw new Error(data?.message);
     }
+    revalidateTag("me", "max");
     return data;
   } catch (error: any) {
     console.log(error);

@@ -37,7 +37,6 @@ const TripParticipants = ({
     try {
       setIsLoading(true);
       const res = await bookTrip({ tripId: trip._id, seats: participants });
-      console.log(res);
       if (!res.success) {
         toast.error(res?.message || "Failed to book trip");
         return;

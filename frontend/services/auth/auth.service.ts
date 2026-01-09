@@ -12,6 +12,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { zodValidator } from "@/lib/zod-validator";
 import z from "zod";
 import cookie from "cookie";
+import { is } from "date-fns/locale";
 
 export const getNewAccessToken = async () => {
   try {
@@ -234,6 +235,205 @@ export const login = async (prevState: unknown, formData: FormData) => {
       success: false,
       message: error?.message,
       errors: [],
+    };
+  }
+};
+
+export const forgotPassword = async (
+  prevState: unknown,
+  formData: FormData
+) => {
+  const schema = z.object({
+    email: z.email("Invalid email address"),
+  });
+  const payload = {
+    email: formData.get("email"),
+  };
+  try {
+    const validatedPayload = zodValidator(payload, schema);
+    if (!validatedPayload.success) {
+      return {
+        success: false,
+        errors: validatedPayload.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+
+    const data = await serverFetch.get(`/otp/send-otp?email=${payload.email}`);
+    const res = await data.json();
+
+    if (!res?.success) {
+      throw new Error(res?.message);
+    }
+
+    return { ...res, formData: payload };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message,
+      errors: [],
+      formData: payload,
+    };
+  }
+};
+
+export const verifyOtp = async (prevState: unknown, formData: FormData) => {
+  const schema = z.object({
+    otp: z.string("OTP is required").min(6, "OTP must be minimum 6 digit"),
+    id: z.string("id is required").regex(/^[0-9a-fA-F]{24}$/, "Invalid id"),
+  });
+  const payload = {
+    otp: formData.get("otp"),
+    id: formData.get("id"),
+  };
+  try {
+    const validatedPayload = zodValidator(payload, schema);
+    if (!validatedPayload.success) {
+      return {
+        success: false,
+        errors: validatedPayload.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+
+    const data = await serverFetch.post(
+      `/otp/verify-otp?session_id=${validatedPayload?.data?.id}`,
+      {
+        body: JSON.stringify({ otp: validatedPayload?.data?.otp }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const res = await data.json();
+
+    if (!res?.success) {
+      throw new Error(res?.message);
+    }
+
+    return { ...res, formData: payload };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message,
+      errors: [],
+      formData: payload,
+    };
+  }
+};
+
+export const sendOtp = async (email: string) => {
+  try {
+    const data = await serverFetch.get(`/otp/send-otp?email=${email}`);
+    const res = await data.json();
+    return res;
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message,
+      errors: [],
+    };
+  }
+};
+
+export const changePassword = async (
+  prevState: unknown,
+  formData: FormData
+) => {
+  const payload = {
+    isForgotten: formData.get("isForgotten") === "true",
+    token: formData.get("token"),
+    currentPassword: formData.get("currentPassword")?.toString(),
+    newPassword: formData.get("newPassword")?.toString(),
+    confirmPassword: formData.get("confirmPassword")?.toString(),
+  };
+  const schema = {
+    newPassword: z
+      .string("newPassword is required")
+      .min(6, "newPassword must be minimum 6 digit"),
+    confirmPassword: z
+      .string("confirmPassword is required ")
+      .min(6, "confirmPassword must be minimum 6 digit"),
+  };
+  try {
+    if (payload.isForgotten) {
+      const validatedPayload = zodValidator(
+        {
+          newPassword: payload.newPassword,
+          confirmPassword: payload.confirmPassword,
+          token: payload.token,
+        },
+        z
+          .object({
+            ...schema,
+            token: z
+              .string("token is required")
+              .min(6, "token must be minimum 6 digit")
+              .regex(/(^[\w-]*\.[\w-]*\.[\w-]*$)/, "Invalid token"),
+          })
+          .refine((data) => data.newPassword === data.confirmPassword, {
+            message: "Passwords do not match",
+            path: ["confirmPassword"],
+          })
+      );
+      if (!validatedPayload.success) {
+        return {
+          success: false,
+          errors: validatedPayload.errors,
+          formData: payload,
+          message: "validation error",
+        };
+      }
+
+      const res = await serverFetch.post("/auth/reset-password", {
+        body: JSON.stringify(validatedPayload.data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      return data;
+    } else {
+      const validatedPayload = zodValidator(
+        payload,
+        z
+          .object({
+            ...schema,
+            currentPassword: z
+              .string("currentPassword is required")
+              .min(6, "currentPassword must be minimum 6 digit"),
+          })
+          .refine((data) => data.newPassword === data.confirmPassword, {
+            message: "Passwords do not match",
+            path: ["confirmPassword"],
+          })
+      );
+      if (!validatedPayload.success) {
+        return {
+          success: false,
+          errors: validatedPayload.errors,
+          formData: payload,
+          message: "validation error",
+        };
+      }
+
+      const res = await serverFetch.post("/auth/change-password", {
+        body: JSON.stringify(validatedPayload.data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      return data;
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message,
+      errors: [],
+      formData: payload,
     };
   }
 };
