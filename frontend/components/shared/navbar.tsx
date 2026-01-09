@@ -29,7 +29,7 @@ export async function Navbar({
       return (
         <>
           <Link
-            href="/explore"
+            href="/tours"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Explore Tours
@@ -48,7 +48,7 @@ export async function Navbar({
       return (
         <>
           <Link
-            href="/explore"
+            href="/tours"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Explore Tours
@@ -91,7 +91,7 @@ export async function Navbar({
     return (
       <>
         <Link
-          href="/explore"
+          href="/tours"
           className="text-sm font-medium hover:text-primary transition-colors"
         >
           Explore Tours

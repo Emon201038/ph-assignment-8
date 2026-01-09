@@ -24,7 +24,7 @@ const MobileNav = ({
       return (
         <>
           <Link
-            href="/explore"
+            href="/tours"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Explore Tours
@@ -43,7 +43,7 @@ const MobileNav = ({
       return (
         <>
           <Link
-            href="/explore"
+            href="/tours"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Explore Tours
@@ -86,7 +86,7 @@ const MobileNav = ({
     return (
       <>
         <Link
-          href="/explore"
+          href="/tours"
           className="text-sm font-medium hover:text-primary transition-colors"
         >
           Explore Tours

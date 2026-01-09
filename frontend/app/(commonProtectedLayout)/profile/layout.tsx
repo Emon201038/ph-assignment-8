@@ -10,6 +10,7 @@ import NavigationTabs from "@/components/module/profile/NavigationTabs";
 import { auth } from "@/lib/session";
 import { ITourist, IUser, UserRole } from "@/interfaces/user.interface";
 import { IGuide } from "@/interfaces/guide.interface";
+import { redirect } from "next/navigation";
 
 const profile = {
   name: "Sofia Martinez",
@@ -27,6 +28,9 @@ const profile = {
 
 const ProfileLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth<ITourist | IGuide>();
+  if (!session) {
+    redirect("/login");
+  }
 
   if (session?.role === "ADMIN") {
     return (
