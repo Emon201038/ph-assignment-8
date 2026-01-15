@@ -14,6 +14,7 @@ import { auth } from "@/lib/session";
 import { logout } from "@/action";
 import { UserRole } from "@/interfaces/user.interface";
 import MobileNav from "./MobileNav";
+import Image from "next/image";
 
 export async function Navbar({
   showLogo = true,
@@ -110,15 +111,21 @@ export async function Navbar({
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
+          <div className="flex items-center h-full max-w-60 w-full">
             {/* Mobile Menu */}
             <MobileNav session={session} isDashboard={isDashboard} />
 
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary">
-                <MapPin className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold">LocalGuide</span>
+            <Link
+              href="/"
+              className="flex items-center gap-2 w-[80%] h-[80%] relative"
+            >
+              <span className="text-xl font-bold sr-only">LocalGuide</span>
+              <Image
+                src={"/images/tourbuddy_cover.png"}
+                alt="logo"
+                fill
+                className="w-[80%]"
+              />
             </Link>
           </div>
 

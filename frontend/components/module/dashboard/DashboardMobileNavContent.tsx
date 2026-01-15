@@ -7,6 +7,7 @@ import { IUser } from "@/interfaces/user.interface";
 import { getIconComponent } from "@/lib/icon-mappers";
 import { cn } from "@/lib/utils";
 import { Bell } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -26,8 +27,19 @@ const DashboardMobileSidebarContent = ({
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex h-16 items-center border-b px-6">
-        <Link href={dashboardHome} className="flex items-center space-y-2">
-          <span className="text-xl font-bold text-primary">Local Guide</span>
+        <Link
+          href={dashboardHome}
+          className="flex items-center space-y-2 w-[80%] h-[80%] relative"
+        >
+          <span className="text-xl font-bold text-primary sr-only">
+            Tour Buddy
+          </span>
+          <Image
+            src={"/images/tourbuddy_cover.png"}
+            alt="logo"
+            fill
+            className="w-[80%]"
+          />
         </Link>
       </div>
 

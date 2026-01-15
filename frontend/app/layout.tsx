@@ -12,26 +12,22 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "LocalGuide - Discover Authentic Travel Experiences",
+  title: "Tour Buddy - Discover Authentic Travel Experiences",
   description:
     "Connect with passionate local experts for personalized tours and authentic experiences around the world.",
   generator: "v0.app",
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
+        url: "/images/tourbuddy_icon.png",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/icon-dark-32x32.png",
+        url: "/images/tourbuddy_icon.png",
         media: "(prefers-color-scheme: dark)",
       },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
     ],
-    apple: "/apple-icon.png",
+    apple: "/images/tourbuddy_icon.png",
   },
 };
 
