@@ -38,6 +38,7 @@ interface IEnvVars {
   STRIPE_WEBHOOK_SECRET: string;
   OPENAI_API_KEY: string;
   GEMINI_API_KEY: string;
+  GROQ_API_KEY: string;
 }
 
 const loadEnv = (): IEnvVars => {
@@ -77,6 +78,7 @@ const loadEnv = (): IEnvVars => {
     "STRIPE_WEBHOOK_SECRET",
     "OPENAI_API_KEY",
     "GEMINI_API_KEY",
+    "GROQ_API_KEY",
   ];
 
   requiredEnv.forEach((envVar) => {
@@ -125,6 +127,7 @@ const loadEnv = (): IEnvVars => {
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY as string,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY as string,
+    GROQ_API_KEY: process.env.GROQ_API_KEY as string,
   };
 };
 

@@ -18,7 +18,7 @@ export const commonProtectedRoutes: RouteConfig = {
 };
 export const guideProtectedRoutes: RouteConfig = {
   exact: [],
-  patterns: [/^\/guide/],
+  patterns: [/^\/gauide/],
 };
 export const touristProtectedRoutes: RouteConfig = {
   exact: ["/my-bookings"],
@@ -35,7 +35,7 @@ export const isAuthRoute = (pathname: string) => {
 
 export const isRouteMatches = (
   pathname: string,
-  routes: RouteConfig
+  routes: RouteConfig,
 ): boolean => {
   if (routes.exact.includes(pathname)) {
     return true;
@@ -45,7 +45,7 @@ export const isRouteMatches = (
 };
 
 export const getRouteOwner = (
-  pathname: string
+  pathname: string,
 ): "TOURIST" | "GUIDE" | "ADMIN" | "COMMON" | null => {
   if (isRouteMatches(pathname, adminProtectedRoutes)) {
     return "ADMIN";
@@ -77,7 +77,7 @@ export const getDefaultDashboardRoute = (role: UserRole) => {
 
 export const isValidRedirectForRole = (
   redirectPath: string,
-  role: UserRole
+  role: UserRole,
 ): boolean => {
   const routeOwner = getRouteOwner(redirectPath);
 

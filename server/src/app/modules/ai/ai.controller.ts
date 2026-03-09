@@ -17,7 +17,7 @@ const tripPlanner = catchAsync(async (req, res, next) => {
     statusCode: 200,
     success: true,
     data: {
-      trip,
+      ...trip,
     },
   });
 });
