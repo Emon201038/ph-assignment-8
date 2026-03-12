@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 import mongoose from "mongoose";
 import { envVars } from "./env";
+import { PrismaClient } from "../../../prisma/generated/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 export const connectDB = async () => {
   try {
@@ -11,3 +13,10 @@ export const connectDB = async () => {
     console.log(error);
   }
 };
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
+const prisma = new PrismaClient({ adapter });
+
+export default prisma;

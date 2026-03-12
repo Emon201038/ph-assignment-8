@@ -1,0 +1,72 @@
+import express, { Router } from "express";
+import userRouter from "../modules/user/user.routes";
+import tourRouter from "../modules/tour/tour.routes";
+import authRouter from "../modules/auth/auth.routes";
+import adminRouter from "../modules/admin/admin.routes";
+import guideRouter from "../modules/guide/guide.routes";
+import touristRouter from "../modules/tourist/tourist.routes";
+import tripRouter from "../modules/trip/trip.routes";
+import { PaymentRoutes } from "../modules/payment/payment.routes";
+import bookingRouter from "../modules/booking/booking.routes";
+import reviewRouter from "../modules/review/review.routes";
+import otpRouter from "../modules/otp/otp.routes";
+import aiRoutes from "../modules/ai/ai.route";
+
+const routerv1 = express.Router();
+
+const moduleRoutes: { path: string; route: Router }[] = [
+  {
+    path: "/auth",
+    route: authRouter,
+  },
+  {
+    path: "/users",
+    route: userRouter,
+  },
+  {
+    path: "/tours",
+    route: tourRouter,
+  },
+  {
+    path: "/trips",
+    route: tripRouter,
+  },
+  {
+    path: "/admin",
+    route: adminRouter,
+  },
+  {
+    path: "/guides",
+    route: guideRouter,
+  },
+  {
+    path: "/tourists",
+    route: touristRouter,
+  },
+  {
+    path: "/otp",
+    route: otpRouter,
+  },
+  {
+    path: "/reviews",
+    route: reviewRouter,
+  },
+  {
+    path: "/payments",
+    route: PaymentRoutes,
+  },
+  {
+    path: "/bookings",
+    route: bookingRouter,
+  },
+  {
+    path: "/ai",
+    route: aiRoutes,
+  },
+];
+
+moduleRoutes.forEach((route) => {
+  routerv1.use(route.path, route.route);
+});
+
+export default routerv1;

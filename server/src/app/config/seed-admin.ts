@@ -1,5 +1,5 @@
-import { UserRole } from "../modules/user/user.interface";
-import User from "../modules/user/user.model";
+import { UserRole } from "../v1/modules/user/user.interface";
+import User from "../v1/modules/user/user.model";
 import { envVars } from "./env";
 
 export const seedAdmin = async () => {

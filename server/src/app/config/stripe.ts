@@ -1,10 +1,10 @@
 import Stripe from "stripe";
-import { PaymentStatus } from "../modules/payment/payment.interface";
+import { PaymentStatus } from "../v1/modules/payment/payment.interface";
 import { envVars } from "./env";
-import { Payment } from "../modules/payment/payment.model";
+import { Payment } from "../v1/modules/payment/payment.model";
 import { Request, Response } from "express";
-import { Booking } from "../modules/booking/booking.model";
-import { BookingStatus } from "../modules/booking/booking.interface";
+import { Booking } from "../v1/modules/booking/booking.model";
+import { BookingStatus } from "../v1/modules/booking/booking.interface";
 
 export const stripe = new Stripe(envVars.STRIPE_SECRET_KEY);
 
@@ -48,7 +48,7 @@ export const stripeWebhook = async (req: Request, res: Response) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch (err) {
     return res.status(400).send(`Webhook Error`);
@@ -59,7 +59,7 @@ export const stripeWebhook = async (req: Request, res: Response) => {
 
     await Payment.findOneAndUpdate(
       { providerPaymentIntentId: intent.id },
-      { status: PaymentStatus.SUCCEEDED }
+      { status: PaymentStatus.SUCCEEDED },
     );
 
     await Booking.findByIdAndUpdate(intent.metadata?.booking, {
@@ -72,7 +72,7 @@ export const stripeWebhook = async (req: Request, res: Response) => {
 
     await Payment.findOneAndUpdate(
       { providerPaymentIntentId: intent.id },
-      { status: PaymentStatus.FAILED }
+      { status: PaymentStatus.FAILED },
     );
   }
 

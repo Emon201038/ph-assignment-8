@@ -1,0 +1,78 @@
+import AppError from "../../../helpers/appError";
+import { catchAsync } from "../../../utils/catchAsync";
+import { sendResponse } from "../../../utils/sendResponse";
+import { UserService } from "./user.service";
+
+const getUsers = catchAsync(async (req, res, next) => {
+  const { users, meta } = await UserService.getAllUsers(
+    req.query as Record<string, string>,
+  );
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "users retrieved successfully",
+    data: users,
+    meta,
+  });
+});
+
+const createUser = catchAsync(async (req, res, next) => {
+  const data = await UserService.createUser(req.body);
+  sendResponse(res, {
+    success: true,
+    statusCode: 201,
+    message: "user created successfully",
+    data,
+  });
+});
+
+const getUserById = catchAsync(async (req, res, next) => {
+  const isValidId = req.params.id.match(/^[0-9a-fA-F]{24}$/);
+  if (!isValidId) throw new AppError(400, "Invalid user id.");
+  const data = await UserService.getUser(req.params.id);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "user retrieved successfully",
+    data,
+  });
+});
+
+const updateUser = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "user updated successfully",
+    // Todo : update user
+    data: UserService.updateUser(req.params.id, req.body, user),
+  });
+});
+
+const deleteUser = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "user deleted successfully",
+    data: {},
+  });
+});
+
+const getUserByEmail = catchAsync(async (req, res, next) => {
+  const data = await UserService.getUserByEmail(req.params.email);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "user found successfully",
+    data,
+  });
+});
+
+export const UserController = {
+  getUsers,
+  createUser,
+  getUserById,
+  updateUser,
+  deleteUser,
+  getUserByEmail,
+};

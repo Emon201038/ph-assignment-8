@@ -1,0 +1,51 @@
+model Tour {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+
+  destinationId String
+  createdById   String
+
+  price        Float
+  durationDays Int
+  maxGroupSize Int
+
+  difficulty Difficulty?
+  category   TourCategory?
+
+  startDate DateTime?
+  endDate   DateTime?
+
+  rating       Float?
+  totalReviews Int    @default(0)
+
+  isAiGenerated Boolean    @default(false)
+  visibility    Visibility @default(PUBLIC)
+
+  creator     User        @relation("TourCreator", fields: [createdById], references: [id])
+  destination Destination @relation(fields: [destinationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Difficulty {
+  EASY
+  MODERATE
+  HARD
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum TourCategory {
+  BEACH
+  ADVENTURE
+  CULTURE
+  CITY
+  NATURE
+  FOOD
+  NIGHTLIFE
+}

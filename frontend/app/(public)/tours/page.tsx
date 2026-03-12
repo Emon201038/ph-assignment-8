@@ -1,36 +1,37 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import {
   MapPin,
   Star,
-  Clock,
-  SlidersHorizontal,
-  Languages,
-  StarHalf,
   Heart,
   ChevronRightIcon,
   ChevronLeftIcon,
   DollarSign,
   ChartBarStacked,
   Globe,
+  Map,
+  SortAsc,
+  Clock,
 } from "lucide-react";
-import TourFilterSection from "@/components/module/tour/TourFilterSection";
-import { getTours } from "@/action/tour";
-import { queryStringFormatter } from "@/lib/formatters";
-import TourSorting from "@/components/module/tour/TourSorting";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import SearchTour from "@/components/module/tour/SearchTour";
-import { Chevron } from "react-day-picker";
+import { Field, FieldGroup } from "@/components/ui/field";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Slider } from "@/components/ui/slider";
+import ToursFilter, {
+  SheetFilters,
+} from "@/components/module/tour/ToursFilter";
+import ToursChip from "@/components/module/tour/ToursChip";
+import TourSorting from "@/components/module/tour/TourSorting";
 
 const ToursPage = async ({
   searchParams,
@@ -133,8 +134,8 @@ const ToursPage = async ({
   ];
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
-      <main className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-8">
-        {/* <!-- Breadcrumbs & Header --> */}
+      <main className="w-full px-6 md:px-20 py-8">
+        {/* <!-- Breadcrumbs--> */}
         <div className="mb-8">
           <nav
             aria-label="Breadcrumb"
@@ -162,167 +163,25 @@ const ToursPage = async ({
                 Explore Our Tours
               </h1>
               <p className="text-lg text-slate-600 dark:text-slate-400">
-                Discover 248 handpicked tours for your next adventure.
+                Discover a wide range of tours for your next adventure.
               </p>
             </div>
-            <div className="flex gap-2">
-              <button className="flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                <span className="material-symbols-outlined text-xl">sort</span>
-                Sort by: Popular
-              </button>
+            <div className="flex md:justify-between items-center gap-4">
+              <div className="md:hidden">
+                <SheetFilters />
+              </div>
+              <TourSorting />
             </div>
           </div>
         </div>
         {/* <!-- Quick Filter Chips --> */}
-        <div className="flex gap-3 pb-6 overflow-x-auto no-scrollbar">
-          {[
-            "All Tours",
-            "Top Rated",
-            "Budget Friendly",
-            "Luxury",
-            "Family Style",
-          ].map((i, index) => (
-            <button
-              className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-full  px-6 text-sm font-bold  ${index === 0 ? "bg-primary text-white" : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-primary transition-colors"}`}
-            >
-              {i}
-            </button>
-          ))}
-        </div>
+        <ToursChip />
         <div className="flex flex-col lg:flex-row gap-8">
           {/* <!-- Sidebar Filters --> */}
-          <aside className="w-full lg:w-72 shrink-0 space-y-8">
-            <div className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                  Filters
-                </h3>
-                <button className="text-xs font-bold text-primary uppercase tracking-wider hover:underline">
-                  Clear All
-                </button>
-              </div>
-              <div className="space-y-6">
-                {/* <!-- Country --> */}
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white mb-3">
-                    <span className="material-symbols-outlined text-primary text-xl">
-                      public
-                    </span>
-                    Country
-                  </label>
-                  <select className="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:border-primary focus:ring-primary dark:text-slate-300">
-                    <option>All Countries</option>
-                    <option>Italy</option>
-                    <option>Japan</option>
-                    <option>France</option>
-                    <option>Greece</option>
-                  </select>
-                </div>
-                {/* <!-- City --> */}
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white mb-3">
-                    <MapPin size={15} />
-                    City
-                  </label>
-                  <select className="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:border-primary focus:ring-primary dark:text-slate-300">
-                    <option>All Cities</option>
-                    <option>Rome</option>
-                    <option>Tokyo</option>
-                    <option>Paris</option>
-                  </select>
-                </div>
-                {/* <!-- Price Range --> */}
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white mb-3">
-                    <DollarSign size={15} />
-                    Price Range
-                  </label>
-                  <div className="space-y-2">
-                    <input
-                      className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary"
-                      type="range"
-                    />
-                    <div className="flex justify-between text-xs font-medium text-slate-500">
-                      <span>$0</span>
-                      <span>$5000+</span>
-                    </div>
-                  </div>
-                </div>
-                {/* <!-- Category --> */}
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white mb-3">
-                    <ChartBarStacked size={15} />
-                    Category
-                  </label>
-                  <div className="grid grid-cols-1 gap-2">
-                    <label className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                      <input
-                        className="rounded border-slate-300 text-primary focus:ring-primary bg-white dark:bg-slate-800"
-                        type="checkbox"
-                      />{" "}
-                      Adventure
-                    </label>
-                    <label className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                      <input
-                        className="rounded border-slate-300 text-primary focus:ring-primary bg-white dark:bg-slate-800"
-                        type="checkbox"
-                      />{" "}
-                      Cultural
-                    </label>
-                    <label className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                      <input
-                        className="rounded border-slate-300 text-primary focus:ring-primary bg-white dark:bg-slate-800"
-                        type="checkbox"
-                      />{" "}
-                      Sightseeing
-                    </label>
-                    <label className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                      <input
-                        className="rounded border-slate-300 text-primary focus:ring-primary bg-white dark:bg-slate-800"
-                        type="checkbox"
-                      />{" "}
-                      Food &amp; Drink
-                    </label>
-                  </div>
-                </div>
-                {/* <!-- Language --> */}
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white mb-3">
-                    <Globe size={15} />
-                    Language
-                  </label>
-                  <div className="grid grid-cols-1 gap-2">
-                    <label className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                      <input
-                        checked={false}
-                        className="border-slate-300 text-primary focus:ring-primary bg-white dark:bg-slate-800"
-                        name="lang"
-                        type="radio"
-                      />{" "}
-                      English
-                    </label>
-                    <label className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                      <input
-                        className="border-slate-300 text-primary focus:ring-primary bg-white dark:bg-slate-800"
-                        name="lang"
-                        type="radio"
-                      />{" "}
-                      Spanish
-                    </label>
-                    <label className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                      <input
-                        className="border-slate-300 text-primary focus:ring-primary bg-white dark:bg-slate-800"
-                        name="lang"
-                        type="radio"
-                      />{" "}
-                      French
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <aside className="w-full hidden md:block lg:w-72 shrink-0 space-y-8">
+            <ToursFilter />
             {/* <!-- Promo Card --> */}
-            <div className="relative overflow-hidden rounded-xl bg-primary p-6 text-white">
+            <div className="md:hidden relative overflow-hidden rounded-xl bg-primary p-6 text-white">
               <div className="relative z-10">
                 <h4 className="text-xl font-bold mb-2">Get 20% Off</h4>
                 <p className="text-primary-20 text-sm mb-4">
@@ -349,7 +208,8 @@ const ToursPage = async ({
                   className="group flex flex-col overflow-hidden rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:shadow-md"
                 >
                   <div className="relative h-56 w-full overflow-hidden">
-                    <img
+                    <Image
+                      fill
                       alt={tour.title}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       data-alt={tour.title}
@@ -359,9 +219,12 @@ const ToursPage = async ({
                     <div className="absolute top-4 left-4 rounded-full bg-white/90 dark:bg-slate-900/90 px-3 py-1 text-xs font-bold text-primary shadow-sm">
                       {tour.category}
                     </div>
-                    <button className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 dark:bg-slate-900/90 text-slate-600 hover:text-red-500 shadow-sm transition-colors">
+                    <Button
+                      variant={"ghost"}
+                      className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 dark:bg-slate-900/90 text-slate-600 hover:text-red-500 shadow-sm transition-colors"
+                    >
                       <Heart size={15} />
-                    </button>
+                    </Button>
                     <div className="absolute bottom-4 left-4 rounded-lg bg-primary px-3 py-1 text-sm font-bold text-white shadow-lg">
                       From ${tour.price}
                     </div>
@@ -374,13 +237,11 @@ const ToursPage = async ({
                           {tour.rating}
                         </span>
                         <span className="text-xs font-medium text-slate-500">
-                          ({tour.reviews} reviews)
+                          ({tour.reviews})
                         </span>
                       </div>
                       <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
-                        <span className="material-symbols-outlined text-sm">
-                          schedule
-                        </span>
+                        <Clock className="size-4" />
                         <span className="text-xs font-medium">
                           {tour.duration}
                         </span>
@@ -393,9 +254,12 @@ const ToursPage = async ({
                       {tour.description}
                     </p>
                     <div className="mt-auto flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
-                      <button className="w-full rounded-lg border-2 border-primary text-primary px-4 py-2 text-sm font-bold hover:bg-primary hover:text-white transition-all">
+                      <Link
+                        href={`/tours/${tour.id}`}
+                        className="w-full text-center rounded-lg border-2 border-primary text-primary px-4 py-2 text-sm font-bold hover:bg-primary hover:text-white transition-all"
+                      >
                         View Details
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </div>

@@ -1,0 +1,41 @@
+model Destination {
+  id        String @id @default(uuid())
+  name      String
+  city      String
+  country   String
+  continent String
+
+  image       String
+  description String
+  overview    String
+
+  lat Float
+  lng Float
+
+  rating      Float
+  averageCost Int
+
+  bestSeason String[]
+  currency   String
+  languages  String[]
+
+  transportation String
+
+  attractions TopAttraction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tours     Tour[]
+}
+
+model TopAttraction {
+  id          String @id @default(uuid())
+  name        String
+  image       String
+  description String
+
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  destinationId String
+
+  createdAt DateTime @default(now())
+}

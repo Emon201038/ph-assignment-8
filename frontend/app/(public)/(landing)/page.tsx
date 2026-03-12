@@ -1,3 +1,4 @@
+import DestinationSearch from "@/components/module/destination/DestinationSearch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -220,68 +221,7 @@ export default function LandingPage() {
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
         {/* Top Navigation Bar */}
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-20 py-4 bg-white dark:bg-slate-900 sticky top-0 z-50">
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2 text-primary">
-              <span className="material-symbols-outlined text-3xl font-bold">
-                explore
-              </span>
-              <h2 className="text-slate-900 dark:text-white text-xl font-black leading-tight tracking-tight">
-                TourBuddy
-              </h2>
-            </div>
-            <nav className="hidden lg:flex items-center gap-8">
-              <a
-                className="text-slate-600 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors"
-                href="#"
-              >
-                Destinations
-              </a>
-              <a
-                className="text-slate-600 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors"
-                href="#"
-              >
-                Experiences
-              </a>
-              <a
-                className="text-slate-600 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors"
-                href="#"
-              >
-                Guides
-              </a>
-              <a
-                className="text-slate-600 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors"
-                href="#"
-              >
-                Why Us
-              </a>
-            </nav>
-          </div>
-          <div className="flex flex-1 justify-end gap-4 items-center">
-            <label className="hidden md:flex flex-col min-w-40 h-10 max-w-64">
-              <div className="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden border border-slate-200 dark:border-slate-700">
-                <div className="text-slate-400 flex bg-slate-50 dark:bg-slate-800 items-center justify-center pl-3">
-                  <span className="material-symbols-outlined text-xl">
-                    search
-                  </span>
-                </div>
-                <Input
-                  className="form-input flex w-full min-w-0 flex-1 border-none bg-slate-50 dark:bg-slate-800 focus-visible:ring-0 focus-visible:outline-none text-sm placeholder:text-slate-400 shadow-none"
-                  placeholder="Search experiences..."
-                  value=""
-                />
-              </div>
-            </label>
-            <div className="flex gap-2">
-              <Button className="hidden sm:flex min-w-21 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold tracking-tight hover:opacity-90 transition-opacity">
-                Sign Up
-              </Button>
-              <Button className="flex min-w-21 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold tracking-tight hover:bg-slate-200 transition-colors">
-                Log In
-              </Button>
-            </div>
-          </div>
-        </header>
+
         <main className="flex flex-col">
           {/* Hero Section */}
           <section className="relative px-4 py-10 md:px-20 md:py-16">
@@ -303,28 +243,7 @@ export default function LandingPage() {
                   local guides who know their city best.
                 </p>
               </div>
-              <div className="w-full max-w-3xl bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2">
-                <div className="flex flex-1 items-center px-4 gap-3 border-b md:border-b-0 md:border-r border-slate-100 dark:border-slate-800 py-2">
-                  <MapPin className="text-primary" />
-                  <Input
-                    className="w-full border-none focus-visible:ring-0 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 shadow-none"
-                    placeholder="Where do you want to go?"
-                    type="text"
-                  />
-                </div>
-                <div className="flex flex-1 items-center px-4 gap-3 border-b md:border-b-0 md:border-r border-slate-100 dark:border-slate-800 py-2">
-                  <Calendar className="text-primary" />
-                  <Input
-                    className="w-full border-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-none bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 shadow-none"
-                    placeholder="When?"
-                    type="text"
-                  />
-                </div>
-                <Button className="bg-primary hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 h-full">
-                  <Search />
-                  Search
-                </Button>
-              </div>
+              <DestinationSearch target="/tours" />
             </div>
           </section>
           {/* Explore by Interest */}

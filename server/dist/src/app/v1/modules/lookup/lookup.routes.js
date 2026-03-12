@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const lookup_controller_1 = require("./lookup.controller");
+const lookupRouter = (0, express_1.Router)();
+lookupRouter.get("/countries", lookup_controller_1.getCountries);
+lookupRouter.get("/languages", lookup_controller_1.getLanguages);
+lookupRouter.get("/currencies", lookup_controller_1.getCurrencies);
+lookupRouter.get("/banks", lookup_controller_1.getBanks);
+exports.default = lookupRouter;

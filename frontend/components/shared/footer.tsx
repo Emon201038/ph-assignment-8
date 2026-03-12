@@ -13,13 +13,13 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="bg-white dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 pt-16 pb-8 px-6 md:px-10">
-      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10">
+    <footer className="bg-white dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 pt-16 pb-8 px-6 md:px-20">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10">
         <div className="col-span-2 lg:col-span-2">
           <div className="flex items-center gap-2 text-primary mb-6 w-full">
             <Link
               href="/"
-              className="flex items-center gap-2 w-[50%] h-12 relative"
+              className="flex items-center gap-2 w-[50%] h-15 relative"
             >
               <span className="text-xl font-bold sr-only">LocalGuide</span>
               <Image

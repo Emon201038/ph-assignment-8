@@ -2,7 +2,7 @@ import { Response } from "express";
 
 export interface IMeta {
   total: number;
-  totalPages: number;
+  totalPages?: number;
   page: number;
   limit: number;
 }
