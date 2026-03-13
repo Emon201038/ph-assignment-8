@@ -26,8 +26,8 @@ const TourSorting = () => {
         router.push(`?${params.toString()}`);
         return;
 
-      case "price-asc":
-      case "price-desc":
+      case "priceFrom-asc":
+      case "priceFrom-desc":
       case "rating-asc":
       case "rating-desc":
         params.set("sortBy", value.split("-")[0]);
@@ -45,8 +45,8 @@ const TourSorting = () => {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="popular">Most Popular</SelectItem>
-        <SelectItem value="price-asc">Price: Low to High</SelectItem>
-        <SelectItem value="price-desc">Price: High to Low</SelectItem>
+        <SelectItem value="priceFrom-asc">Price: Low to High</SelectItem>
+        <SelectItem value="priceFrom-desc">Price: High to Low</SelectItem>
         <SelectItem value="rating-asc">Rating: Low to High</SelectItem>
         <SelectItem value="rating-desc">Rating: High to Low</SelectItem>
       </SelectContent>

@@ -26,83 +26,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
-
-const countries = [
-  { label: "Turkey", value: "turkey" },
-  { label: "Indonesia", value: "indonesia" },
-  { label: "New Zealand", value: "new zealand" },
-  { label: "Italy", value: "italy" },
-  { label: "UAE", value: "uae" },
-  { label: "China", value: "china" },
-  { label: "Czech Republic", value: "czech republic" },
-  { label: "USA", value: "usa" },
-  { label: "Netherlands", value: "netherlands" },
-  { label: "Brazil", value: "brazil" },
-  { label: "Austria", value: "austria" },
-  { label: "UK", value: "uk" },
-  { label: "Australia", value: "australia" },
-  { label: "Singapore", value: "singapore" },
-  { label: "Canada", value: "canada" },
-  { label: "South Korea", value: "south korea" },
-  { label: "Argentina", value: "argentina" },
-  { label: "Spain", value: "spain" },
-  { label: "Egypt", value: "egypt" },
-  { label: "Greece", value: "greece" },
-  { label: "Morocco", value: "morocco" },
-  { label: "French Polynesia", value: "french polynesia" },
-  { label: "France", value: "france" },
-  { label: "Vietnam", value: "vietnam" },
-  { label: "Maldives", value: "maldives" },
-  { label: "South Africa", value: "south africa" },
-  { label: "Peru", value: "peru" },
-  { label: "Taiwan", value: "taiwan" },
-  { label: "Iceland", value: "iceland" },
-  { label: "Japan", value: "japan" },
-  { label: "Thailand", value: "thailand" },
-];
-
-const cities = [
-  { label: "Marrakech", value: "marrakech" },
-  { label: "Vaitape", value: "vaitape" },
-  { label: "Miami", value: "miami" },
-  { label: "Rio de Janeiro", value: "rio de janeiro" },
-  { label: "Dubai", value: "dubai" },
-  { label: "Taipei", value: "taipei" },
-  { label: "Queenstown", value: "queenstown" },
-  { label: "Las Vegas", value: "las vegas" },
-  { label: "Banff", value: "banff" },
-  { label: "London", value: "london" },
-  { label: "Paris", value: "paris" },
-  { label: "Shanghai", value: "shanghai" },
-  { label: "Sydney", value: "sydney" },
-  { label: "New York", value: "new york" },
-  { label: "Prague", value: "prague" },
-  { label: "Tokyo", value: "tokyo" },
-  { label: "San Francisco", value: "san francisco" },
-  { label: "Vienna", value: "vienna" },
-  { label: "Cairo", value: "cairo" },
-  { label: "Santorini", value: "santorini" },
-  { label: "Rome", value: "rome" },
-  { label: "Reykjavik", value: "reykjavik" },
-  { label: "Singapore", value: "singapore" },
-  { label: "Bangkok", value: "bangkok" },
-  { label: "Hanoi", value: "hanoi" },
-  { label: "Amsterdam", value: "amsterdam" },
-  { label: "Cape Town", value: "cape town" },
-  { label: "Denpasar", value: "denpasar" },
-  { label: "Barcelona", value: "barcelona" },
-  { label: "Cusco", value: "cusco" },
-  { label: "Honolulu", value: "honolulu" },
-  { label: "Istanbul", value: "istanbul" },
-  { label: "Male", value: "male" },
-  { label: "Vancouver", value: "vancouver" },
-  { label: "Kyoto", value: "kyoto" },
-  { label: "Buenos Aires", value: "buenos aires" },
-  { label: "Seoul", value: "seoul" },
-  { label: "Phuket", value: "phuket" },
-  { label: "Hong Kong", value: "hong kong" },
-  { label: "Venice", value: "venice" },
-];
+import { categories, cities, countries, languages } from "@/constants/tours";
 
 export default function ToursFilter() {
   const router = useRouter();
@@ -114,8 +38,8 @@ export default function ToursFilter() {
     Number(searchParams.get("maxPrice")) || 5000,
   ]);
 
-  const [categories, setCategories] = useState<string[]>(
-    searchParams.getAll("category") || [],
+  const [category, setCategory] = useState<string>(
+    searchParams.get("category") || "",
   );
 
   const [country, setCountry] = useState(searchParams.get("country") || "");
@@ -135,6 +59,8 @@ export default function ToursFilter() {
     if (!value) params.delete(key);
     else params.set(key, value);
 
+    params.set("page", "1");
+
     updateQuery(params);
   };
 
@@ -145,23 +71,7 @@ export default function ToursFilter() {
     const params = new URLSearchParams(searchParams.toString());
     params.set("minPrice", value[0].toString());
     params.set("maxPrice", value[1].toString());
-
-    updateQuery(params);
-  };
-
-  // CATEGORY MULTI SELECT
-  const handleCategoryChange = (value: string, checked: boolean) => {
-    let updated = [...categories];
-
-    if (checked) updated.push(value);
-    else updated = updated.filter((c) => c !== value);
-
-    setCategories(updated);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("category");
-
-    updated.forEach((cat) => params.append("category", cat));
+    params.set("page", "1");
 
     updateQuery(params);
   };
@@ -169,7 +79,7 @@ export default function ToursFilter() {
   // CLEAR ALL
   const clearAll = () => {
     setPrice([0, 5000]);
-    setCategories([]);
+    setCategory("");
     setCountry("");
     setCity("");
     setLanguage("");
@@ -189,13 +99,13 @@ export default function ToursFilter() {
 
   const filtersCount = useMemo(() => {
     return [
-      categories.length > 0,
+      category,
       country,
       city,
       language,
       price[0] !== 0 || price[1] !== 5000,
     ].filter(Boolean).length;
-  }, [categories, country, city, language, price]);
+  }, [category, country, city, language, price]);
 
   return (
     <div className="md:rounded-xl bg-white dark:bg-slate-900 md:border p-0 md:p-6 md:shadow-sm">
@@ -315,28 +225,28 @@ export default function ToursFilter() {
             Category
           </Label>
 
-          <div className="grid gap-2">
-            {[
-              { value: "adventure", label: "Adventure" },
-              { value: "cultural", label: "Cultural" },
-              { value: "sightseeing", label: "Sightseeing" },
-              { value: "food-drink", label: "Food & Drink" },
-            ].map((c) => (
-              <div
-                key={c.value}
-                className="flex items-center gap-3 cursor-pointer"
-              >
-                <Checkbox
-                  checked={categories.includes(c.value)}
-                  onCheckedChange={(checked) =>
-                    handleCategoryChange(c.value, Boolean(checked))
-                  }
-                  id={c.value}
-                />
-                <Label htmlFor={c.value}>{c.label}</Label>
-              </div>
-            ))}
-          </div>
+          <Select
+            value={category}
+            onValueChange={(v) => {
+              handleSingleFilter("category", v);
+              setCategory(v);
+            }}
+          >
+            <SelectTrigger className="w-full cursor-pointer">
+              <SelectValue placeholder="All Categories" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((cat) => (
+                <SelectItem
+                  key={cat.value}
+                  value={cat.value}
+                  className="hover:bg-primary hover:text-primary-foreground"
+                >
+                  {cat.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* LANGUAGE */}
@@ -346,24 +256,28 @@ export default function ToursFilter() {
             Language
           </Label>
 
-          <RadioGroup
+          <Select
             value={language}
             onValueChange={(v) => {
               handleSingleFilter("language", v);
               setLanguage(v);
             }}
           >
-            {[
-              { value: "english", label: "English" },
-              { value: "spanish", label: "Spanish" },
-              { value: "french", label: "French" },
-            ].map((l) => (
-              <div key={l.value} className="flex items-center gap-3">
-                <RadioGroupItem id={l.value} value={l.value} />
-                <Label htmlFor={l.value}>{l.label}</Label>
-              </div>
-            ))}
-          </RadioGroup>
+            <SelectTrigger className="w-full cursor-pointer">
+              <SelectValue placeholder="All Languages" />
+            </SelectTrigger>
+            <SelectContent>
+              {languages.map((lang) => (
+                <SelectItem
+                  key={lang.value}
+                  value={lang.value}
+                  className="hover:bg-primary hover:text-primary-foreground"
+                >
+                  {lang.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </div>

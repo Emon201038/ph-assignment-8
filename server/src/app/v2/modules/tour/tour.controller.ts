@@ -11,6 +11,9 @@ const getAllTours = catchAsync(async (req, res, next) => {
     "category",
     "country",
     "city",
+    "minPrice",
+    "maxPrice",
+    "language",
   ]);
 
   const data = await TourService.getAllTourFromDB(

@@ -35,6 +35,8 @@ import TourSorting from "@/components/module/tour/TourSorting";
 import { serverFetch } from "@/lib/server-fetch";
 import { ITour } from "@/interfaces/tour.interface";
 import { IResponse } from "@/interfaces";
+import Pagination from "@/components/module/tour/TourPagination";
+import TablePagination from "@/components/shared/TablePagination";
 
 const ToursPage = async ({
   searchParams,
@@ -42,10 +44,11 @@ const ToursPage = async ({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
   const searchParamsObj = await searchParams;
+  if (!searchParamsObj.limit) searchParamsObj.limit = "6";
   // const queryString = queryStringFormatter(searchParamsObj);
   // const tours = await getTours(queryString);
   const res = await serverFetch.get(
-    `/v2/tours?limit=6&${new URLSearchParams(searchParamsObj as Record<string, string>).toString()}`,
+    `/v2/tours?${new URLSearchParams(searchParamsObj as Record<string, string>).toString()}`,
   );
   const data: IResponse<ITour[]> = await res.json();
 
@@ -178,7 +181,7 @@ const ToursPage = async ({
           </div>
         </div>
         {/* <!-- Quick Filter Chips --> */}
-        <ToursChip />
+        {/* <ToursChip /> */}
         <div className="flex flex-col lg:flex-row gap-8">
           {/* <!-- Sidebar Filters --> */}
           <aside className="w-full hidden md:block lg:w-72 shrink-0 space-y-8">
@@ -228,7 +231,7 @@ const ToursPage = async ({
                       <Heart size={15} />
                     </Button>
                     <div className="absolute bottom-4 left-4 rounded-lg bg-primary px-3 py-1 text-sm font-bold text-white shadow-lg">
-                      From ${tour.price}
+                      From ${tour.priceFrom}
                     </div>
                   </div>
                   <div className="flex flex-1 flex-col p-5">
@@ -267,28 +270,20 @@ const ToursPage = async ({
                 </div>
               ))}
             </div>
-            <div className="mt-12 flex justify-center">
-              <nav className="flex items-center gap-1">
-                <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50">
-                  <ChevronLeftIcon className="size-4" />
-                </button>
-                <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary font-bold text-white">
-                  1
-                </button>
-                <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-200 hover:bg-slate-50">
-                  2
-                </button>
-                <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-200 hover:bg-slate-50">
-                  3
-                </button>
-                <span className="px-2 text-slate-400">...</span>
-                <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-200 hover:bg-slate-50">
-                  12
-                </button>
-                <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50">
-                  <ChevronRightIcon className="size-4" />
-                </button>
-              </nav>
+            {/* <Pagination
+              meta={{
+                limit: data.meta?.limit as number,
+                page: data.meta?.page as number,
+                total: data.meta?.total as number,
+              }}
+            /> */}
+            <div className="mt-12">
+              <TablePagination
+                currentPage={data.meta?.page as number}
+                totalPages={Math.ceil(
+                  Number(data.meta?.total) / Number(data.meta?.limit),
+                )}
+              />
             </div>
           </div>
         </div>

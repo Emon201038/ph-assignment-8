@@ -6,7 +6,8 @@ const getAllTourFromDB = async (options: any, filters: any) => {
   const { limit, skip, page, sortBy, sortOrder } =
     paginationHelper.calculatePagination(options);
 
-  const { searchTerm, category, country, city, ...filtersData } = filters;
+  const { searchTerm, category, country, city, minPrice, maxPrice, language } =
+    filters;
 
   const andConditions: Prisma.TourWhereInput[] = [];
   if (searchTerm) {
@@ -24,6 +25,30 @@ const getAllTourFromDB = async (options: any, filters: any) => {
             mode: "insensitive",
           },
         },
+        {
+          destination: {
+            OR: [
+              {
+                name: {
+                  contains: searchTerm,
+                  mode: "insensitive",
+                },
+              },
+              {
+                city: {
+                  contains: searchTerm,
+                  mode: "insensitive",
+                },
+              },
+              {
+                country: {
+                  contains: searchTerm,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          },
+        },
       ],
     });
   }
@@ -32,6 +57,69 @@ const getAllTourFromDB = async (options: any, filters: any) => {
     andConditions.push({
       category: category.toUpperCase(),
     });
+  }
+
+  if (country) {
+    andConditions.push({
+      destination: {
+        country: {
+          contains: country,
+          mode: "insensitive",
+        },
+      },
+    });
+  }
+
+  if (city) {
+    andConditions.push({
+      destination: {
+        city: {
+          contains: city,
+          mode: "insensitive",
+        },
+      },
+    });
+  }
+
+  if (minPrice) {
+    andConditions.push({
+      priceFrom: {
+        gte: parseInt(minPrice) || 0,
+      },
+    });
+  }
+
+  if (maxPrice) {
+    andConditions.push({
+      priceFrom: {
+        lte: parseInt(maxPrice) || 5000,
+      },
+    });
+  }
+
+  if (language) {
+    andConditions.push({
+      destination: {
+        languages: {
+          has: language,
+        },
+      },
+    });
+
+    const lang = await prisma.destination.groupBy({
+      by: ["languages"],
+    });
+
+    const mainarr = lang.map((i) => i.languages).flatMap((i) => i);
+    const unique = mainarr.filter(
+      (item, index, arr) => arr.indexOf(item) === index,
+    );
+    console.log(
+      unique.map((i) => ({
+        label: i.charAt(0).toUpperCase() + i.slice(1),
+        value: i,
+      })),
+    );
   }
 
   const whereConditions: Prisma.TourWhereInput =
