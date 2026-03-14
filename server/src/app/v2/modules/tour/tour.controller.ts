@@ -38,4 +38,16 @@ const getSingleTour = catchAsync(async (req, res, next) => {
   });
 });
 
-export const TourController = { getAllTours, getSingleTour };
+const createTour = catchAsync(async (req, res, next) => {
+  const userId = req.user?.userId;
+  const data = await TourService.createTourInDB(req.body, userId);
+
+  sendResponse(res, {
+    message: "Tour created successfully",
+    statusCode: 201,
+    success: true,
+    data,
+  });
+});
+
+export const TourController = { getAllTours, getSingleTour, createTour };

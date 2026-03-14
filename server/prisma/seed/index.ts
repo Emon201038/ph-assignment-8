@@ -5,6 +5,7 @@ import { guides } from "./guides";
 import { travelers } from "./traveler";
 import { tripIncludes } from "./trip";
 import { toursData } from "./tour";
+import { generateTripsData } from "./trips";
 
 function getContinent(country: string) {
   const map: Record<string, string> = {
@@ -230,6 +231,9 @@ const updates = [
 ];
 
 async function main() {
+  // ========== OLD SEEDING CODE (COMMENTED OUT) ==========
+  // Uncomment the sections below to re-seed the database with initial data
+
   // await prisma.user.create({
   //   data: {
   //     name: "Admin One",
@@ -282,16 +286,35 @@ async function main() {
   //   });
   // }
 
-  console.log("Updating broken image URLs...");
+  // ========== TRIPS SEEDING (MAIN) ==========
+  console.log("Generating trips data...");
+  const tours = await prisma.tour.findMany({});
+  const { trips, tripIncludes: tripIncludeItems } = generateTripsData(tours);
 
-  for (const tour of updates) {
-    await prisma.tour.update({
-      where: { id: tour.id },
-      data: { image: tour.url }, // Change 'imageUrl' to 'image' if that is your schema field name
+  console.log(`Creating ${trips.length} trips...`);
+  for (const trip of trips) {
+    await prisma.trip.create({
+      data: trip,
     });
   }
 
-  console.log("Update complete.");
+  console.log(`Creating ${tripIncludeItems.length} trip include items...`);
+  for (const tripIncludeItem of tripIncludeItems) {
+    await prisma.tripIncludeItem.create({
+      data: tripIncludeItem,
+    });
+  }
+
+  // console.log("Updating broken image URLs...");
+
+  // for (const tour of updates) {
+  //   await prisma.tour.update({
+  //     where: { id: tour.id },
+  //     data: { image: tour.url }, // Change 'imageUrl' to 'image' if that is your schema field name
+  //   });
+  // }
+
+  console.log("Seed completed successfully!");
 }
 
 main()

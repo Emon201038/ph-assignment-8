@@ -37,14 +37,14 @@ export default function GuidesLayout({
                 <h2 className="text-slate-900 dark:text-white text-2xl font-bold">
                   Explore All Guides
                 </h2>
-                <div className="flex gap-2">
+                {/* <div className="flex gap-2">
                   <Button variant="outline" className="flex items-center gap-2">
                     <Filter className="w-4 h-4" /> Filter
                   </Button>
                   <Button variant="outline" className="flex items-center gap-2">
                     Sort: Popular <ChevronDown className="w-4 h-4" />
                   </Button>
-                </div>
+                </div> */}
               </div>
               {children}
             </section>

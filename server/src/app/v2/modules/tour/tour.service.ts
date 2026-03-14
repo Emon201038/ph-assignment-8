@@ -1,6 +1,7 @@
 import { Prisma } from "../../../../../prisma/generated/client";
 import prisma from "../../../config/db";
 import { paginationHelper } from "../../../helpers/paginationHelper";
+import AppError from "../../../helpers/appError";
 
 const getAllTourFromDB = async (options: any, filters: any) => {
   const { limit, skip, page, sortBy, sortOrder } =
@@ -162,11 +163,150 @@ const getSingleTour = async (id: string) => {
     where: {
       id,
     },
+    include: {
+      destination: {
+        select: {
+          city: true,
+          country: true,
+          languages: true,
+        },
+      },
+
+      trips: {
+        select: {
+          guide: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phone: true,
+              city: true,
+              avatar: true,
+            },
+          },
+          includes: {
+            select: {
+              tripInclude: {
+                select: {
+                  category: true,
+                  title: true,
+                  description: true,
+                },
+              },
+            },
+          },
+          startDate: true,
+          endDate: true,
+          price: true,
+          maxGuests: true,
+          bookedSeats: true,
+          status: true,
+        },
+      },
+      itineraries: {
+        select: {
+          dayNumber: true,
+          title: true,
+          description: true,
+          icon: true,
+        },
+      },
+    },
   });
+  return {
+    ...result,
+    trips: result?.trips.map((trip) => ({
+      ...trip,
+      includes: trip.includes.map((include) => include.tripInclude),
+    })),
+  };
+};
+
+const createTourInDB = async (payload: any, userId: string) => {
+  const {
+    title,
+    description,
+    destinationId,
+    category,
+    priceFrom,
+    image,
+    slug,
+    durationDays,
+    maxGroupSize,
+    difficulty,
+  } = payload;
+
+  // Validate required fields
+  if (
+    !title ||
+    !description ||
+    !destinationId ||
+    !category ||
+    priceFrom === null ||
+    !durationDays ||
+    !maxGroupSize ||
+    !difficulty
+  ) {
+    throw new AppError(400, "Missing required fields");
+  }
+
+  // Validate destination exists
+  const destinationExists = await prisma.destination.findUnique({
+    where: { id: destinationId },
+  });
+
+  if (!destinationExists) {
+    throw new AppError(404, "Destination not found");
+  }
+
+  // Generate slug if not provided
+  const tourSlug =
+    slug ||
+    title
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9\-]/g, "");
+
+  // Create tour
+  const result = await prisma.tour.create({
+    data: {
+      title,
+      description,
+      destinationId,
+      category: category.toUpperCase(),
+      priceFrom,
+      image: image || "https://via.placeholder.com/400x300",
+      slug: tourSlug,
+      durationDays,
+      maxGroupSize,
+      difficulty: difficulty.toUpperCase(),
+      createdById: userId,
+    },
+    include: {
+      destination: {
+        select: {
+          id: true,
+          name: true,
+          city: true,
+          country: true,
+        },
+      },
+      creator: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
   return result;
 };
 
 export const TourService = {
   getAllTourFromDB,
   getSingleTour,
+  createTourInDB,
 };

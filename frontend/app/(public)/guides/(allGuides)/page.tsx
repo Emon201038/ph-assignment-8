@@ -7,6 +7,7 @@ import { IResponse } from "@/interfaces";
 import { IUser } from "@/interfaces/user.interface";
 import { IGuide } from "@/interfaces/guide.interface";
 import TablePagination from "@/components/shared/TablePagination";
+import Link from "next/link";
 
 interface GuidesProps {
   topGuides: ReactNode;
@@ -148,7 +149,12 @@ export default async function Guides({
               <p className="text-slate-600 dark:text-slate-400 text-sm line-clamp-2 italic mb-4">
                 "{guide.guideProfile.aboutMe}"
               </p>
-              <Button className="w-full">View Profile</Button>
+              <Link
+                href={`/guides/${guide.id}`}
+                className="w-full py-2 flex justify-center items-center bg-primary text-primary-foreground rounded-md"
+              >
+                View Profile
+              </Link>
             </div>
           </div>
         ))}

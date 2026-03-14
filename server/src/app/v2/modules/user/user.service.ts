@@ -2,6 +2,7 @@ import { Prisma } from "../../../../../prisma/generated/client";
 import prisma from "../../../config/db";
 import AppError from "../../../helpers/appError";
 import { paginationHelper } from "../../../helpers/paginationHelper";
+import bcrypt from "bcryptjs";
 
 const getAllUserFromDB = async (options: any, filters: any) => {
   const { limit, skip, page, sortBy, sortOrder } =
@@ -62,7 +63,8 @@ const getAllUserFromDB = async (options: any, filters: any) => {
       AND: andConditions,
     },
     include: {
-      guideProfile: topGuides || role.toUpperCase() === "GUIDE" ? true : false,
+      guideProfile:
+        topGuides || (role || "").toUpperCase() === "GUIDE" ? true : false,
     },
     take: limit,
     skip: skip,
@@ -103,7 +105,49 @@ const getSingleUserFromDB = async (id: string) => {
   return result;
 };
 
+const createUserInDB = async (payload: any) => {
+  const { name, email, password, role, country, city, avatar, bio, phone } =
+    payload;
+
+  // Check if user already exists
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (existingUser) {
+    throw new AppError(400, "Email already in use");
+  }
+
+  // Create user
+  const result = await prisma.user.create({
+    data: {
+      name,
+      email,
+      password: await bcrypt.hash(password, 10),
+      role: role ? role.toUpperCase() : "TRAVELER",
+      country: country || "Unknown",
+      city: city || "Unknown",
+      avatar: avatar || null,
+      bio: bio || null,
+      phone: phone || null,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      city: true,
+      country: true,
+      avatar: true,
+      createdAt: true,
+    },
+  });
+
+  return result;
+};
+
 export const UserService = {
   getAllUserFromDB,
   getSingleUserFromDB,
+  createUserInDB,
 };

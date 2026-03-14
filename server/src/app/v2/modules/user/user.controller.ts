@@ -33,4 +33,15 @@ const getSingleUser = catchAsync(async (req, res, next) => {
   });
 });
 
-export const UserController = { getAllUsers, getSingleUser };
+const createUser = catchAsync(async (req, res, next) => {
+  const data = await UserService.createUserInDB(req.body);
+
+  sendResponse(res, {
+    message: "User created successfully",
+    statusCode: 201,
+    success: true,
+    data,
+  });
+});
+
+export const UserController = { getAllUsers, getSingleUser, createUser };

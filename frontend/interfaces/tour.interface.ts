@@ -12,6 +12,7 @@ export interface ITour {
   destination: {
     city: string;
     country: string;
+    languages: string[];
   };
   image: string;
 
@@ -24,6 +25,8 @@ export interface ITour {
     step: number;
     title: string;
     details: string;
+    description: string;
+    dayNumber: number;
   }[];
 
   images: string[];
@@ -40,6 +43,28 @@ export interface ITour {
   totalReviews?: number;
   totalTrips: number;
 
+  itineraries: {
+    dayNumber: number;
+    title: string;
+    description: string;
+    icon: string;
+  }[];
+
+  trips: {
+    id: string;
+    guide: IUser;
+    startDate: Date;
+    endDate: Date;
+    maxGuests: number;
+    bookedSeats: number;
+    price: number;
+    status: string;
+    includes: {
+      category: string;
+      title: string;
+      description: string;
+    }[];
+  }[];
   isActive: boolean;
   isFeatured: boolean;
   createdAt: Date;

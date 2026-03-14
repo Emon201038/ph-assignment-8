@@ -4,6 +4,7 @@ import { IUser } from "@/interfaces/user.interface";
 import { serverFetch } from "@/lib/server-fetch";
 import { Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function TopGuidesPage() {
   const res = await serverFetch.get("/v2/users?topGuides=true&limit=5");
@@ -27,9 +28,11 @@ export default async function TopGuidesPage() {
               {guide.guideProfile.rating}
             </div>
           </div>
-          <h3 className="text-slate-900 dark:text-white font-bold text-lg">
-            {guide.name}
-          </h3>
+          <Link href={`/guides/${guide.id}`}>
+            <h3 className="text-slate-900 dark:text-white font-bold text-lg">
+              {guide.name}
+            </h3>
+          </Link>
           <p className="text-slate-500 dark:text-slate-400 text-sm">
             {guide.city}, {guide.country} • {guide.guideProfile.specialties[0]}
           </p>

@@ -143,26 +143,6 @@ const ToursPage = async ({
       <main className="w-full px-6 md:px-20 py-8">
         {/* <!-- Breadcrumbs--> */}
         <div className="mb-8">
-          <nav
-            aria-label="Breadcrumb"
-            className="flex text-sm font-medium text-slate-500 dark:text-slate-400 mb-4"
-          >
-            <ol className="inline-flex items-center space-x-1 md:space-x-3">
-              <li className="inline-flex items-center">
-                <a className="hover:text-primary" href="#">
-                  Home
-                </a>
-              </li>
-              <li>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-5 w-5 text-slate-400" />
-                  <span className="ml-1 text-slate-900 dark:text-slate-100 font-semibold">
-                    Tours
-                  </span>
-                </div>
-              </li>
-            </ol>
-          </nav>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">

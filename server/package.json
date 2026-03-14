@@ -33,6 +33,7 @@
     "openai": "^6.27.0",
     "streamifier": "^0.1.1",
     "stripe": "^20.1.0",
+    "uuid": "^13.0.0",
     "world-countries": "^5.1.0",
     "zod": "^4.1.13"
   },
