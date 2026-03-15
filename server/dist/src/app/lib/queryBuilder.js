@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -25,7 +34,7 @@ class QueryBuilder {
             "populate",
             ...excludeFields, // Add custom excluded fields
         ];
-        const filters = { ...this.queryParams };
+        const filters = Object.assign({}, this.queryParams);
         excludedFields.forEach((field) => delete filters[field]);
         for (const key in filters) {
             let value = filters[key];
@@ -54,7 +63,7 @@ class QueryBuilder {
                 filters[key] = value;
             }
         }
-        this.filters = { ...this.filters, ...filters };
+        this.filters = Object.assign(Object.assign({}, this.filters), filters);
         this.mongooseQuery = this.model.find(this.filters);
         console.log(this.filters, this.queryParams, filters);
         return this;
@@ -69,75 +78,71 @@ class QueryBuilder {
      *                       e.g., { gender: 'gender', userRole: 'role' }
      * @param foreignField - The field in referenced model to match against (default: '_id')
      */
-    async filterPopulated(refModel, localField, filterFields, foreignField = "_id") {
-        const refFilters = {};
-        // Extract filters that apply to the referenced model
-        for (const [paramKey, refFieldName] of Object.entries(filterFields)) {
-            const value = this.queryParams[paramKey];
-            if (value !== null &&
-                value !== undefined &&
-                value !== "null" &&
-                value !== "undefined" &&
-                value !== "") {
-                // Handle boolean conversion
-                if (value === "true" || value === "false") {
-                    refFilters[refFieldName] = value === "true";
-                }
-                // Handle comma-separated values
-                else if (typeof value === "string" && value.includes(",")) {
-                    const arrayValues = value.split(",").map((v) => v.trim());
-                    refFilters[refFieldName] = { $in: arrayValues };
-                }
-                else {
-                    refFilters[refFieldName] = value;
+    filterPopulated(refModel_1, localField_1, filterFields_1) {
+        return __awaiter(this, arguments, void 0, function* (refModel, localField, filterFields, foreignField = "_id") {
+            const refFilters = {};
+            // Extract filters that apply to the referenced model
+            for (const [paramKey, refFieldName] of Object.entries(filterFields)) {
+                const value = this.queryParams[paramKey];
+                if (value !== null &&
+                    value !== undefined &&
+                    value !== "null" &&
+                    value !== "undefined" &&
+                    value !== "") {
+                    // Handle boolean conversion
+                    if (value === "true" || value === "false") {
+                        refFilters[refFieldName] = value === "true";
+                    }
+                    // Handle comma-separated values
+                    else if (typeof value === "string" && value.includes(",")) {
+                        const arrayValues = value.split(",").map((v) => v.trim());
+                        refFilters[refFieldName] = { $in: arrayValues };
+                    }
+                    else {
+                        refFilters[refFieldName] = value;
+                    }
                 }
             }
-        }
-        // If no filters apply to referenced model, skip this step
-        if (Object.keys(refFilters).length === 0) {
-            return this;
-        }
-        // Find matching documents from the referenced model
-        const matchingRefs = await refModel.find(refFilters).select(foreignField);
-        // Extract the values from the foreignField
-        const matchingValues = matchingRefs.map((doc) => doc[foreignField]);
-        if (matchingValues.length > 0) {
-            // Check if there's already a filter on this localField
-            const existingFilter = this.filters[localField];
-            if (existingFilter && existingFilter.$in) {
-                // If there's already a filter (from searchPopulated or previous filterPopulated),
-                // intersect the two arrays (AND logic)
-                const existingIds = existingFilter.$in.map((id) => id.toString());
-                const newIds = matchingValues.map((id) => id.toString());
-                const intersection = existingIds.filter((id) => newIds.includes(id));
-                if (intersection.length > 0) {
-                    this.filters = {
-                        ...this.filters,
-                        [localField]: {
-                            $in: intersection.map((id) => new mongoose_1.default.Types.ObjectId(id)),
-                        },
-                    };
+            // If no filters apply to referenced model, skip this step
+            if (Object.keys(refFilters).length === 0) {
+                return this;
+            }
+            // Find matching documents from the referenced model
+            const matchingRefs = yield refModel.find(refFilters).select(foreignField);
+            // Extract the values from the foreignField
+            const matchingValues = matchingRefs.map((doc) => doc[foreignField]);
+            if (matchingValues.length > 0) {
+                // Check if there's already a filter on this localField
+                const existingFilter = this.filters[localField];
+                if (existingFilter && existingFilter.$in) {
+                    // If there's already a filter (from searchPopulated or previous filterPopulated),
+                    // intersect the two arrays (AND logic)
+                    const existingIds = existingFilter.$in.map((id) => id.toString());
+                    const newIds = matchingValues.map((id) => id.toString());
+                    const intersection = existingIds.filter((id) => newIds.includes(id));
+                    if (intersection.length > 0) {
+                        this.filters = Object.assign(Object.assign({}, this.filters), { [localField]: {
+                                $in: intersection.map((id) => new mongoose_1.default.Types.ObjectId(id)),
+                            } });
+                    }
+                    else {
+                        // No intersection - return empty result
+                        this.filters = Object.assign(Object.assign({}, this.filters), { _id: { $in: [] } });
+                    }
                 }
                 else {
-                    // No intersection - return empty result
-                    this.filters = { ...this.filters, _id: { $in: [] } };
+                    // No existing filter, just add the new one
+                    this.filters = Object.assign(Object.assign({}, this.filters), { [localField]: { $in: matchingValues } });
                 }
+                this.mongooseQuery = this.model.find(this.filters);
             }
             else {
-                // No existing filter, just add the new one
-                this.filters = {
-                    ...this.filters,
-                    [localField]: { $in: matchingValues },
-                };
+                // No matches found - return empty result
+                this.filters = Object.assign(Object.assign({}, this.filters), { _id: { $in: [] } });
+                this.mongooseQuery = this.model.find(this.filters);
             }
-            this.mongooseQuery = this.model.find(this.filters);
-        }
-        else {
-            // No matches found - return empty result
-            this.filters = { ...this.filters, _id: { $in: [] } };
-            this.mongooseQuery = this.model.find(this.filters);
-        }
-        return this;
+            return this;
+        });
     }
     search(fields, populateField) {
         const keyword = this.queryParams.searchTerm;
@@ -150,7 +155,7 @@ class QueryBuilder {
             }
             return { [field]: { $regex: regex } };
         });
-        this.filters = { ...this.filters, $or: searchConditions };
+        this.filters = Object.assign(Object.assign({}, this.filters), { $or: searchConditions });
         this.mongooseQuery = this.model.find(this.filters);
         return this;
     }
@@ -163,36 +168,35 @@ class QueryBuilder {
      * @param searchFields - Fields to search in the referenced model (e.g., ['name', 'email'])
      * @param foreignField - The field in referenced model to match against (default: '_id')
      */
-    async searchPopulated(refModel, localField, searchFields, foreignField = "_id") {
-        const keyword = this.queryParams.searchTerm;
-        if (!keyword || searchFields.length === 0) {
+    searchPopulated(refModel_1, localField_1, searchFields_1) {
+        return __awaiter(this, arguments, void 0, function* (refModel, localField, searchFields, foreignField = "_id") {
+            const keyword = this.queryParams.searchTerm;
+            if (!keyword || searchFields.length === 0) {
+                return this;
+            }
+            const regex = new RegExp(keyword, "i");
+            // Find matching documents from the referenced model
+            const searchConditions = searchFields.map((field) => ({
+                [field]: { $regex: regex },
+            }));
+            // Select only the foreignField to get matching values
+            const matchingRefs = yield refModel
+                .find({ $or: searchConditions })
+                .select(foreignField);
+            // Extract the values from the foreignField
+            const matchingValues = matchingRefs.map((doc) => doc[foreignField]);
+            if (matchingValues.length > 0) {
+                // Add to existing filters
+                this.filters = Object.assign(Object.assign({}, this.filters), { [localField]: { $in: matchingValues } });
+                this.mongooseQuery = this.model.find(this.filters);
+            }
+            else {
+                // No matches found - return empty result
+                this.filters = Object.assign(Object.assign({}, this.filters), { _id: null });
+                this.mongooseQuery = this.model.find(this.filters);
+            }
             return this;
-        }
-        const regex = new RegExp(keyword, "i");
-        // Find matching documents from the referenced model
-        const searchConditions = searchFields.map((field) => ({
-            [field]: { $regex: regex },
-        }));
-        // Select only the foreignField to get matching values
-        const matchingRefs = await refModel
-            .find({ $or: searchConditions })
-            .select(foreignField);
-        // Extract the values from the foreignField
-        const matchingValues = matchingRefs.map((doc) => doc[foreignField]);
-        if (matchingValues.length > 0) {
-            // Add to existing filters
-            this.filters = {
-                ...this.filters,
-                [localField]: { $in: matchingValues },
-            };
-            this.mongooseQuery = this.model.find(this.filters);
-        }
-        else {
-            // No matches found - return empty result
-            this.filters = { ...this.filters, _id: null };
-            this.mongooseQuery = this.model.find(this.filters);
-        }
-        return this;
+        });
     }
     sort(field) {
         const { sortBy, sortOrder } = this.queryParams;
@@ -265,26 +269,30 @@ class QueryBuilder {
         }
         return this;
     }
-    async exec() {
-        const results = await this.mongooseQuery;
-        return this.applyFieldRenames(results);
+    exec() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const results = yield this.mongooseQuery;
+            return this.applyFieldRenames(results);
+        });
     }
-    async execWithMeta() {
-        const page = Number(this.queryParams.page) || 1;
-        const limit = Number(this.queryParams.limit) || 10;
-        const [data, total] = await Promise.all([
-            this.mongooseQuery.exec(),
-            this.model.countDocuments(this.filters),
-        ]);
-        return {
-            data: this.applyFieldRenames(data),
-            meta: {
-                total: total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit),
-            },
-        };
+    execWithMeta() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const page = Number(this.queryParams.page) || 1;
+            const limit = Number(this.queryParams.limit) || 10;
+            const [data, total] = yield Promise.all([
+                this.mongooseQuery.exec(),
+                this.model.countDocuments(this.filters),
+            ]);
+            return {
+                data: this.applyFieldRenames(data),
+                meta: {
+                    total: total,
+                    page,
+                    limit,
+                    totalPages: Math.ceil(total / limit),
+                },
+            };
+        });
     }
     /**
      * Add price range filtering
@@ -311,10 +319,7 @@ class QueryBuilder {
         delete this.filters.maxPrice;
         // Only add filter if at least one range is specified
         if (Object.keys(priceFilter).length > 0) {
-            this.filters = {
-                ...this.filters,
-                [priceField]: priceFilter,
-            };
+            this.filters = Object.assign(Object.assign({}, this.filters), { [priceField]: priceFilter });
             this.mongooseQuery = this.model.find(this.filters);
         }
         return this;
@@ -329,7 +334,7 @@ class QueryBuilder {
         }
         return results.map((doc) => {
             const plainDoc = doc.toObject ? doc.toObject() : doc;
-            const renamedDoc = { ...plainDoc };
+            const renamedDoc = Object.assign({}, plainDoc);
             Object.entries(renameFields).forEach(([oldKey, newKey]) => {
                 if (oldKey in renamedDoc) {
                     renamedDoc[newKey] = renamedDoc[oldKey];

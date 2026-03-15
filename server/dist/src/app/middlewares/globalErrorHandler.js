@@ -16,7 +16,7 @@ const globalErrorHandler = (err, req, res, next) => {
     if (err.code === 11000) {
         statusCode = httpStatus_1.HTTP_STATUS.CONFLICT;
         const matchedPart = err.message.match(/"([^"]*)"/);
-        message = `${matchedPart?.[1]} already exists.`;
+        message = `${matchedPart === null || matchedPart === void 0 ? void 0 : matchedPart[1]} already exists.`;
     }
     // Mongoose CastError
     else if (err.name === "CastError") {

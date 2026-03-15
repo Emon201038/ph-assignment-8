@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -10,7 +19,7 @@ const guide_model_1 = require("../guide/guide.model");
 const trip_interface_1 = require("./trip.interface");
 const trip_model_1 = require("./trip.model");
 const queryBuilder_1 = require("../../../lib/queryBuilder");
-const getTrips = async () => {
+const getTrips = () => __awaiter(void 0, void 0, void 0, function* () {
     const data = new queryBuilder_1.QueryBuilder(trip_model_1.Trip, {})
         .filter()
         .search([])
@@ -25,8 +34,8 @@ const getTrips = async () => {
         .paginate()
         .execWithMeta();
     return data;
-};
-const getTourTrips = async (tourId) => {
+});
+const getTourTrips = (tourId) => __awaiter(void 0, void 0, void 0, function* () {
     const data = new queryBuilder_1.QueryBuilder(trip_model_1.Trip, { tourId })
         .filter()
         .search([])
@@ -41,9 +50,9 @@ const getTourTrips = async (tourId) => {
         .paginate()
         .execWithMeta();
     return data;
-};
-const getSingleTripDetails = async (tripId) => {
-    const data = await trip_model_1.Trip.findById(tripId)
+});
+const getSingleTripDetails = (tripId) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield trip_model_1.Trip.findById(tripId)
         .populate([
         {
             path: "guideId",
@@ -54,17 +63,13 @@ const getSingleTripDetails = async (tripId) => {
         },
     ])
         .lean();
-    const finalObj = {
-        ...data,
-        guide: data?.guideId,
-        tour: data?.tourId,
-    };
+    const finalObj = Object.assign(Object.assign({}, data), { guide: data === null || data === void 0 ? void 0 : data.guideId, tour: data === null || data === void 0 ? void 0 : data.tourId });
     delete finalObj.guideId;
     delete finalObj.tourId;
     return finalObj;
-};
-const createTrip = async (data) => {
-    const session = await mongoose_1.default.startSession();
+});
+const createTrip = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const session = yield mongoose_1.default.startSession();
     session.startTransaction();
     try {
         const { guideId, startDate, duration } = data;
@@ -76,7 +81,7 @@ const createTrip = async (data) => {
             throw new appError_1.default(400, "Duration must be between 3 hours and 7 days");
         }
         /* 2️⃣ Check guide exists */
-        const guide = await guide_model_1.Guide.findOne({ userId: guideId }).session(session);
+        const guide = yield guide_model_1.Guide.findOne({ userId: guideId }).session(session);
         if (!guide) {
             throw new appError_1.default(404, "Guide not found");
         }
@@ -96,7 +101,7 @@ const createTrip = async (data) => {
         const bufferedEnd = new Date(derivedEndDate);
         bufferedEnd.setDate(bufferedEnd.getDate() + bufferDays);
         /* 6️⃣ Check overlapping trips */
-        const conflictingTrip = await trip_model_1.Trip.findOne({
+        const conflictingTrip = yield trip_model_1.Trip.findOne({
             guideId,
             status: { $in: [trip_interface_1.TripStatus.UPCOMING, trip_interface_1.TripStatus.ONGOING] },
             startDate: { $lte: bufferedEnd },
@@ -113,7 +118,7 @@ const createTrip = async (data) => {
             throw new appError_1.default(409, "Guide is already assigned to another trip in this date range");
         }
         /* 7️⃣ Check guide manual unavailability */
-        const guideSchedule = await guide_model_1.GuideSchedule.findOne({ guideId }).session(session);
+        const guideSchedule = yield guide_model_1.GuideSchedule.findOne({ guideId }).session(session);
         if (guideSchedule) {
             const isUnavailable = guideSchedule.unavailableRanges.some((range) => {
                 return range.startDate <= bufferedEnd && range.endDate >= bufferedStart;
@@ -123,14 +128,11 @@ const createTrip = async (data) => {
             }
         }
         /* 8️⃣ Create trip */
-        const trip = await trip_model_1.Trip.create([
-            {
-                status: trip_interface_1.TripStatus.UPCOMING,
-                ...data, // contains startDate & duration
-            },
+        const trip = yield trip_model_1.Trip.create([
+            Object.assign({ status: trip_interface_1.TripStatus.UPCOMING }, data),
         ], { session });
         /* 9️⃣ Lock guide schedule */
-        await guide_model_1.GuideSchedule.findOneAndUpdate({ guideId }, {
+        yield guide_model_1.GuideSchedule.findOneAndUpdate({ guideId }, {
             $push: {
                 unavailableRanges: {
                     startDate: bufferedStart,
@@ -139,30 +141,30 @@ const createTrip = async (data) => {
                 },
             },
         }, { upsert: true, session });
-        await session.commitTransaction();
+        yield session.commitTransaction();
         session.endSession();
         return trip[0];
     }
     catch (error) {
-        await session.abortTransaction();
+        yield session.abortTransaction();
         session.endSession();
         throw error;
     }
-};
-const updateTrip = async (tripId, data) => {
-    const trip = await trip_model_1.Trip.findOneAndUpdate({ _id: tripId }, data, {
+});
+const updateTrip = (tripId, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const trip = yield trip_model_1.Trip.findOneAndUpdate({ _id: tripId }, data, {
         new: true,
     });
     return trip;
-};
-const softDeleteTrip = async (tripId) => {
-    const trip = await trip_model_1.Trip.findByIdAndUpdate(tripId, { isDeleted: true });
+});
+const softDeleteTrip = (tripId) => __awaiter(void 0, void 0, void 0, function* () {
+    const trip = yield trip_model_1.Trip.findByIdAndUpdate(tripId, { isDeleted: true });
     return trip;
-};
-const hardDeleteTrip = async (tripId) => {
-    const trip = await trip_model_1.Trip.findByIdAndDelete(tripId);
+});
+const hardDeleteTrip = (tripId) => __awaiter(void 0, void 0, void 0, function* () {
+    const trip = yield trip_model_1.Trip.findByIdAndDelete(tripId);
     return trip;
-};
+});
 exports.TripService = {
     getTrips,
     getTourTrips,

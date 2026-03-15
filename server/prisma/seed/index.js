@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -223,94 +214,92 @@ const updates = [
         url: "https://images.unsplash.com/photo-1516483638261-f40af5aa11ce?auto=format&fit=crop&q=80&w=1000",
     },
 ];
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        // ========== OLD SEEDING CODE (COMMENTED OUT) ==========
-        // Uncomment the sections below to re-seed the database with initial data
-        // await prisma.user.create({
-        //   data: {
-        //     name: "Admin One",
-        //     email: "admin@tourbuddy.com",
-        //     password: await bcrypt.hash("admin123@#", 10),
-        //     role: "ADMIN",
-        //     country: "Bangladesh",
-        //     city: "Cumilla",
-        //   },
-        // });
-        // for (const { languages, specialties, aboutMe, ...g } of guides) {
-        //   const rating = Number((Math.random() * (5 - 4) + 4).toFixed(1));
-        //   await prisma.user.create({
-        //     data: {
-        //       ...g,
-        //       password: await bcrypt.hash(g.password, 10),
-        //       guideProfile: {
-        //         create: {
-        //           rating: rating,
-        //           hourlyRate: Math.round(Math.random() * (40 - 20) + 20),
-        //           experience: Math.floor(Math.random() * (10 - 3) + 3),
-        //           aboutMe: aboutMe,
-        //           specialties: specialties,
-        //           languages: languages,
-        //           isTopRated: rating >= 4.6,
-        //         },
-        //       },
-        //     },
-        //   });
-        // }
-        // for (const t of travelers) {
-        //   await prisma.user.create({
-        //     data: {
-        //       ...t,
-        //       password: await bcrypt.hash(t.password, 10),
-        //     },
-        //   });
-        // }
-        // for (let index = 0; index < toursData.length; index++) {
-        //   const { itineraries, ...tour } = toursData[index];
-        //   await prisma.tour.create({
-        //     data: {
-        //       ...tour,
-        //       itineraries: {
-        //         createMany: {
-        //           data: itineraries.createMany,
-        //         },
-        //       },
-        //     },
-        //   });
-        // }
-        // ========== TRIPS SEEDING (MAIN) ==========
-        console.log("Generating trips data...");
-        const tours = yield db_1.default.tour.findMany({});
-        const { trips, tripIncludes: tripIncludeItems } = (0, trips_1.generateTripsData)(tours);
-        console.log(`Creating ${trips.length} trips...`);
-        for (const trip of trips) {
-            yield db_1.default.trip.create({
-                data: trip,
-            });
-        }
-        console.log(`Creating ${tripIncludeItems.length} trip include items...`);
-        for (const tripIncludeItem of tripIncludeItems) {
-            yield db_1.default.tripIncludeItem.create({
-                data: tripIncludeItem,
-            });
-        }
-        // console.log("Updating broken image URLs...");
-        // for (const tour of updates) {
-        //   await prisma.tour.update({
-        //     where: { id: tour.id },
-        //     data: { image: tour.url }, // Change 'imageUrl' to 'image' if that is your schema field name
-        //   });
-        // }
-        console.log("Seed completed successfully!");
-    });
+async function main() {
+    // ========== OLD SEEDING CODE (COMMENTED OUT) ==========
+    // Uncomment the sections below to re-seed the database with initial data
+    // await prisma.user.create({
+    //   data: {
+    //     name: "Admin One",
+    //     email: "admin@tourbuddy.com",
+    //     password: await bcrypt.hash("admin123@#", 10),
+    //     role: "ADMIN",
+    //     country: "Bangladesh",
+    //     city: "Cumilla",
+    //   },
+    // });
+    // for (const { languages, specialties, aboutMe, ...g } of guides) {
+    //   const rating = Number((Math.random() * (5 - 4) + 4).toFixed(1));
+    //   await prisma.user.create({
+    //     data: {
+    //       ...g,
+    //       password: await bcrypt.hash(g.password, 10),
+    //       guideProfile: {
+    //         create: {
+    //           rating: rating,
+    //           hourlyRate: Math.round(Math.random() * (40 - 20) + 20),
+    //           experience: Math.floor(Math.random() * (10 - 3) + 3),
+    //           aboutMe: aboutMe,
+    //           specialties: specialties,
+    //           languages: languages,
+    //           isTopRated: rating >= 4.6,
+    //         },
+    //       },
+    //     },
+    //   });
+    // }
+    // for (const t of travelers) {
+    //   await prisma.user.create({
+    //     data: {
+    //       ...t,
+    //       password: await bcrypt.hash(t.password, 10),
+    //     },
+    //   });
+    // }
+    // for (let index = 0; index < toursData.length; index++) {
+    //   const { itineraries, ...tour } = toursData[index];
+    //   await prisma.tour.create({
+    //     data: {
+    //       ...tour,
+    //       itineraries: {
+    //         createMany: {
+    //           data: itineraries.createMany,
+    //         },
+    //       },
+    //     },
+    //   });
+    // }
+    // ========== TRIPS SEEDING (MAIN) ==========
+    console.log("Generating trips data...");
+    const tours = await db_1.default.tour.findMany({});
+    const { trips, tripIncludes: tripIncludeItems } = (0, trips_1.generateTripsData)(tours);
+    console.log(`Creating ${trips.length} trips...`);
+    for (const trip of trips) {
+        await db_1.default.trip.create({
+            data: trip,
+        });
+    }
+    console.log(`Creating ${tripIncludeItems.length} trip include items...`);
+    for (const tripIncludeItem of tripIncludeItems) {
+        await db_1.default.tripIncludeItem.create({
+            data: tripIncludeItem,
+        });
+    }
+    // console.log("Updating broken image URLs...");
+    // for (const tour of updates) {
+    //   await prisma.tour.update({
+    //     where: { id: tour.id },
+    //     data: { image: tour.url }, // Change 'imageUrl' to 'image' if that is your schema field name
+    //   });
+    // }
+    console.log("Seed completed successfully!");
 }
 main()
     .then(() => {
     console.log("Seed completed");
     db_1.default.$disconnect();
 })
-    .catch((e) => __awaiter(void 0, void 0, void 0, function* () {
+    .catch(async (e) => {
     console.error(e);
-    yield db_1.default.$disconnect();
+    await db_1.default.$disconnect();
     process.exit(1);
-}));
+});

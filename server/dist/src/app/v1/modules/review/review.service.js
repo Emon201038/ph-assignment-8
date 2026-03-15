@@ -1,22 +1,31 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReviewService = void 0;
 const mongoose_1 = require("mongoose");
 const review_model_1 = require("./review.model");
-const createReview = async (payload) => {
-    return await review_model_1.Review.create(payload);
-};
-const getReviewsByTarget = async (targetId, targetType) => {
-    return await review_model_1.Review.find({
+const createReview = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield review_model_1.Review.create(payload);
+});
+const getReviewsByTarget = (targetId, targetType) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield review_model_1.Review.find({
         targetId,
         targetType,
         isDeleted: false,
     })
         .populate("reviewerId", "name profileImage")
         .sort({ createdAt: -1 });
-};
-const getReviewStats = async (targetId, targetType) => {
-    const stats = await review_model_1.Review.aggregate([
+});
+const getReviewStats = (targetId, targetType) => __awaiter(void 0, void 0, void 0, function* () {
+    const stats = yield review_model_1.Review.aggregate([
         {
             $match: {
                 targetId: new mongoose_1.Types.ObjectId(targetId),
@@ -36,7 +45,7 @@ const getReviewStats = async (targetId, targetType) => {
         averageRating: 0,
         totalReviews: 0,
     });
-};
+});
 exports.ReviewService = {
     createReview,
     getReviewsByTarget,

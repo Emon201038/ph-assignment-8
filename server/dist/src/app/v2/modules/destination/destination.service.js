@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,7 +16,7 @@ exports.DestinationService = void 0;
 const db_1 = __importDefault(require("../../../config/db"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const destination_constant_1 = require("./destination.constant");
-const getDestinationsFromDb = async (options, filters) => {
+const getDestinationsFromDb = (options, filters) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, sortBy, sortOrder, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const andConditions = [];
     if (filters.searchTerm) {
@@ -35,7 +44,7 @@ const getDestinationsFromDb = async (options, filters) => {
         });
     }
     // Fetch destinations along with their tour counts
-    const destinations = await db_1.default.destination.findMany({
+    const destinations = yield db_1.default.destination.findMany({
         where: {
             AND: andConditions,
         },
@@ -57,12 +66,9 @@ const getDestinationsFromDb = async (options, filters) => {
         },
     });
     // Map to include tourCount
-    const destinationsWithTourCount = destinations.map((dest) => ({
-        ...dest,
-        tourCount: dest._count.tours,
-    }));
+    const destinationsWithTourCount = destinations.map((dest) => (Object.assign(Object.assign({}, dest), { tourCount: dest._count.tours })));
     const meta = {
-        total: await db_1.default.destination.count({
+        total: yield db_1.default.destination.count({
             where: { AND: andConditions },
         }),
         page: Number(options.page) || 1,
@@ -72,9 +78,9 @@ const getDestinationsFromDb = async (options, filters) => {
         meta,
         destinations: destinationsWithTourCount,
     };
-};
-const getSingleDestination = async (id) => {
-    const destination = await db_1.default.destination.findUnique({
+});
+const getSingleDestination = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const destination = yield db_1.default.destination.findUnique({
         where: {
             id,
         },
@@ -83,9 +89,9 @@ const getSingleDestination = async (id) => {
         },
     });
     return destination;
-};
-const getNearbyDestinations = async (lat, lng, radius = 1000) => {
-    const destinations = await db_1.default.$queryRawUnsafe(`
+});
+const getNearbyDestinations = (lat_1, lng_1, ...args_1) => __awaiter(void 0, [lat_1, lng_1, ...args_1], void 0, function* (lat, lng, radius = 1000) {
+    const destinations = yield db_1.default.$queryRawUnsafe(`
   SELECT *
   FROM (
     SELECT *,
@@ -106,7 +112,7 @@ const getNearbyDestinations = async (lat, lng, radius = 1000) => {
 `);
     console.log(destinations);
     if (!destinations || destinations.length === 0) {
-        const fallback = await db_1.default.destination.findMany({
+        const fallback = yield db_1.default.destination.findMany({
             take: 2,
             orderBy: {
                 rating: "desc",
@@ -115,7 +121,7 @@ const getNearbyDestinations = async (lat, lng, radius = 1000) => {
         return fallback;
     }
     return destinations;
-};
+});
 exports.DestinationService = {
     getDestinationsFromDb,
     getSingleDestination,

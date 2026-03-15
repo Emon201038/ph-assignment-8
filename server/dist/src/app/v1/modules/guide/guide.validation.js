@@ -16,10 +16,12 @@ exports.guideSchema = zod_1.default.object({
     image: zod_1.default.file("image is required").optional(),
     bio: zod_1.default.string("bio is required").min(2, "bio is required"),
     expertise: zod_1.default.string("expertise is required").transform((z) => {
-        return z?.split(",")?.map((i) => i.trim());
+        var _a;
+        return (_a = z === null || z === void 0 ? void 0 : z.split(",")) === null || _a === void 0 ? void 0 : _a.map((i) => i.trim());
     }),
     languages: zod_1.default.string("languages is required").transform((z) => {
-        return z?.split(",")?.map((i) => i.trim());
+        var _a;
+        return (_a = z === null || z === void 0 ? void 0 : z.split(",")) === null || _a === void 0 ? void 0 : _a.map((i) => i.trim());
     }),
     gender: zod_1.default.enum(Object.values(user_interface_1.Gender), "Invalide gender").default(user_interface_1.Gender.MALE),
     hourlyRate: zod_1.default

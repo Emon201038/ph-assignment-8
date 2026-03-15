@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,7 +16,7 @@ exports.TripService = void 0;
 const db_1 = __importDefault(require("../../../config/db"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const appError_1 = __importDefault(require("../../../helpers/appError"));
-const getTripInclude = async (filters) => {
+const getTripInclude = (filters) => __awaiter(void 0, void 0, void 0, function* () {
     const andConditions = [];
     if (filters.searchTerm) {
         andConditions.push({
@@ -35,7 +44,7 @@ const getTripInclude = async (filters) => {
             },
         });
     }
-    const tripIncludes = await db_1.default.tripInclude.findMany({
+    const tripIncludes = yield db_1.default.tripInclude.findMany({
         where: {
             AND: andConditions,
         },
@@ -48,8 +57,8 @@ const getTripInclude = async (filters) => {
         },
     });
     return tripIncludes;
-};
-const getAllTripsFromDB = async (options, filters) => {
+});
+const getAllTripsFromDB = (options, filters) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, skip, page, sortBy, sortOrder } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm, status, tourId, guideId, minPrice, maxPrice } = filters;
     const andConditions = [];
@@ -103,7 +112,7 @@ const getAllTripsFromDB = async (options, filters) => {
         });
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
-    const result = await db_1.default.trip.findMany({
+    const result = yield db_1.default.trip.findMany({
         where: whereConditions,
         include: {
             tour: {
@@ -134,7 +143,7 @@ const getAllTripsFromDB = async (options, filters) => {
             [sortBy]: sortOrder,
         },
     });
-    const total = await db_1.default.trip.count({
+    const total = yield db_1.default.trip.count({
         where: whereConditions,
     });
     return {
@@ -145,9 +154,9 @@ const getAllTripsFromDB = async (options, filters) => {
         },
         data: result,
     };
-};
-const getSingleTrip = async (id) => {
-    const result = await db_1.default.trip.findUnique({
+});
+const getSingleTrip = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield db_1.default.trip.findUnique({
         where: {
             id,
         },
@@ -173,15 +182,12 @@ const getSingleTrip = async (id) => {
     if (!result) {
         throw new appError_1.default(404, "Trip not found");
     }
-    return {
-        ...result,
-        includes: result.includes.map((include) => include.tripInclude),
-    };
-};
-const createTripInDB = async (payload) => {
+    return Object.assign(Object.assign({}, result), { includes: result.includes.map((include) => include.tripInclude) });
+});
+const createTripInDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { tourId, guideId, startDate, endDate, price, maxGuests, includes } = payload;
     // Validate tour exists
-    const tourExists = await db_1.default.tour.findUnique({
+    const tourExists = yield db_1.default.tour.findUnique({
         where: { id: tourId },
     });
     if (!tourExists) {
@@ -189,7 +195,7 @@ const createTripInDB = async (payload) => {
     }
     // Validate guide exists if provided
     if (guideId) {
-        const guideExists = await db_1.default.user.findUnique({
+        const guideExists = yield db_1.default.user.findUnique({
             where: { id: guideId },
         });
         if (!guideExists) {
@@ -206,7 +212,7 @@ const createTripInDB = async (payload) => {
         throw new appError_1.default(400, "Start date must be in the future");
     }
     // Create trip
-    const result = await db_1.default.trip.create({
+    const result = yield db_1.default.trip.create({
         data: {
             tourId: tourId,
             guideId: guideId,
@@ -228,7 +234,7 @@ const createTripInDB = async (payload) => {
         },
     });
     return result;
-};
+});
 exports.TripService = {
     getTripInclude,
     getAllTripsFromDB,

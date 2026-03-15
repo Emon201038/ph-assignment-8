@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,14 +25,14 @@ const tour_model_1 = __importDefault(require("../tour/tour.model"));
 const appError_1 = __importDefault(require("../../../helpers/appError"));
 const trip_interface_1 = require("../trip/trip.interface");
 const stripe = new stripe_1.default(env_1.envVars.STRIPE_SECRET_KEY);
-const createCheckoutSession = async (payload) => {
-    const trip = await trip_model_1.Trip.findById(payload.tripId);
+const createCheckoutSession = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const trip = yield trip_model_1.Trip.findById(payload.tripId);
     if (!trip)
         throw new appError_1.default(404, "Trip not found");
-    const booking = await booking_model_1.Booking.findById(payload.bookingId);
+    const booking = yield booking_model_1.Booking.findById(payload.bookingId);
     if (!booking)
         throw new appError_1.default(404, "Booking not found");
-    const tour = await tour_model_1.default.findById(trip.tourId);
+    const tour = yield tour_model_1.default.findById(trip.tourId);
     if (!tour)
         throw new appError_1.default(404, "Tour not found");
     if (trip.status !== trip_interface_1.TripStatus.OPEN)
@@ -33,7 +42,7 @@ const createCheckoutSession = async (payload) => {
     if (trip.bookedSeats + booking.seats > trip.maxCapacity)
         throw new appError_1.default(400, "Trip is full");
     // 1️⃣ Create Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create({
+    const session = yield stripe.checkout.sessions.create({
         mode: "payment",
         payment_method_types: ["card"],
         customer_email: payload.userEmail,
@@ -58,7 +67,7 @@ const createCheckoutSession = async (payload) => {
         cancel_url: `${env_1.envVars.CLIENT_URL}/payment-cancel`,
     });
     // 2️⃣ Save payment record
-    await payment_model_1.Payment.create({
+    yield payment_model_1.Payment.create({
         user: payload.userId,
         booking: payload.bookingId,
         trip: payload.tripId,
@@ -73,8 +82,9 @@ const createCheckoutSession = async (payload) => {
     return {
         checkoutUrl: session.url,
     };
-};
-const handleStripeWebhook = async (req, res) => {
+});
+const handleStripeWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     const signature = req.headers["stripe-signature"];
     let event;
     try {
@@ -88,22 +98,22 @@ const handleStripeWebhook = async (req, res) => {
     // ✅ Payment success
     if (event.type === "checkout.session.completed") {
         const session = event.data.object;
-        const bookingId = session.metadata?.bookingId;
-        const tripId = session.metadata?.tripId;
-        const mongoSession = await mongoose_1.default.startSession();
+        const bookingId = (_a = session.metadata) === null || _a === void 0 ? void 0 : _a.bookingId;
+        const tripId = (_b = session.metadata) === null || _b === void 0 ? void 0 : _b.tripId;
+        const mongoSession = yield mongoose_1.default.startSession();
         mongoSession.startTransaction();
         try {
-            await payment_model_1.Payment.findOneAndUpdate({ "metadata.checkoutSessionId": session.id }, {
+            yield payment_model_1.Payment.findOneAndUpdate({ "metadata.checkoutSessionId": session.id }, {
                 status: payment_interface_1.PaymentStatus.SUCCEEDED,
                 providerPaymentIntentId: session.payment_intent,
             }, { session: mongoSession });
-            await booking_model_1.Booking.findByIdAndUpdate(bookingId, { status: booking_interface_1.BookingStatus.CONFIRMED }, { session: mongoSession });
-            await trip_model_1.Trip.findByIdAndUpdate(tripId, { $inc: { bookedSeats: 1 } }, { session: mongoSession });
-            await mongoSession.commitTransaction();
+            yield booking_model_1.Booking.findByIdAndUpdate(bookingId, { status: booking_interface_1.BookingStatus.CONFIRMED }, { session: mongoSession });
+            yield trip_model_1.Trip.findByIdAndUpdate(tripId, { $inc: { bookedSeats: 1 } }, { session: mongoSession });
+            yield mongoSession.commitTransaction();
         }
         catch (error) {
             console.log(error, "update error");
-            await mongoSession.abortTransaction();
+            yield mongoSession.abortTransaction();
             throw error;
         }
         finally {
@@ -111,10 +121,10 @@ const handleStripeWebhook = async (req, res) => {
         }
     }
     res.json({ received: true });
-};
-const getPayments = async () => {
-    return await payment_model_1.Payment.find();
-};
+});
+const getPayments = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield payment_model_1.Payment.find();
+});
 exports.PaymentService = {
     createCheckoutSession,
     handleStripeWebhook,

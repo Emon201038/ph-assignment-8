@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -11,14 +20,14 @@ const payment_model_1 = require("../v1/modules/payment/payment.model");
 const booking_model_1 = require("../v1/modules/booking/booking.model");
 const booking_interface_1 = require("../v1/modules/booking/booking.interface");
 exports.stripe = new stripe_1.default(env_1.envVars.STRIPE_SECRET_KEY);
-const createStripePaymentIntent = async ({ booking, trip, user, amount, }) => {
-    const intent = await exports.stripe.paymentIntents.create({
+const createStripePaymentIntent = (_a) => __awaiter(void 0, [_a], void 0, function* ({ booking, trip, user, amount, }) {
+    const intent = yield exports.stripe.paymentIntents.create({
         amount: Math.round(amount * 100), // cents
         currency: "usd",
         metadata: { booking, trip, user },
         automatic_payment_methods: { enabled: true },
     });
-    await payment_model_1.Payment.create({
+    yield payment_model_1.Payment.create({
         user,
         booking,
         trip,
@@ -29,9 +38,10 @@ const createStripePaymentIntent = async ({ booking, trip, user, amount, }) => {
     return {
         clientSecret: intent.client_secret,
     };
-};
+});
 exports.createStripePaymentIntent = createStripePaymentIntent;
-const stripeWebhook = async (req, res) => {
+const stripeWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const sig = req.headers["stripe-signature"];
     let event;
     try {
@@ -42,15 +52,15 @@ const stripeWebhook = async (req, res) => {
     }
     if (event.type === "payment_intent.succeeded") {
         const intent = event.data.object;
-        await payment_model_1.Payment.findOneAndUpdate({ providerPaymentIntentId: intent.id }, { status: payment_interface_1.PaymentStatus.SUCCEEDED });
-        await booking_model_1.Booking.findByIdAndUpdate(intent.metadata?.booking, {
+        yield payment_model_1.Payment.findOneAndUpdate({ providerPaymentIntentId: intent.id }, { status: payment_interface_1.PaymentStatus.SUCCEEDED });
+        yield booking_model_1.Booking.findByIdAndUpdate((_a = intent.metadata) === null || _a === void 0 ? void 0 : _a.booking, {
             status: booking_interface_1.BookingStatus.CONFIRMED,
         });
     }
     if (event.type === "payment_intent.payment_failed") {
         const intent = event.data.object;
-        await payment_model_1.Payment.findOneAndUpdate({ providerPaymentIntentId: intent.id }, { status: payment_interface_1.PaymentStatus.FAILED });
+        yield payment_model_1.Payment.findOneAndUpdate({ providerPaymentIntentId: intent.id }, { status: payment_interface_1.PaymentStatus.FAILED });
     }
     res.json({ received: true });
-};
+});
 exports.stripeWebhook = stripeWebhook;

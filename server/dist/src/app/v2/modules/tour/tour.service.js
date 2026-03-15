@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,7 +16,7 @@ exports.TourService = void 0;
 const db_1 = __importDefault(require("../../../config/db"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const appError_1 = __importDefault(require("../../../helpers/appError"));
-const getAllTourFromDB = async (options, filters) => {
+const getAllTourFromDB = (options, filters) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, skip, page, sortBy, sortOrder } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm, category, country, city, minPrice, maxPrice, language } = filters;
     const andConditions = [];
@@ -100,7 +109,7 @@ const getAllTourFromDB = async (options, filters) => {
                 },
             },
         });
-        const lang = await db_1.default.destination.groupBy({
+        const lang = yield db_1.default.destination.groupBy({
             by: ["languages"],
         });
         const mainarr = lang.map((i) => i.languages).flatMap((i) => i);
@@ -111,7 +120,7 @@ const getAllTourFromDB = async (options, filters) => {
         })));
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
-    const result = await db_1.default.tour.findMany({
+    const result = yield db_1.default.tour.findMany({
         where: whereConditions,
         include: {
             destination: {
@@ -127,7 +136,7 @@ const getAllTourFromDB = async (options, filters) => {
             [sortBy]: sortOrder,
         },
     });
-    const total = await db_1.default.tour.count({
+    const total = yield db_1.default.tour.count({
         where: whereConditions,
     });
     return {
@@ -138,9 +147,9 @@ const getAllTourFromDB = async (options, filters) => {
         },
         data: result,
     };
-};
-const getSingleTour = async (id) => {
-    const result = await db_1.default.tour.findUnique({
+});
+const getSingleTour = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield db_1.default.tour.findUnique({
         where: {
             id,
         },
@@ -193,15 +202,9 @@ const getSingleTour = async (id) => {
             },
         },
     });
-    return {
-        ...result,
-        trips: result?.trips.map((trip) => ({
-            ...trip,
-            includes: trip.includes.map((include) => include.tripInclude),
-        })),
-    };
-};
-const createTourInDB = async (payload, userId) => {
+    return Object.assign(Object.assign({}, result), { trips: result === null || result === void 0 ? void 0 : result.trips.map((trip) => (Object.assign(Object.assign({}, trip), { includes: trip.includes.map((include) => include.tripInclude) }))) });
+});
+const createTourInDB = (payload, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, description, destinationId, category, priceFrom, image, slug, durationDays, maxGroupSize, difficulty, } = payload;
     // Validate required fields
     if (!title ||
@@ -215,7 +218,7 @@ const createTourInDB = async (payload, userId) => {
         throw new appError_1.default(400, "Missing required fields");
     }
     // Validate destination exists
-    const destinationExists = await db_1.default.destination.findUnique({
+    const destinationExists = yield db_1.default.destination.findUnique({
         where: { id: destinationId },
     });
     if (!destinationExists) {
@@ -229,7 +232,7 @@ const createTourInDB = async (payload, userId) => {
             .replace(/\s+/g, "-")
             .replace(/[^a-z0-9\-]/g, "");
     // Create tour
-    const result = await db_1.default.tour.create({
+    const result = yield db_1.default.tour.create({
         data: {
             title,
             description,
@@ -262,7 +265,7 @@ const createTourInDB = async (payload, userId) => {
         },
     });
     return result;
-};
+});
 exports.TourService = {
     getAllTourFromDB,
     getSingleTour,

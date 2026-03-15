@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,12 +16,9 @@ exports.ReviewService = void 0;
 const db_1 = __importDefault(require("../../../config/db"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const appError_1 = __importDefault(require("../../../helpers/appError"));
-const createReviewInDB = async (payload, reviewerId) => {
-    const data = await db_1.default.review.create({
-        data: {
-            ...payload,
-            reviewerId,
-        },
+const createReviewInDB = (payload, reviewerId) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield db_1.default.review.create({
+        data: Object.assign(Object.assign({}, payload), { reviewerId }),
         include: {
             reviewer: {
                 select: {
@@ -38,8 +44,8 @@ const createReviewInDB = async (payload, reviewerId) => {
         },
     });
     return data;
-};
-const getAllReviewsFromDB = async (options, filters) => {
+});
+const getAllReviewsFromDB = (options, filters) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, skip, page, sortBy, sortOrder } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm, tourId, guideId, rating, minRating, maxRating } = filters;
     const andConditions = [];
@@ -101,7 +107,7 @@ const getAllReviewsFromDB = async (options, filters) => {
         });
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
-    const data = await db_1.default.review.findMany({
+    const data = yield db_1.default.review.findMany({
         where: whereConditions,
         include: {
             reviewer: {
@@ -132,7 +138,7 @@ const getAllReviewsFromDB = async (options, filters) => {
         take: limit,
         skip,
     });
-    const total = await db_1.default.review.count({ where: whereConditions });
+    const total = yield db_1.default.review.count({ where: whereConditions });
     return {
         meta: {
             page,
@@ -142,9 +148,9 @@ const getAllReviewsFromDB = async (options, filters) => {
         },
         data,
     };
-};
-const getSingleReviewFromDB = async (id) => {
-    const data = await db_1.default.review.findUnique({
+});
+const getSingleReviewFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield db_1.default.review.findUnique({
         where: { id },
         include: {
             reviewer: {
@@ -174,9 +180,9 @@ const getSingleReviewFromDB = async (id) => {
         throw new appError_1.default(404, "Review not found");
     }
     return data;
-};
-const updateReviewInDB = async (id, payload, reviewerId) => {
-    const review = await db_1.default.review.findUnique({
+});
+const updateReviewInDB = (id, payload, reviewerId) => __awaiter(void 0, void 0, void 0, function* () {
+    const review = yield db_1.default.review.findUnique({
         where: { id },
     });
     if (!review) {
@@ -185,7 +191,7 @@ const updateReviewInDB = async (id, payload, reviewerId) => {
     if (review.reviewerId !== reviewerId) {
         throw new appError_1.default(403, "You can only update your own reviews");
     }
-    const data = await db_1.default.review.update({
+    const data = yield db_1.default.review.update({
         where: { id },
         data: payload,
         include: {
@@ -213,9 +219,9 @@ const updateReviewInDB = async (id, payload, reviewerId) => {
         },
     });
     return data;
-};
-const deleteReviewFromDB = async (id, reviewerId) => {
-    const review = await db_1.default.review.findUnique({
+});
+const deleteReviewFromDB = (id, reviewerId) => __awaiter(void 0, void 0, void 0, function* () {
+    const review = yield db_1.default.review.findUnique({
         where: { id },
     });
     if (!review) {
@@ -224,11 +230,11 @@ const deleteReviewFromDB = async (id, reviewerId) => {
     if (review.reviewerId !== reviewerId) {
         throw new appError_1.default(403, "You can only delete your own reviews");
     }
-    const data = await db_1.default.review.delete({
+    const data = yield db_1.default.review.delete({
         where: { id },
     });
     return data;
-};
+});
 exports.ReviewService = {
     createReviewInDB,
     getAllReviewsFromDB,

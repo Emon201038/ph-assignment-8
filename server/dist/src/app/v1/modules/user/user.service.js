@@ -1,4 +1,24 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -13,9 +33,10 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const tourist_model_1 = require("../tourist/tourist.model");
 const queryBuilderByPipline_1 = require("../../../lib/queryBuilderByPipline");
 const guide_model_1 = require("../guide/guide.model");
-const getAllUsers = async (query) => {
+const getAllUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d;
     const populatedArray = [];
-    if (query?.role === user_interface_1.UserRole.GUIDE) {
+    if ((query === null || query === void 0 ? void 0 : query.role) === user_interface_1.UserRole.GUIDE) {
         populatedArray.push({
             model: guide_model_1.Guide,
             localField: "_id",
@@ -24,7 +45,7 @@ const getAllUsers = async (query) => {
             as: "profile",
         });
     }
-    if (query?.role === user_interface_1.UserRole.TOURIST) {
+    if ((query === null || query === void 0 ? void 0 : query.role) === user_interface_1.UserRole.TOURIST) {
         populatedArray.push({
             model: tourist_model_1.Tourist,
             localField: "_id",
@@ -34,16 +55,16 @@ const getAllUsers = async (query) => {
         });
     }
     const qb = new queryBuilderByPipline_1.DynamicQueryBuilder(user_model_1.default, query, populatedArray);
-    const res = await qb
+    const res = yield qb
         .search(["name", "email", "phone"])
         .filter()
         .filterPopulated()
         .sort()
         .paginate()
         .exec();
-    if (query?.role === user_interface_1.UserRole.GUIDE) {
+    if ((query === null || query === void 0 ? void 0 : query.role) === user_interface_1.UserRole.GUIDE) {
         for (const user of res.data) {
-            const ratingAgg = await user_model_1.default.aggregate([
+            const ratingAgg = yield user_model_1.default.aggregate([
                 { $match: { _id: user._id } },
                 {
                     $lookup: {
@@ -61,7 +82,7 @@ const getAllUsers = async (query) => {
                     },
                 },
             ]);
-            const tripsAgg = await user_model_1.default.aggregate([
+            const tripsAgg = yield user_model_1.default.aggregate([
                 { $match: { _id: user._id } },
                 {
                     $lookup: {
@@ -77,39 +98,39 @@ const getAllUsers = async (query) => {
                     },
                 },
             ]);
-            user.profile.rating = ratingAgg[0]?.rating ?? 0;
-            user.profile.totalTrips = tripsAgg[0]?.totalTrips ?? 0;
+            user.profile.rating = (_b = (_a = ratingAgg[0]) === null || _a === void 0 ? void 0 : _a.rating) !== null && _b !== void 0 ? _b : 0;
+            user.profile.totalTrips = (_d = (_c = tripsAgg[0]) === null || _c === void 0 ? void 0 : _c.totalTrips) !== null && _d !== void 0 ? _d : 0;
         }
     }
     return { users: res.data, meta: res.meta };
-};
-const getUser = async (userId) => {
-    const mainProfile = await user_model_1.default.findById(userId).lean();
+});
+const getUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const mainProfile = yield user_model_1.default.findById(userId).lean();
     if (!mainProfile) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.NOT_FOUND, "User not found.");
     }
     let user;
     if (!user) {
-        user = await guide_model_1.Guide.findOne({ userId }).lean();
+        user = yield guide_model_1.Guide.findOne({ userId }).lean();
     }
     if (!user) {
-        user = await tourist_model_1.Tourist.findOne({ userId }).lean();
+        user = yield tourist_model_1.Tourist.findOne({ userId }).lean();
     }
-    const doc = { ...user, profile: mainProfile };
+    const doc = Object.assign(Object.assign({}, user), { profile: mainProfile });
     return doc;
-};
-const createTourist = async (payload) => {
-    const session = await mongoose_1.default.startSession();
+});
+const createTourist = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const session = yield mongoose_1.default.startSession();
     session.startTransaction();
     try {
-        const { email, ...rest } = payload;
+        const { email } = payload, rest = __rest(payload, ["email"]);
         // Check if user already exists
-        const existingUser = await user_model_1.default.findOne({ email }).session(session);
+        const existingUser = yield user_model_1.default.findOne({ email }).session(session);
         if (existingUser) {
             if (existingUser.isDeleted) {
                 // Remove soft-deleted user and related Tourist profile
-                await user_model_1.default.deleteOne({ _id: existingUser._id }).session(session);
-                await tourist_model_1.Tourist.deleteOne({ userId: existingUser._id }).session(session);
+                yield user_model_1.default.deleteOne({ _id: existingUser._id }).session(session);
+                yield tourist_model_1.Tourist.deleteOne({ userId: existingUser._id }).session(session);
             }
             else if (existingUser.isBlocked) {
                 throw new appError_1.default(httpStatus_1.HTTP_STATUS.BAD_REQUEST, "User account has been blocked. Please contact admin");
@@ -119,34 +140,27 @@ const createTourist = async (payload) => {
             }
         }
         // Create new User
-        const [user] = await user_model_1.default.create([
-            {
-                email,
-                ...rest,
-                role: user_interface_1.UserRole.TOURIST,
-            },
+        const [user] = yield user_model_1.default.create([
+            Object.assign(Object.assign({ email }, rest), { role: user_interface_1.UserRole.TOURIST }),
         ], { session });
         // Create Tourist profile
-        await tourist_model_1.Tourist.create([
-            {
-                userId: user._id,
-                ...rest,
-            },
+        yield tourist_model_1.Tourist.create([
+            Object.assign({ userId: user._id }, rest),
         ], { session });
         // Commit transaction
-        await session.commitTransaction();
+        yield session.commitTransaction();
         session.endSession();
         return user;
     }
     catch (error) {
-        await session.abortTransaction();
+        yield session.abortTransaction();
         session.endSession();
         throw error;
     }
-};
+});
 exports.createTourist = createTourist;
-const updateUser = async (userId, payload, loggedInUser) => {
-    const user = await user_model_1.default.findById(userId);
+const updateUser = (userId, payload, loggedInUser) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(userId);
     if (!user) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.NOT_FOUND, "User not found.");
     }
@@ -168,28 +182,28 @@ const updateUser = async (userId, payload, loggedInUser) => {
         // }
     }
     if (payload.password) {
-        const isMatchPass = await bcryptjs_1.default.compare(payload?.currentPassword, user.password);
+        const isMatchPass = yield bcryptjs_1.default.compare(payload === null || payload === void 0 ? void 0 : payload.currentPassword, user.password);
         if (!isMatchPass) {
             throw new appError_1.default(httpStatus_1.HTTP_STATUS.BAD_REQUEST, "Invalid password.");
         }
     }
-    return await user_model_1.default.findByIdAndUpdate(userId, payload, {
+    return yield user_model_1.default.findByIdAndUpdate(userId, payload, {
         new: true,
         runValidators: true,
     });
-};
-const updateUserRole = async (userId, role) => {
-    const user = await user_model_1.default.findById(userId);
+});
+const updateUserRole = (userId, role) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(userId);
     if (!user) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.NOT_FOUND, "User not found.");
     }
     if (user.role === user_interface_1.UserRole.ADMIN) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.FORBIDDEN, "You can't update role.");
     }
-    return await user_model_1.default.findByIdAndUpdate(userId, { role }, { new: true, runValidators: true });
-};
-const deleteUser = async (loggedInUser, userId) => {
-    const user = await user_model_1.default.findById(userId);
+    return yield user_model_1.default.findByIdAndUpdate(userId, { role }, { new: true, runValidators: true });
+});
+const deleteUser = (loggedInUser, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(userId);
     if (!user) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.NOT_FOUND, "User not found.");
     }
@@ -206,15 +220,15 @@ const deleteUser = async (loggedInUser, userId) => {
             throw new appError_1.default(httpStatus_1.HTTP_STATUS.FORBIDDEN, "User is blocked or deleted.");
         }
     }
-    return await user_model_1.default.findByIdAndUpdate(userId, { isDeleted: true }, { new: true, runValidators: true });
-};
-const getUserByEmail = async (email) => {
-    const user = await user_model_1.default.findOne({ email });
+    return yield user_model_1.default.findByIdAndUpdate(userId, { isDeleted: true }, { new: true, runValidators: true });
+});
+const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findOne({ email });
     if (!user) {
         throw new appError_1.default(httpStatus_1.HTTP_STATUS.NOT_FOUND, "User not found.");
     }
     return user;
-};
+});
 exports.UserService = {
     getAllUsers,
     getUser,

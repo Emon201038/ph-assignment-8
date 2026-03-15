@@ -18,7 +18,7 @@ exports.touristSchema = zod_1.default.object({
     interests: zod_1.default
         .string()
         .optional()
-        .transform((z) => z?.split(",").map((i) => i.trim()))
+        .transform((z) => z === null || z === void 0 ? void 0 : z.split(",").map((i) => i.trim()))
         .default([]),
     preferredLanguage: zod_1.default.string().optional(),
     gender: zod_1.default.enum(Object.values(user_interface_1.Gender), "Invalide gender").default(user_interface_1.Gender.MALE),
