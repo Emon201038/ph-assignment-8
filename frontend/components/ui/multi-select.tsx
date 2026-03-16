@@ -57,8 +57,8 @@ export function MultiSelect({
     const newValue = value.includes(selectedValue)
       ? value.filter((v) => v !== selectedValue)
       : maxSelected && value.length >= maxSelected
-      ? value
-      : [...value, selectedValue];
+        ? value
+        : [...value, selectedValue];
     onValueChange?.(newValue);
   };
 
@@ -68,7 +68,7 @@ export function MultiSelect({
   };
 
   const selectedOptions = options.filter((option) =>
-    value.includes(option.value)
+    value.includes(option.value),
   );
   const displayedOptions = selectedOptions.slice(0, maxDisplayed);
   const remainingCount = selectedOptions.length - maxDisplayed;
@@ -81,8 +81,8 @@ export function MultiSelect({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-full justify-between min-h-10 h-auto relative",
-            className
+            "w-full justify-between min-h-10 h-auto relative hover:bg-primary hover:text-primary-foreground",
+            className,
           )}
           disabled={disabled}
         >
@@ -120,7 +120,7 @@ export function MultiSelect({
                 )}
               </>
             ) : (
-              <span className="text-muted-foreground text-ellipsis overflow-hidden">
+              <span className=" text-ellipsis overflow-hidden">
                 {placeholder}
               </span>
             )}
@@ -155,13 +155,13 @@ export function MultiSelect({
                     }}
                     disabled={isDisabled}
                     className={cn(
-                      isDisabled && "opacity-50 cursor-not-allowed"
+                      isDisabled && "opacity-50 cursor-not-allowed",
                     )}
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        isSelected ? "opacity-100" : "opacity-0"
+                        isSelected ? "opacity-100" : "opacity-0",
                       )}
                     />
                     {option.label}

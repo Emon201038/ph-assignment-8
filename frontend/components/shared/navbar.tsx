@@ -61,12 +61,18 @@ export async function Navbar({
       <div className="flex flex-1 justify-end gap-4 items-center">
         <HeaderSearch />
         <div className="flex gap-2">
-          <Button className="hidden sm:flex min-w-21 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold tracking-tight hover:opacity-90 transition-opacity">
+          <Link
+            href={"/signup"}
+            className="hidden sm:flex min-w-21 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold tracking-tight hover:opacity-90 transition-opacity"
+          >
             Sign Up
-          </Button>
-          <Button className="flex min-w-21 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold tracking-tight hover:bg-slate-200 transition-colors">
+          </Link>
+          <Link
+            href={"/login"}
+            className="flex min-w-21 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold tracking-tight hover:bg-slate-200 transition-colors"
+          >
             Log In
-          </Button>
+          </Link>
         </div>
       </div>
     </header>
