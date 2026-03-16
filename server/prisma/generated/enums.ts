@@ -49,6 +49,15 @@ export const TripStatus = {
 export type TripStatus = (typeof TripStatus)[keyof typeof TripStatus]
 
 
+export const AuthProvider = {
+  GOOGLE: 'GOOGLE',
+  FACEBOOK: 'FACEBOOK',
+  CREDENTIALS: 'CREDENTIALS'
+} as const
+
+export type AuthProvider = (typeof AuthProvider)[keyof typeof AuthProvider]
+
+
 export const UserRole = {
   TRAVELER: 'TRAVELER',
   GUIDE: 'GUIDE',

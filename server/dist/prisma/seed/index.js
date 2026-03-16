@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../src/app/config/db"));
-const trips_1 = require("./trips");
 function getContinent(country) {
     const map = {
         Indonesia: "Asia",
@@ -280,20 +279,20 @@ function main() {
         // }
         // ========== TRIPS SEEDING (MAIN) ==========
         console.log("Generating trips data...");
-        const tours = yield db_1.default.tour.findMany({});
-        const { trips, tripIncludes: tripIncludeItems } = (0, trips_1.generateTripsData)(tours);
-        console.log(`Creating ${trips.length} trips...`);
-        for (const trip of trips) {
-            yield db_1.default.trip.create({
-                data: trip,
-            });
-        }
-        console.log(`Creating ${tripIncludeItems.length} trip include items...`);
-        for (const tripIncludeItem of tripIncludeItems) {
-            yield db_1.default.tripIncludeItem.create({
-                data: tripIncludeItem,
-            });
-        }
+        // const tours = await prisma.tour.findMany({});
+        // const { trips, tripIncludes: tripIncludeItems } = generateTripsData(tours);
+        // console.log(`Creating ${trips.length} trips...`);
+        // for (const trip of trips) {
+        //   await prisma.trip.create({
+        //     data: trip,
+        //   });
+        // }
+        // console.log(`Creating ${tripIncludeItems.length} trip include items...`);
+        // for (const tripIncludeItem of tripIncludeItems) {
+        //   await prisma.tripIncludeItem.create({
+        //     data: tripIncludeItem,
+        //   });
+        // }
         // console.log("Updating broken image URLs...");
         // for (const tour of updates) {
         //   await prisma.tour.update({
@@ -301,6 +300,16 @@ function main() {
         //     data: { image: tour.url }, // Change 'imageUrl' to 'image' if that is your schema field name
         //   });
         // }
+        // await prisma.user.updateMany({
+        //   where: {
+        //     role: {
+        //       not: "ADMIN",
+        //     },
+        //   },
+        //   data: {
+        //     provider: "CREDENTIALS",
+        //   },
+        // });
         console.log("Seed completed successfully!");
     });
 }

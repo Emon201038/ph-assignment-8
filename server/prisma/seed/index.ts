@@ -288,22 +288,22 @@ async function main() {
 
   // ========== TRIPS SEEDING (MAIN) ==========
   console.log("Generating trips data...");
-  const tours = await prisma.tour.findMany({});
-  const { trips, tripIncludes: tripIncludeItems } = generateTripsData(tours);
+  // const tours = await prisma.tour.findMany({});
+  // const { trips, tripIncludes: tripIncludeItems } = generateTripsData(tours);
 
-  console.log(`Creating ${trips.length} trips...`);
-  for (const trip of trips) {
-    await prisma.trip.create({
-      data: trip,
-    });
-  }
+  // console.log(`Creating ${trips.length} trips...`);
+  // for (const trip of trips) {
+  //   await prisma.trip.create({
+  //     data: trip,
+  //   });
+  // }
 
-  console.log(`Creating ${tripIncludeItems.length} trip include items...`);
-  for (const tripIncludeItem of tripIncludeItems) {
-    await prisma.tripIncludeItem.create({
-      data: tripIncludeItem,
-    });
-  }
+  // console.log(`Creating ${tripIncludeItems.length} trip include items...`);
+  // for (const tripIncludeItem of tripIncludeItems) {
+  //   await prisma.tripIncludeItem.create({
+  //     data: tripIncludeItem,
+  //   });
+  // }
 
   // console.log("Updating broken image URLs...");
 
@@ -313,6 +313,17 @@ async function main() {
   //     data: { image: tour.url }, // Change 'imageUrl' to 'image' if that is your schema field name
   //   });
   // }
+
+  // await prisma.user.updateMany({
+  //   where: {
+  //     role: {
+  //       not: "ADMIN",
+  //     },
+  //   },
+  //   data: {
+  //     provider: "CREDENTIALS",
+  //   },
+  // });
 
   console.log("Seed completed successfully!");
 }

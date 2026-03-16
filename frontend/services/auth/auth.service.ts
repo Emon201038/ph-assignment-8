@@ -30,7 +30,7 @@ export const getNewAccessToken = async () => {
     if (accessToken) {
       const verifiedToken = await verifyToken(
         accessToken,
-        process.env.JWT_ACCESS_TOKEN_SECRET as string
+        process.env.JWT_ACCESS_TOKEN_SECRET as string,
       );
 
       if (verifiedToken.success) {
@@ -134,13 +134,12 @@ const loginSchema = z.object({
 });
 
 export const login = async (prevState: unknown, formData: FormData) => {
+  const payload = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
   try {
     const redirectTo = formData.get("redirect") || null;
-    const payload = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
-
     const validatedPayload = zodValidator(payload, loginSchema);
     if (!validatedPayload.success) {
       return {
@@ -150,7 +149,7 @@ export const login = async (prevState: unknown, formData: FormData) => {
         message: "validation error",
       };
     }
-    const res = await serverFetch.post(`/auth/login`, {
+    const res = await serverFetch.post(`/v2/auth/login`, {
       method: "POST",
       credentials: "include",
       body: JSON.stringify({
@@ -210,7 +209,7 @@ export const login = async (prevState: unknown, formData: FormData) => {
 
     const verifiedToken: JwtPayload | string = jwt.verify(
       accessTokenObject["accessToken"],
-      process.env.JWT_ACCESS_TOKEN_SECRET as string
+      process.env.JWT_ACCESS_TOKEN_SECRET as string,
     );
     if (typeof verifiedToken === "string") {
       throw new Error("Failed to verify token");
@@ -235,13 +234,14 @@ export const login = async (prevState: unknown, formData: FormData) => {
       success: false,
       message: error?.message,
       errors: [],
+      formData: payload,
     };
   }
 };
 
 export const forgotPassword = async (
   prevState: unknown,
-  formData: FormData
+  formData: FormData,
 ) => {
   const schema = z.object({
     email: z.email("Invalid email address"),
@@ -305,7 +305,7 @@ export const verifyOtp = async (prevState: unknown, formData: FormData) => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
     const res = await data.json();
 
@@ -340,7 +340,7 @@ export const sendOtp = async (email: string) => {
 
 export const changePassword = async (
   prevState: unknown,
-  formData: FormData
+  formData: FormData,
 ) => {
   const payload = {
     isForgotten: formData.get("isForgotten") === "true",
@@ -376,7 +376,7 @@ export const changePassword = async (
           .refine((data) => data.newPassword === data.confirmPassword, {
             message: "Passwords do not match",
             path: ["confirmPassword"],
-          })
+          }),
       );
       if (!validatedPayload.success) {
         return {
@@ -408,7 +408,7 @@ export const changePassword = async (
           .refine((data) => data.newPassword === data.confirmPassword, {
             message: "Passwords do not match",
             path: ["confirmPassword"],
-          })
+          }),
       );
       if (!validatedPayload.success) {
         return {

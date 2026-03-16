@@ -201,6 +201,8 @@ exports.UserScalarFieldEnum = {
     phone: 'phone',
     city: 'city',
     country: 'country',
+    provider: 'provider',
+    providerId: 'providerId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };

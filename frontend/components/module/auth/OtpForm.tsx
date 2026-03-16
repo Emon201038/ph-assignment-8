@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { KeyRound } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -50,7 +49,7 @@ export default function OtpForm({ id, email }: { id: string; email: string }) {
     }
     if (state && state.success && state?.data?.token) {
       router.push(
-        `/forgot-password/reset-password?token=${state?.data?.token}`
+        `/forgot-password/reset-password?token=${state?.data?.token}`,
       );
     }
   }, [state]);

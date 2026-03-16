@@ -9,6 +9,7 @@ const user_routes_1 = __importDefault(require("../modules/user/user.routes"));
 const tour_routes_1 = __importDefault(require("../modules/tour/tour.routes"));
 const trip_routes_1 = __importDefault(require("../modules/trip/trip.routes"));
 const review_routes_1 = __importDefault(require("../modules/review/review.routes"));
+const auth_routes_1 = __importDefault(require("../modules/auth/auth.routes"));
 const routerv2 = express_1.default.Router();
 const routes = [
     {
@@ -30,6 +31,10 @@ const routes = [
     {
         path: "/reviews",
         route: review_routes_1.default,
+    },
+    {
+        path: "/auth",
+        route: auth_routes_1.default,
     },
 ];
 routes.forEach((route) => {
