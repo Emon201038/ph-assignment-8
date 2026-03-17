@@ -56,7 +56,7 @@ export const getNewAccessToken = async () => {
     let refreshTokenObject: null | any = null;
 
     // API Call - serverFetch will skip getNewAccessToken for /auth/refresh-token endpoint
-    const response = await serverFetch.get("/auth/refresh-token", {
+    const response = await serverFetch.get("/v1/auth/refresh-token", {
       headers: {
         Cookie: `refreshToken=${refreshToken}`,
       },

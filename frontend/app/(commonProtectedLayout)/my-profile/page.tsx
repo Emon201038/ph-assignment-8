@@ -1,483 +1,419 @@
+"use client";
+
+import { useState } from "react";
 import {
   MapPin,
-  Star,
+  Edit,
+  Share2,
+  Map,
+  MessageSquare,
+  Globe,
   Calendar,
   Heart,
-  Bookmark,
   Settings,
-  Camera,
-  Globe,
-  Mail,
+  Star,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function TouristProfile() {
+export default function MyProfile() {
+  const [activeTab, setActiveTab] = useState("bookings");
+
+  const iconMap = {
+    map: "Map",
+    rate_review: "MessageSquare",
+    public: "Globe",
+    event_available: "Calendar",
+    favorite: "Heart",
+    manage_accounts: "Settings",
+  };
   const user = {
-    name: "Alex Thompson",
-    role: "Travel Enthusiast",
-    location: "San Francisco, USA",
-    avatar: "/male-tourist.jpg",
-    coverImage: "/barcelona-cityscape-night.jpg",
-    memberSince: "2023",
-    toursCompleted: 12,
-    reviewsWritten: 8,
-    savedTours: 15,
-    interests: ["Architecture", "Food & Culture", "Photography", "History"],
-    languages: ["English", "Spanish"],
-    bio: "Passionate traveler exploring the world one city at a time. I love discovering hidden gems, trying local cuisine, and capturing memories through photography.",
-    contact: {
-      email: "alex.thompson@email.com",
-    },
+    name: "Alex Johnson",
+    location: "San Francisco, CA",
+    memberStatus: "GOLD MEMBER",
+    profileImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCr2IxcSfPEvoVZTyuwWd_D0vz4dh-WU67nZkPnRj7-1wCB8zjWGftapFUznUlVvBoEgNOGjfdfCDGt1zBQ2e-_U6Ldbslc_XDDmt-te2iuHrf1Hu9vnqop4nvByXL2WFM4JYoGsnXjy2qnicP2UtdMEzXuPSz7_PgKz0hjToJFYrAoxot898hlrws7VvfQd4iaZ5rdr0FIyrtowB_Z8jIDBKL7wx3Rs6_F9o5Fa_Gr1BlT6DhE_KA63w26D_D0XxF8HateSCf83KI",
+    coverImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCr2IxcSfPEvoVZTyuwWd_D0vz4dh-WU67nZkPnRj7-1wCB8zjWGftapFUznUlVvBoEgNOGjfdfCDGt1zBQ2e-_U6Ldbslc_XDDmt-te2iuHrf1Hu9vnqop4nvByXL2WFM4JYoGsnXjy2qnicP2UtdMEzXuPSz7_PgKz0hjToJFYrAoxot898hlrws7VvfQd4iaZ5rdr0FIyrtowB_Z8jIDBKL7wx3Rs6_F9o5Fa_Gr1BlT6DhE_KA63w26D_D0XxF8HateSCf83KI",
   };
 
-  const upcomingBookings = [
+  const stats = [
+    { icon: "map", label: "Tours Taken", value: "24" },
+    { icon: "rate_review", label: "Reviews", value: "18" },
+    { icon: "public", label: "Countries", value: "12" },
+  ];
+
+  const upcomingTours = [
     {
       id: 1,
-      title: "Gothic Quarter Night Walk",
-      guide: "Sofia Martinez",
-      date: "Apr 15, 2025",
-      time: "7:00 PM",
-      duration: "3 hours",
-      price: 45,
-      image: "/gothic-quarter-barcelona-night.jpg",
-    },
-    {
-      id: 2,
-      title: "Gaudí Architecture Tour",
-      guide: "Sofia Martinez",
-      date: "Apr 17, 2025",
-      time: "10:00 AM",
-      duration: "4 hours",
-      price: 65,
-      image: "/sagrada-familia-gaudi.jpg",
+      title: "Amalfi Coast Sunset Hike",
+      status: "CONFIRMED",
+      bookingId: "#TB-88231",
+      dates: "Oct 12 - Oct 15, 2024",
+      guides: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuDwEU1wueFACIdydCWydSWSgNhB8pY7N4NFuV5xy__t1RbDPfSa-usf5CH6pAiSPvgocQh1ae8GvJaRhuaqBMpBgH2mbgXEXz61Z-NY6Rlg080hEzBv1kmzuyOtGHznPJ2d5_w8CGvd9NNMUxCivy-o_zxzrpQyAbcYiRbEcpFOM80WLhK5G0u2s6iSGCBYOrbbfKgV7Rfiz73WAH-CAILvUapwFtv13azpzOULKBdWJSpqufQWgiAAPDcFzzgcqSH76LdMZ0a169Q",
+      ],
+      moreGuides: 2,
+      image:
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuB9k5jznONkbQXIFnMXXqgaQPv4s4-XCa6zAhWmYdOW3VIC_OsyWVm1ViwyTqBKmSg_4hVyZlyHZx1YSvMp_0ewoRA6zwmeOztNP_jM2Qdh-DM7_pkKi8Jkl9gE9KScQ9ytbwWhHHEl5NxFjjIxO4aai4YGyYNmtdhRBvwPAsAX_HouQF5FdDU03OcC67q4M3qVmeTzJLEHcZO9fx7Cil1oRo7G3TC3F7mZmaT6FngaaFseLL0wB3yZb_6hj0jgIqZBZi0CpnTzk4s",
     },
   ];
 
-  const completedTours = [
+  const pastTours = [
     {
       id: 1,
-      title: "Barcelona Food & Wine Experience",
-      guide: "Sofia Martinez",
-      date: "Jan 20, 2025",
+      title: "Kyoto Zen Gardens Tour",
+      date: "May 2024",
       rating: 5,
-      image: "/spanish-tapas-wine.jpg",
       reviewed: true,
+      image:
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuDyBLx-Nf2gUl6SefdMdAi5815szptJCBrZkTxNPdH1-9yo_wpp0PW2oISxSKrBBpGIl0N54WZmHYc4IDWMvz0VIQtf8GDFT1FLAaty0WvIbCpIoLJ2Dd_Q7l7hTCsGDVhoCw8vySxIFKISORhw9bob2qdKccNyiO2J_C--2a-DgCJetZITwtEe3VctDpjuQVGhyGJOdKTXV6gH6cmBH-m5ooZEtTlFtiHmMUYBh_XaLSwM5U7KTn_8HObTjp6UsdV0lhx4RdxwZEI",
     },
     {
       id: 2,
-      title: "Gothic Quarter History Walk",
-      guide: "Carlos Rodriguez",
-      date: "Dec 10, 2024",
-      rating: 4,
-      image: "/gothic-quarter-barcelona-night.jpg",
-      reviewed: true,
+      title: "Venice Hidden Waterways",
+      date: "Mar 2024",
+      rating: 0,
+      reviewed: false,
+      image:
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuBVRYliVGD9HydjW6gD7vNhJROJtOX53zem-3kJRs_SR5nuIkQXGqcbl4_fKAAXlQeZSp4IwqzzjGoCYEqfTOH9k-GFo3JuFkMqpHFlinP8OhBSkFQGwln10ESFjnEiux8h9H4OscUs3ny3Hc2U50lGUEjeLyTSqOreNWDsytlgQYgRIZrZf_Bg_CNxyum2k-1NEoSxeTuVM7DcLdHZtwjXge1aLuhkXDx8fBddrVqORjOPvbxhUMtrMwHRRCUJ9reuZFBw0rRd-9A",
     },
   ];
 
   const savedTours = [
     {
-      id: 1,
-      title: "Barcelona Food & Wine Experience",
-      guide: "Sofia Martinez",
-      price: 85,
-      rating: 4.8,
-      image: "/spanish-tapas-wine.jpg",
+      country: "India",
+      title: "Golden Triangle Explorer",
+      image:
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuCEHBteosN3o163c7mCtd1oj5pJMtX1Udqk_dODkv0-OgVwUY1kdcaszIYkF0lsfTMfXYqa7LqPotOmdawYuxr4LQ1MR1OR0fDrfC1LV1cS5Lh85TC_Jj_MsnXte54LXa3mpqrrOOW4QtEHWkOr7cDHIl4HLX1aDRt4vHm-ATJJi91FN2h2e-jRxI2JYqzNlNbUI9sAbYEymMp54gK9ChL6M6iv2IBvmOI0PuVelKLX-l4oKFAtlftwL93bThpnZ1EbtkpiNGCEtBw",
     },
     {
-      id: 2,
-      title: "Sagrada Familia Architecture Tour",
-      guide: "Maria Garcia",
-      price: 55,
-      rating: 4.9,
-      image: "/sagrada-familia-gaudi.jpg",
+      country: "France",
+      title: "Paris Culinary Walking Tour",
+      image:
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuDDpCNTkI13JxzqlrChm1oH9hy8wpLH03SpALt2RfeRwRqiURomxCcxQUH-1PHtuBeSAgLXfvtIe16vP4rn8Aa9spTlK9VD_iErspCH9Sz5j8nZpRAYhaC-RQTv3O8eCIG6sFoImQ2fwk05yhUMwSkvdK_MhOhsOlSOsYvaHNwjvriCJhj_XSItVfQiIsgU3u7OEG6oCizbzIVkyj0daen-ADFHKwmZg4dh4wBJXBE9yS86Uns2RnFjcim_XfKmki69K_PMFJL19hI",
+    },
+    {
+      country: "Switzerland",
+      title: "Alpine Peaks Helicopter Tour",
+      image:
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuAhNixaed_rucyLutK3QevzHhmqbQNkmp9rQytWeZASpWnrvNJv3NyUhaEQATY5xbIqrSINRA-sxZZGM_PfIXHjlaCy4W3WDbZaiv4sd7QOIxjPGZFFAaWXcVlDl0Mb9gopffcKK0ek06zoT1gttR4AFChHpL06eL-cUqtXytiXSwgajBLSMd7kVKcf0qPvjMzfqwxZ6l4MJDRciWZJXotuD2U0nVu2Z599NS5cmX141gOl9oEyYEyERKogU98BTd0RKapq7vTK4-Q",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Cover Image */}
-      <div className="relative h-64 md:h-80 w-full overflow-hidden">
-        <img
-          src={user.coverImage || "/placeholder.svg"}
-          alt="Cover"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent" />
-      </div>
+    <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-10 py-8">
+      {/* Hero Profile Section */}
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm overflow-hidden mb-8 border border-slate-200 dark:border-slate-800">
+        {/* Cover Image */}
+        <div
+          className="h-48 bg-linear-to-r from-primary to-blue-400 relative"
+          data-alt="Blue abstract travel themed gradient background"
+        >
+          <button className="absolute bottom-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
+            Edit Cover
+          </button>
+        </div>
 
-      {/* Profile Header */}
-      <div className="container mx-auto px-4 -mt-20 relative z-10">
-        <div className="flex flex-col md:flex-row gap-6 items-start md:items-end mb-8">
-          <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
-            <AvatarImage
-              src={user.avatar || "/placeholder.svg"}
-              alt={user.name}
-            />
-            <AvatarFallback>
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </AvatarFallback>
-          </Avatar>
+        {/* Profile Info Container */}
+        <div className="px-8 pb-8 flex flex-col md:flex-row items-end gap-6 -mt-12">
+          {/* Avatar */}
+          <div className="bg-white dark:bg-slate-900 p-1.5 rounded-full shadow-lg relative">
+            <div
+              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32"
+              data-alt="User profile picture close up"
+              style={{
+                backgroundImage: `url("${user.profileImage}")`,
+              }}
+            ></div>
+            <div className="absolute bottom-2 right-2 bg-green-500 border-4 border-white dark:border-slate-900 size-6 rounded-full"></div>
+          </div>
 
-          <div className="flex-1 w-full">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-balance mb-2">
-                  {user.name}
-                </h1>
-                <p className="text-lg text-muted-foreground mb-2">
-                  {user.role}
-                </p>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <MapPin className="h-4 w-4" />
-                  <span>{user.location}</span>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <Button size="lg">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Edit Profile
-                </Button>
-                <Button size="lg" variant="outline">
-                  Share Profile
-                </Button>
+          {/* Name and Actions */}
+          <div className="flex-1 flex flex-col md:flex-row justify-between items-center md:items-end w-full pb-2">
+            <div className="text-center md:text-left">
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+                {user.name}
+              </h1>
+              <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mt-1 flex-wrap justify-center md:justify-start">
+                <MapPin className="h-4 w-4" />
+                <span>{user.location}</span>
+                <span className="mx-1">•</span>
+                <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-0.5 rounded-full">
+                  {user.memberStatus}
+                </span>
               </div>
             </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Calendar className="h-5 w-5 text-primary" />
-                    <span className="text-2xl font-bold">
-                      {user.toursCompleted}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Tours completed
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Star className="h-5 w-5 text-primary" />
-                    <span className="text-2xl font-bold">
-                      {user.reviewsWritten}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Reviews written
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Bookmark className="h-5 w-5 text-primary" />
-                    <span className="text-2xl font-bold">
-                      {user.savedTours}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Saved tours</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Heart className="h-5 w-5 text-primary" />
-                    <span className="text-2xl font-bold">
-                      {user.memberSince}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Member since</p>
-                </CardContent>
-              </Card>
+            <div className="flex gap-3 mt-4 md:mt-0">
+              <button className="bg-primary text-white px-6 py-2.5 rounded-lg font-bold hover:bg-primary/90 transition-colors flex items-center gap-2">
+                <Edit className="h-4 w-4" />
+                Edit Profile
+              </button>
+              <button className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-3 py-2.5 rounded-lg font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                <Share2 className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Main Content */}
-        <Tabs defaultValue="upcoming" className="space-y-6">
-          <TabsList className="w-full justify-start">
-            <TabsTrigger value="upcoming">
-              Upcoming ({upcomingBookings.length})
-            </TabsTrigger>
-            <TabsTrigger value="completed">
-              Completed ({completedTours.length})
-            </TabsTrigger>
-            <TabsTrigger value="saved">Saved ({savedTours.length})</TabsTrigger>
-            <TabsTrigger value="about">About</TabsTrigger>
-          </TabsList>
-
-          {/* Upcoming Bookings Tab */}
-          <TabsContent value="upcoming">
-            <div className="space-y-4">
-              {upcomingBookings.map((booking) => (
-                <Card
-                  key={booking.id}
-                  className="overflow-hidden hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className="relative h-48 md:h-auto md:w-64 overflow-hidden shrink-0">
-                      <img
-                        src={booking.image || "/placeholder.svg"}
-                        alt={booking.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 p-6">
-                      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-                        <div>
-                          <h3 className="text-2xl font-bold mb-2">
-                            {booking.title}
-                          </h3>
-                          <p className="text-muted-foreground mb-2">
-                            Guide: {booking.guide}
-                          </p>
-                          <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              {booking.date}
-                            </span>
-                            <span>{booking.time}</span>
-                            <span>{booking.duration}</span>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold mb-2">
-                            ${booking.price}
-                          </div>
-                          <Badge variant="secondary">Confirmed</Badge>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button>View Details</Button>
-                        <Button variant="outline">Contact Guide</Button>
-                        <Button variant="ghost">Cancel</Button>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Completed Tours Tab */}
-          <TabsContent value="completed">
-            <div className="space-y-4">
-              {completedTours.map((tour) => (
-                <Card
-                  key={tour.id}
-                  className="overflow-hidden hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className="relative h-48 md:h-auto md:w-64 overflow-hidden shrink-0">
-                      <img
-                        src={tour.image || "/placeholder.svg"}
-                        alt={tour.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 p-6">
-                      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-                        <div>
-                          <h3 className="text-2xl font-bold mb-2">
-                            {tour.title}
-                          </h3>
-                          <p className="text-muted-foreground mb-2">
-                            Guide: {tour.guide}
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground">
-                              {tour.date}
-                            </span>
-                            <div className="flex gap-1">
-                              {Array.from({ length: 5 }).map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < tour.rating
-                                      ? "fill-primary text-primary"
-                                      : "text-muted"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        {tour.reviewed && (
-                          <Badge variant="outline" className="shrink-0">
-                            <Star className="h-3 w-3 mr-1" />
-                            Reviewed
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline">View Review</Button>
-                        <Button variant="outline">Book Again</Button>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Saved Tours Tab */}
-          <TabsContent value="saved">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {savedTours.map((tour) => (
-                <Card
-                  key={tour.id}
-                  className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow"
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={tour.image || "/placeholder.svg"}
-                      alt={tour.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <Button
-                      size="icon"
-                      variant="secondary"
-                      className="absolute top-2 right-2"
-                    >
-                      <Bookmark className="h-4 w-4 fill-primary" />
-                    </Button>
-                  </div>
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-lg">{tour.title}</CardTitle>
-                      <Badge variant="secondary" className="shrink-0">
-                        <Star className="h-3 w-3 mr-1 fill-primary text-primary" />
-                        {tour.rating}
-                      </Badge>
-                    </div>
-                    <CardDescription>Guide: {tour.guide}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">${tour.price}</span>
-                      <Button>Book Now</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* About Tab */}
-          <TabsContent value="about" className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="md:col-span-2 space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>About Me</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {user.bio}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Travel Gallery</CardTitle>
-                    <CardDescription>
-                      Memories from my adventures
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[1, 2, 3, 4, 5, 6].map((i) => (
-                        <div
-                          key={i}
-                          className="relative aspect-square bg-muted rounded-lg overflow-hidden group cursor-pointer"
-                        >
-                          <img
-                            src={`/vibrant-market-street.png?height=200&width=200&query=travel photo ${i}`}
-                            alt={`Travel photo ${i}`}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                          />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <Camera className="h-6 w-6 text-white" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Languages</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {user.languages.map((lang) => (
-                        <Badge key={lang} variant="secondary">
-                          <Globe className="h-3 w-3 mr-1" />
-                          {lang}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Interests</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {user.interests.map((interest) => (
-                        <Badge key={interest} variant="outline">
-                          {interest}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Contact</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        {user.contact.email}
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
       </div>
-    </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Sidebar: Stats */}
+        <aside className="lg:col-span-3 space-y-6">
+          {/* Travel Stats Card */}
+          <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+            <h3 className="font-bold text-lg mb-4">Travel Stats</h3>
+            <div className="space-y-4">
+              {stats.map((stat, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    {stat.icon === "map" && (
+                      <Map className="h-5 w-5 text-primary" />
+                    )}
+                    {stat.icon === "rate_review" && (
+                      <MessageSquare className="h-5 w-5 text-primary" />
+                    )}
+                    {stat.icon === "public" && (
+                      <Globe className="h-5 w-5 text-primary" />
+                    )}
+                    <span className="text-sm font-medium">{stat.label}</span>
+                  </div>
+                  <span className="font-bold">{stat.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* About Me Card */}
+          <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+            <h3 className="font-bold text-lg mb-4">About Me</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Adventure seeker and landscape photographer. Always looking for
+              the next hidden gem in Europe and SE Asia.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-xs rounded-md">
+                #Hiking
+              </span>
+              <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-xs rounded-md">
+                #Photography
+              </span>
+              <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-xs rounded-md">
+                #LocalFood
+              </span>
+            </div>
+          </div>
+        </aside>
+
+        {/* Right Content Area */}
+        <div className="lg:col-span-9">
+          {/* Navigation Tabs */}
+          <div className="flex border-b border-slate-200 dark:border-slate-800 mb-6 overflow-x-auto whitespace-nowrap">
+            {[
+              {
+                id: "bookings",
+                label: "My Bookings",
+                icon: "event_available",
+              },
+              {
+                id: "favorites",
+                label: "Favorites",
+                icon: "favorite",
+              },
+              {
+                id: "settings",
+                label: "Account Settings",
+                icon: "manage_accounts",
+              },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-4 text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${
+                  activeTab === tab.id
+                    ? "border-primary text-primary"
+                    : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                }`}
+              >
+                {tab.icon === "event_available" && (
+                  <Calendar className="h-4 w-4" />
+                )}
+                {tab.icon === "favorite" && <Heart className="h-4 w-4" />}
+                {tab.icon === "manage_accounts" && (
+                  <Settings className="h-4 w-4" />
+                )}
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Bookings Section */}
+          {activeTab === "bookings" && (
+            <div className="space-y-6">
+              {/* Upcoming Tours */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold">Upcoming Tours</h2>
+                  <button className="text-primary text-sm font-bold hover:underline">
+                    View All
+                  </button>
+                </div>
+
+                {upcomingTours.map((tour) => (
+                  <div
+                    key={tour.id}
+                    className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col md:flex-row"
+                  >
+                    <div
+                      className="md:w-64 h-48 md:h-auto bg-center bg-cover"
+                      data-alt={tour.title}
+                      style={{
+                        backgroundImage: `url("${tour.image}")`,
+                      }}
+                    ></div>
+                    <div className="flex-1 p-6 flex flex-col justify-between">
+                      <div>
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="px-3 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-bold rounded-full">
+                            {tour.status}
+                          </span>
+                          <span className="text-slate-400 text-xs font-medium">
+                            Booking ID: {tour.bookingId}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-bold mb-1">{tour.title}</h3>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1 mb-4">
+                          <Calendar className="h-4 w-4" />
+                          {tour.dates}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex -space-x-2">
+                          {tour.guides.map((guideImg, idx) => (
+                            <div
+                              key={idx}
+                              className="size-8 rounded-full border-2 border-white dark:border-slate-900 bg-center bg-cover"
+                              style={{
+                                backgroundImage: `url("${guideImg}")`,
+                              }}
+                            ></div>
+                          ))}
+                          {tour.moreGuides > 0 && (
+                            <div className="size-8 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold">
+                              +{tour.moreGuides}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                            Manage
+                          </button>
+                          <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">
+                            Get Tickets
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Past Tours */}
+              <div>
+                <h2 className="text-xl font-bold mb-4 pt-4">Past Tours</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {pastTours.map((tour) => (
+                    <div
+                      key={tour.id}
+                      className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col"
+                    >
+                      <div
+                        className="h-32 bg-center bg-cover filter grayscale"
+                        data-alt={tour.title}
+                        style={{
+                          backgroundImage: `url("${tour.image}")`,
+                        }}
+                      ></div>
+                      <div className="p-4">
+                        <div className="flex justify-between items-center mb-1">
+                          <h4 className="font-bold truncate">{tour.title}</h4>
+                          <span className="text-xs text-slate-400">
+                            {tour.date}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 mb-3">
+                          {Array.from({ length: 5 }).map((_, idx) => (
+                            <Star
+                              key={idx}
+                              className={`h-4 w-4 ${
+                                idx < tour.rating
+                                  ? "fill-yellow-500 text-yellow-500"
+                                  : "text-slate-400"
+                              }`}
+                            />
+                          ))}
+                          <span className="text-xs text-slate-400 ml-1">
+                            {tour.reviewed ? "(Reviewed)" : "(No review)"}
+                          </span>
+                        </div>
+                        <button className="w-full py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                          {tour.reviewed ? "Rebook Tour" : "Write a Review"}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Saved for Later */}
+              <div>
+                <h2 className="text-xl font-bold mb-4 pt-8 border-t border-slate-200 dark:border-slate-800">
+                  Saved for Later
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {savedTours.map((tour, idx) => (
+                    <div
+                      key={idx}
+                      className="group relative rounded-xl overflow-hidden aspect-3/4"
+                    >
+                      <img
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        data-alt={tour.title}
+                        src={tour.image}
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
+                        <p className="text-white text-xs font-medium uppercase tracking-wider">
+                          {tour.country}
+                        </p>
+                        <h4 className="text-white font-bold">{tour.title}</h4>
+                        <button className="absolute top-3 right-3 bg-white/20 backdrop-blur-md rounded-full size-8 flex items-center justify-center text-white hover:bg-white/30 transition-all">
+                          <Heart className="h-4 w-4 fill-red-500 text-red-500" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Favorites Tab Content */}
+          {activeTab === "favorites" && (
+            <div className="p-8 text-center text-slate-500">
+              <p>Favorites section coming soon</p>
+            </div>
+          )}
+
+          {/* Settings Tab Content */}
+          {activeTab === "settings" && (
+            <div className="p-8 text-center text-slate-500">
+              <p>Account settings section coming soon</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </main>
   );
 }
