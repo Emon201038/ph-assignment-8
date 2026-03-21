@@ -4,9 +4,11 @@ import {
   Edit,
   Globe,
   Heart,
+  Mail,
   Map,
   MapPin,
   MessageSquare,
+  Phone,
   Settings,
   Share2,
 } from "lucide-react";
@@ -29,7 +31,7 @@ const TravelerLayout = ({ user, children }: IProps) => {
       <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm overflow-hidden mb-8 border border-slate-200 dark:border-slate-800">
         {/* Cover Image */}
         <div
-          className="h-48 bg-linear-to-r from-primary to-blue-400 relative"
+          className="h-64 bg-linear-to-r from-primary to-blue-400 relative"
           data-alt="Blue abstract travel themed gradient background"
         >
           <button className="absolute bottom-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
@@ -38,7 +40,7 @@ const TravelerLayout = ({ user, children }: IProps) => {
         </div>
 
         {/* Profile Info Container */}
-        <div className="px-8 pb-8 flex flex-col md:flex-row items-end gap-6 -mt-12">
+        <div className="px-8 pb-6 flex flex-col md:flex-row items-center md:items-end gap-6 -mt-12">
           {/* Avatar */}
           <div className="bg-white dark:bg-slate-900 p-1.5 rounded-full shadow-lg relative">
             <div
@@ -57,15 +59,18 @@ const TravelerLayout = ({ user, children }: IProps) => {
               <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
                 {user.name}
               </h1>
-              <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mt-1 flex-wrap justify-center md:justify-start">
+              <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mt-1 flex-wrap justify-center md:justify-start text-sm">
                 <MapPin className="h-4 w-4" />
                 <span>
                   {user.city}, {user.country}
                 </span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mt-1 flex-wrap justify-center md:justify-start  text-sm">
+                <Mail className="h-4 w-4" />
+                <span>{user.email}</span>
                 <span className="mx-1">•</span>
-                <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-0.5 rounded-full">
-                  {"Verified Traveler"}
-                </span>
+                <Phone className="h-4 w-4" />
+                <span>{user.phone}</span>
               </div>
             </div>
             <div className="flex gap-3 mt-4 md:mt-0">
@@ -113,19 +118,17 @@ const TravelerLayout = ({ user, children }: IProps) => {
           <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
             <h3 className="font-bold text-lg mb-4">About Me</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Adventure seeker and landscape photographer. Always looking for
-              the next hidden gem in Europe and SE Asia.
+              {user.profile.aboutMe}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-xs rounded-md">
-                #Hiking
-              </span>
-              <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-xs rounded-md">
-                #Photography
-              </span>
-              <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-xs rounded-md">
-                #LocalFood
-              </span>
+              {user.profile.interests.map((interest, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-xs rounded-md"
+                >
+                  #{interest}
+                </span>
+              ))}
             </div>
           </div>
         </aside>

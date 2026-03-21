@@ -39,16 +39,14 @@ export interface ITourist {
   interests: string[];
   gender: Gender;
   aboutMe: string;
+  dateOfBirth: string;
+  bloodGroup: string;
   totalTrips: number;
   totalSpent: number;
   wishlistTours: string[];
   bookedTours: string[];
   reviewsGiven: string[];
-  emergencyContact?: {
-    name: string;
-    phone: string;
-    email: string;
-    relationship: string;
-  };
+  emergencyContactRelation?: string;
+  emergencyContactNumber: string;
   createdAt: Date;
 }

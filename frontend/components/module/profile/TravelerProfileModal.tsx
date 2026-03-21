@@ -7,14 +7,17 @@ import {
   User,
   Globe,
   FileText,
-  CheckCircle,
   Trash2,
+  Phone,
+  Calendar,
+  Droplet,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -53,10 +56,13 @@ const TravelerProfileModal = ({
     })) || [],
   );
   const [gender, setGender] = React.useState<Gender>(user.profile.gender);
+  const [bloodGroup, setBloodGroup] = React.useState<string>(
+    user.profile.bloodGroup || "",
+  );
   const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
   const fileRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
-  const [state, isPending] = useActionState(
+  const [state, updateProfile, isPending] = useActionState(
     editTourist.bind(null, user.id),
     null,
   );
@@ -66,7 +72,6 @@ const TravelerProfileModal = ({
       setAvatarFile(null);
     }
   }, [open]);
-  console.log(avatarFile);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
@@ -86,8 +91,8 @@ const TravelerProfileModal = ({
               : "Fill in the details to create your user profile."}
           </DialogDescription>
         </DialogHeader>
-        <div className="overflow-y-auto p-6 space-y-8">
-          <div className="flex flex-col items-center gap-4">
+        <div className="overflow-y-auto p-6">
+          <div className="flex flex-col items-center gap-4 mb-3">
             <div className="relative group">
               <div className="size-32 rounded-full border-4 border-white dark:border-slate-800 shadow-lg overflow-hidden bg-slate-100 relative">
                 <Image
@@ -146,19 +151,22 @@ const TravelerProfileModal = ({
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Field className="md:col-span-2 space-y-2">
-              <FieldLabel htmlFor="name" className="flex items-center gap-2">
-                <User className="h-5 w-5 opacity-70" />
-                Full Name
-              </FieldLabel>
+
+          <Field className="md:col-span-2 space-y-2  mb-3">
+            <FieldLabel htmlFor="name" className="flex items-center gap-2">
+              <User className="h-5 w-5 opacity-70" />
+              Full Name
+            </FieldLabel>
+            <FieldContent>
               <Input
                 placeholder="Enter your full name"
                 type="text"
                 id="name"
                 defaultValue={user.name || undefined}
               />
-            </Field>
+            </FieldContent>
+          </Field>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3">
             <Field className="space-y-2">
               <FieldLabel htmlFor="city" className="flex items-center gap-2">
                 <MapPin className="h-5 w-5 opacity-70" />
@@ -183,64 +191,153 @@ const TravelerProfileModal = ({
                 defaultValue={user.country || undefined}
               />
             </Field>
-            <Field className="md:col-span-2 space-y-2">
-              <FieldLabel htmlFor="bio" className="flex items-center gap-2">
-                <FileText className="h-5 w-5 opacity-70" />
-                Bio/About Me
-              </FieldLabel>
-              <Textarea
-                placeholder="Tell us about your travel style and favorite adventures..."
-                rows={4}
-                id="bio"
-                defaultValue={user.bio || undefined}
+          </div>
+          <Field className="md:col-span-2 space-y-2  mb-3">
+            <FieldLabel htmlFor="bio" className="flex items-center gap-2">
+              <FileText className="h-5 w-5 opacity-70" />
+              Bio/About Me
+            </FieldLabel>
+            <Textarea
+              placeholder="Tell us about your travel style and favorite adventures..."
+              rows={4}
+              id="bio"
+              defaultValue={user.bio || undefined}
+            />
+          </Field>
+          <div className="md:col-span-2 space-y-3 grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <Field className="space-y-1 gap-px w-full mb-0">
+              <FieldLabel htmlFor="interests">Interests</FieldLabel>
+              <FieldContent>
+                <MultiSelect
+                  options={TOURIST_PREFERENCES}
+                  onValueChange={(e) =>
+                    setInterests(
+                      e.map((i) => {
+                        const interest = TOURIST_PREFERENCES.find(
+                          (p) => p.value.toLowerCase() === i.toLowerCase(),
+                        );
+                        return {
+                          label: interest?.label || "",
+                          value: interest?.value || "",
+                        };
+                      }),
+                    )
+                  }
+                  value={interests.map((i) => i.value)}
+                  placeholder="Select interest..."
+                  searchPlaceholder="Search interest..."
+                  maxDisplayed={2}
+                  id="interests"
+                />
+              </FieldContent>
+              <InputFieldError
+                state={state as IInputErrorState}
+                field="interests"
               />
             </Field>
+
+            <Field className="space-y-1 gap-px w-full mb-0">
+              <FieldLabel htmlFor="gender">Gender</FieldLabel>
+              <FieldContent>
+                <Select
+                  value={gender}
+                  onValueChange={(v) => setGender(v as Gender)}
+                >
+                  <SelectTrigger id="gender" className="w-full">
+                    <SelectValue placeholder="Select gender..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={Gender.MALE}> Male </SelectItem>
+                    <SelectItem value={Gender.FEMALE}> Female </SelectItem>
+                    <SelectItem value={Gender.OTHER}> Other </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FieldContent>
+            </Field>
+          </div>
+
+          <div className="mb-3">
+            <FieldLabel className="mb-3">Emergency Contact</FieldLabel>
             <div className="md:col-span-2 space-y-3 grid grid-cols-1 md:grid-cols-2 gap-6">
               <Field className="space-y-1 gap-px w-full">
-                <FieldLabel htmlFor="interests">Interests</FieldLabel>
-                <FieldContent>
-                  <MultiSelect
-                    options={TOURIST_PREFERENCES}
-                    onValueChange={(e) =>
-                      setInterests(
-                        e.map((i) => {
-                          const interest = TOURIST_PREFERENCES.find(
-                            (p) => p.value.toLowerCase() === i.toLowerCase(),
-                          );
-                          return {
-                            label: interest?.label || "",
-                            value: interest?.value || "",
-                          };
-                        }),
-                      )
-                    }
-                    value={interests.map((i) => i.value)}
-                    placeholder="Select interest..."
-                    searchPlaceholder="Search interest..."
-                    maxDisplayed={2}
-                    id="interests"
-                  />
-                </FieldContent>
-                <InputFieldError
-                  state={state as IInputErrorState}
-                  field="interests"
+                <FieldLabel
+                  htmlFor="emergencyContactRelation"
+                  className="flex items-center gap-2"
+                >
+                  <User className="h-5 w-5 opacity-70" />
+                  Relation
+                </FieldLabel>
+                <Input
+                  placeholder="e.g., Family member, Friend"
+                  type="text"
+                  id="emergencyContactRelation"
+                  defaultValue={
+                    user.profile.emergencyContactRelation || undefined
+                  }
                 />
               </Field>
 
               <Field className="space-y-1 gap-px w-full">
-                <FieldLabel htmlFor="gender">Gender</FieldLabel>
+                <FieldLabel
+                  htmlFor="emergencyContactNumber"
+                  className="flex items-center gap-2"
+                >
+                  <Phone className="h-5 w-5 opacity-70" />
+                  Number
+                </FieldLabel>
+                <Input
+                  placeholder="Phone number"
+                  type="tel"
+                  id="emergencyContactNumber"
+                  defaultValue={
+                    user.profile.emergencyContactNumber || undefined
+                  }
+                />
+              </Field>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <FieldLabel>Health Information</FieldLabel>
+            <div className="md:col-span-2 space-y-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Field className="space-y-1 gap-px w-full">
+                <FieldLabel
+                  htmlFor="dateOfBirth"
+                  className="flex items-center gap-2"
+                >
+                  <Calendar className="h-5 w-5 opacity-70" />
+                  Date of Birth
+                </FieldLabel>
+                <Input
+                  placeholder="MM/DD/YYYY"
+                  type="date"
+                  id="dateOfBirth"
+                  defaultValue={user.profile.dateOfBirth || undefined}
+                />
+              </Field>
+
+              <Field className="space-y-1 gap-px w-full">
+                <FieldLabel
+                  htmlFor="bloodGroup"
+                  className="flex items-center gap-2"
+                >
+                  <Droplet className="h-5 w-5 opacity-70" />
+                  Blood Group
+                </FieldLabel>
                 <FieldContent>
-                  <Select
-                    value={gender}
-                    onValueChange={(v) => setGender(v as Gender)}
-                  >
-                    <SelectTrigger id="gender" className="w-full">
-                      <SelectValue placeholder="Select gender..." />
+                  <Select value={bloodGroup} onValueChange={setBloodGroup}>
+                    <SelectTrigger id="bloodGroup" className="w-full">
+                      <SelectValue placeholder="Select blood group..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value={Gender.MALE}> Male </SelectItem>
-                      <SelectItem value={Gender.FEMALE}> Female </SelectItem>
-                      <SelectItem value={Gender.OTHER}> Other </SelectItem>
+                      <SelectItem value="O+">O+</SelectItem>
+                      <SelectItem value="O-">O-</SelectItem>
+                      <SelectItem value="A+">A+</SelectItem>
+                      <SelectItem value="A-">A-</SelectItem>
+                      <SelectItem value="B+">B+</SelectItem>
+                      <SelectItem value="B-">B-</SelectItem>
+                      <SelectItem value="AB+">AB+</SelectItem>
+                      <SelectItem value="AB-">AB-</SelectItem>
                     </SelectContent>
                   </Select>
                 </FieldContent>
@@ -248,12 +345,18 @@ const TravelerProfileModal = ({
             </div>
           </div>
         </div>
-        <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
-          <p>Profile completion: 85%</p>
-          <div className="flex items-center gap-1">
-            <CheckCircle className="h-4 w-4 text-green-500" />
-            <span>Verified TourBuddy Member</span>
-          </div>
+        <div className="px-6 pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-end gap-3">
+          <Button asChild variant="outline">
+            <DialogClose>Cancel</DialogClose>
+          </Button>
+          <Button
+            disabled={isPending}
+            onClick={() => {
+              // Handle save changes
+            }}
+          >
+            Save Changes
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
