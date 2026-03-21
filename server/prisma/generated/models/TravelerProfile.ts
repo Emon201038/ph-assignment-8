@@ -27,6 +27,10 @@ export type AggregateTravelerProfile = {
 export type TravelerProfileMinAggregateOutputType = {
   id: string | null
   aboutMe: string | null
+  gender: $Enums.Gender | null
+  bloodGroup: string | null
+  emergencyContactPhone: string | null
+  emergencyContactRelation: string | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -35,6 +39,10 @@ export type TravelerProfileMinAggregateOutputType = {
 export type TravelerProfileMaxAggregateOutputType = {
   id: string | null
   aboutMe: string | null
+  gender: $Enums.Gender | null
+  bloodGroup: string | null
+  emergencyContactPhone: string | null
+  emergencyContactRelation: string | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -45,6 +53,10 @@ export type TravelerProfileCountAggregateOutputType = {
   interests: number
   languages: number
   aboutMe: number
+  gender: number
+  bloodGroup: number
+  emergencyContactPhone: number
+  emergencyContactRelation: number
   userId: number
   createdAt: number
   updatedAt: number
@@ -55,6 +67,10 @@ export type TravelerProfileCountAggregateOutputType = {
 export type TravelerProfileMinAggregateInputType = {
   id?: true
   aboutMe?: true
+  gender?: true
+  bloodGroup?: true
+  emergencyContactPhone?: true
+  emergencyContactRelation?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -63,6 +79,10 @@ export type TravelerProfileMinAggregateInputType = {
 export type TravelerProfileMaxAggregateInputType = {
   id?: true
   aboutMe?: true
+  gender?: true
+  bloodGroup?: true
+  emergencyContactPhone?: true
+  emergencyContactRelation?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -73,6 +93,10 @@ export type TravelerProfileCountAggregateInputType = {
   interests?: true
   languages?: true
   aboutMe?: true
+  gender?: true
+  bloodGroup?: true
+  emergencyContactPhone?: true
+  emergencyContactRelation?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -156,6 +180,10 @@ export type TravelerProfileGroupByOutputType = {
   interests: string[]
   languages: string[]
   aboutMe: string
+  gender: $Enums.Gender
+  bloodGroup: string | null
+  emergencyContactPhone: string | null
+  emergencyContactRelation: string | null
   userId: string
   createdAt: Date
   updatedAt: Date
@@ -187,6 +215,10 @@ export type TravelerProfileWhereInput = {
   interests?: Prisma.StringNullableListFilter<"TravelerProfile">
   languages?: Prisma.StringNullableListFilter<"TravelerProfile">
   aboutMe?: Prisma.StringFilter<"TravelerProfile"> | string
+  gender?: Prisma.EnumGenderFilter<"TravelerProfile"> | $Enums.Gender
+  bloodGroup?: Prisma.StringNullableFilter<"TravelerProfile"> | string | null
+  emergencyContactPhone?: Prisma.StringNullableFilter<"TravelerProfile"> | string | null
+  emergencyContactRelation?: Prisma.StringNullableFilter<"TravelerProfile"> | string | null
   userId?: Prisma.StringFilter<"TravelerProfile"> | string
   createdAt?: Prisma.DateTimeFilter<"TravelerProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TravelerProfile"> | Date | string
@@ -198,6 +230,10 @@ export type TravelerProfileOrderByWithRelationInput = {
   interests?: Prisma.SortOrder
   languages?: Prisma.SortOrder
   aboutMe?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -213,6 +249,10 @@ export type TravelerProfileWhereUniqueInput = Prisma.AtLeast<{
   interests?: Prisma.StringNullableListFilter<"TravelerProfile">
   languages?: Prisma.StringNullableListFilter<"TravelerProfile">
   aboutMe?: Prisma.StringFilter<"TravelerProfile"> | string
+  gender?: Prisma.EnumGenderFilter<"TravelerProfile"> | $Enums.Gender
+  bloodGroup?: Prisma.StringNullableFilter<"TravelerProfile"> | string | null
+  emergencyContactPhone?: Prisma.StringNullableFilter<"TravelerProfile"> | string | null
+  emergencyContactRelation?: Prisma.StringNullableFilter<"TravelerProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TravelerProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TravelerProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -223,6 +263,10 @@ export type TravelerProfileOrderByWithAggregationInput = {
   interests?: Prisma.SortOrder
   languages?: Prisma.SortOrder
   aboutMe?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -239,6 +283,10 @@ export type TravelerProfileScalarWhereWithAggregatesInput = {
   interests?: Prisma.StringNullableListFilter<"TravelerProfile">
   languages?: Prisma.StringNullableListFilter<"TravelerProfile">
   aboutMe?: Prisma.StringWithAggregatesFilter<"TravelerProfile"> | string
+  gender?: Prisma.EnumGenderWithAggregatesFilter<"TravelerProfile"> | $Enums.Gender
+  bloodGroup?: Prisma.StringNullableWithAggregatesFilter<"TravelerProfile"> | string | null
+  emergencyContactPhone?: Prisma.StringNullableWithAggregatesFilter<"TravelerProfile"> | string | null
+  emergencyContactRelation?: Prisma.StringNullableWithAggregatesFilter<"TravelerProfile"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"TravelerProfile"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TravelerProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TravelerProfile"> | Date | string
@@ -249,6 +297,10 @@ export type TravelerProfileCreateInput = {
   interests?: Prisma.TravelerProfileCreateinterestsInput | string[]
   languages?: Prisma.TravelerProfileCreatelanguagesInput | string[]
   aboutMe: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTravelerProfileInput
@@ -259,6 +311,10 @@ export type TravelerProfileUncheckedCreateInput = {
   interests?: Prisma.TravelerProfileCreateinterestsInput | string[]
   languages?: Prisma.TravelerProfileCreatelanguagesInput | string[]
   aboutMe: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -269,6 +325,10 @@ export type TravelerProfileUpdateInput = {
   interests?: Prisma.TravelerProfileUpdateinterestsInput | string[]
   languages?: Prisma.TravelerProfileUpdatelanguagesInput | string[]
   aboutMe?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTravelerProfileNestedInput
@@ -279,6 +339,10 @@ export type TravelerProfileUncheckedUpdateInput = {
   interests?: Prisma.TravelerProfileUpdateinterestsInput | string[]
   languages?: Prisma.TravelerProfileUpdatelanguagesInput | string[]
   aboutMe?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -289,6 +353,10 @@ export type TravelerProfileCreateManyInput = {
   interests?: Prisma.TravelerProfileCreateinterestsInput | string[]
   languages?: Prisma.TravelerProfileCreatelanguagesInput | string[]
   aboutMe: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -299,6 +367,10 @@ export type TravelerProfileUpdateManyMutationInput = {
   interests?: Prisma.TravelerProfileUpdateinterestsInput | string[]
   languages?: Prisma.TravelerProfileUpdatelanguagesInput | string[]
   aboutMe?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -308,6 +380,10 @@ export type TravelerProfileUncheckedUpdateManyInput = {
   interests?: Prisma.TravelerProfileUpdateinterestsInput | string[]
   languages?: Prisma.TravelerProfileUpdatelanguagesInput | string[]
   aboutMe?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -323,6 +399,10 @@ export type TravelerProfileCountOrderByAggregateInput = {
   interests?: Prisma.SortOrder
   languages?: Prisma.SortOrder
   aboutMe?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -331,6 +411,10 @@ export type TravelerProfileCountOrderByAggregateInput = {
 export type TravelerProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   aboutMe?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -339,6 +423,10 @@ export type TravelerProfileMaxOrderByAggregateInput = {
 export type TravelerProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   aboutMe?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -399,6 +487,10 @@ export type TravelerProfileCreateWithoutUserInput = {
   interests?: Prisma.TravelerProfileCreateinterestsInput | string[]
   languages?: Prisma.TravelerProfileCreatelanguagesInput | string[]
   aboutMe: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -408,6 +500,10 @@ export type TravelerProfileUncheckedCreateWithoutUserInput = {
   interests?: Prisma.TravelerProfileCreateinterestsInput | string[]
   languages?: Prisma.TravelerProfileCreatelanguagesInput | string[]
   aboutMe: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -433,6 +529,10 @@ export type TravelerProfileUpdateWithoutUserInput = {
   interests?: Prisma.TravelerProfileUpdateinterestsInput | string[]
   languages?: Prisma.TravelerProfileUpdatelanguagesInput | string[]
   aboutMe?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -442,6 +542,10 @@ export type TravelerProfileUncheckedUpdateWithoutUserInput = {
   interests?: Prisma.TravelerProfileUpdateinterestsInput | string[]
   languages?: Prisma.TravelerProfileUpdatelanguagesInput | string[]
   aboutMe?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -453,6 +557,10 @@ export type TravelerProfileSelect<ExtArgs extends runtime.Types.Extensions.Inter
   interests?: boolean
   languages?: boolean
   aboutMe?: boolean
+  gender?: boolean
+  bloodGroup?: boolean
+  emergencyContactPhone?: boolean
+  emergencyContactRelation?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -464,6 +572,10 @@ export type TravelerProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   interests?: boolean
   languages?: boolean
   aboutMe?: boolean
+  gender?: boolean
+  bloodGroup?: boolean
+  emergencyContactPhone?: boolean
+  emergencyContactRelation?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -475,6 +587,10 @@ export type TravelerProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   interests?: boolean
   languages?: boolean
   aboutMe?: boolean
+  gender?: boolean
+  bloodGroup?: boolean
+  emergencyContactPhone?: boolean
+  emergencyContactRelation?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -486,12 +602,16 @@ export type TravelerProfileSelectScalar = {
   interests?: boolean
   languages?: boolean
   aboutMe?: boolean
+  gender?: boolean
+  bloodGroup?: boolean
+  emergencyContactPhone?: boolean
+  emergencyContactRelation?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TravelerProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "interests" | "languages" | "aboutMe" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["travelerProfile"]>
+export type TravelerProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "interests" | "languages" | "aboutMe" | "gender" | "bloodGroup" | "emergencyContactPhone" | "emergencyContactRelation" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["travelerProfile"]>
 export type TravelerProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -512,6 +632,10 @@ export type $TravelerProfilePayload<ExtArgs extends runtime.Types.Extensions.Int
     interests: string[]
     languages: string[]
     aboutMe: string
+    gender: $Enums.Gender
+    bloodGroup: string | null
+    emergencyContactPhone: string | null
+    emergencyContactRelation: string | null
     userId: string
     createdAt: Date
     updatedAt: Date
@@ -943,6 +1067,10 @@ export interface TravelerProfileFieldRefs {
   readonly interests: Prisma.FieldRef<"TravelerProfile", 'String[]'>
   readonly languages: Prisma.FieldRef<"TravelerProfile", 'String[]'>
   readonly aboutMe: Prisma.FieldRef<"TravelerProfile", 'String'>
+  readonly gender: Prisma.FieldRef<"TravelerProfile", 'Gender'>
+  readonly bloodGroup: Prisma.FieldRef<"TravelerProfile", 'String'>
+  readonly emergencyContactPhone: Prisma.FieldRef<"TravelerProfile", 'String'>
+  readonly emergencyContactRelation: Prisma.FieldRef<"TravelerProfile", 'String'>
   readonly userId: Prisma.FieldRef<"TravelerProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"TravelerProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TravelerProfile", 'DateTime'>

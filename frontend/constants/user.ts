@@ -1,25 +1,21 @@
 export const TOURIST_PREFERENCES = [
-  { label: "Food & Street Food", value: "food" },
-  { label: "History & Heritage", value: "history" },
-  { label: "Culture & Traditions", value: "culture" },
-  { label: "Nightlife", value: "nightlife" },
-  { label: "Photography", value: "photography" },
-  { label: "Nature & Outdoor", value: "nature" },
-  { label: "Shopping", value: "shopping" },
   { label: "Adventure", value: "adventure" },
-  { label: "Luxury Experience", value: "luxury" },
+  { label: "Culture", value: "culture" },
+  { label: "Beach", value: "beach" },
+  { label: "Nature", value: "nature" },
+  { label: "City", value: "city" },
+  { label: "Food", value: "food" },
+  { label: "Nightlife", value: "nightlife" },
 ];
 
 export const GUIDE_EXPERTISE = [
-  { label: "Food Expert", value: "food" },
-  { label: "History Expert", value: "history" },
-  { label: "Cultural Expert", value: "culture" },
-  { label: "Photography Guide", value: "photography" },
-  { label: "Nightlife Guide", value: "nightlife" },
-  { label: "Nature Guide", value: "nature" },
-  { label: "Adventure Guide", value: "adventure" },
-  { label: "Shopping Guide", value: "shopping" },
-  { label: "Luxury Tours", value: "luxury" },
+  { label: "Adventure", value: "adventure" },
+  { label: "Culture", value: "culture" },
+  { label: "Beach", value: "beach" },
+  { label: "Nature", value: "nature" },
+  { label: "City", value: "city" },
+  { label: "Food", value: "food" },
+  { label: "Nightlife", value: "nightlife" },
 ];
 
 export const WEEK_DAYS = [
@@ -44,15 +40,13 @@ export const ADMIN_PERMISSIONS = [
 ];
 
 export const TOUR_CATEGORIES = [
-  { label: "Food Tour", value: "food" },
-  { label: "Historical Tour", value: "history" },
-  { label: "Cultural Tour", value: "culture" },
-  { label: "Photography Tour", value: "photography" },
-  { label: "Nightlife Tour", value: "nightlife" },
-  { label: "Nature Tour", value: "nature" },
-  { label: "Adventure Tour", value: "adventure" },
-  { label: "Shopping Tour", value: "shopping" },
-  { label: "Luxury Tour", value: "luxury" },
+  { label: "Adventure", value: "adventure" },
+  { label: "Culture", value: "culture" },
+  { label: "Beach", value: "beach" },
+  { label: "Nature", value: "nature" },
+  { label: "City", value: "city" },
+  { label: "Food", value: "food" },
+  { label: "Nightlife", value: "nightlife" },
 ];
 
 export const TOUR_DURATIONS = [

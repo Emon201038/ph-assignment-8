@@ -1,4 +1,4 @@
-import { IUser } from "@/interfaces/user.interface";
+import { ITourist, IUser } from "@/interfaces/user.interface";
 import {
   Calendar,
   Edit,
@@ -14,7 +14,7 @@ import React from "react";
 import TravelerProfileModal from "./TravelerProfileModal";
 
 interface IProps {
-  user: IUser;
+  user: IUser<ITourist>;
   pathname: string;
   children: React.ReactNode;
 }

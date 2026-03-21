@@ -229,6 +229,10 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const GuideProfileScalarFieldEnum = {
   id: 'id',
+  gender: 'gender',
+  bloodGroup: 'bloodGroup',
+  emergencyContactPhone: 'emergencyContactPhone',
+  emergencyContactRelation: 'emergencyContactRelation',
   userId: 'userId',
   experience: 'experience',
   languages: 'languages',
@@ -252,6 +256,10 @@ export const TravelerProfileScalarFieldEnum = {
   interests: 'interests',
   languages: 'languages',
   aboutMe: 'aboutMe',
+  gender: 'gender',
+  bloodGroup: 'bloodGroup',
+  emergencyContactPhone: 'emergencyContactPhone',
+  emergencyContactRelation: 'emergencyContactRelation',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

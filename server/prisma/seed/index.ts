@@ -6,7 +6,7 @@ import { travelers } from "./traveler";
 import { tripIncludes } from "./trip";
 import { toursData } from "./tour";
 import { generateTripsData } from "./trips";
-import { UserRole } from "../generated/enums";
+import { Gender, UserRole } from "../generated/enums";
 import { get } from "node:http";
 
 function getContinent(country: string) {
@@ -337,16 +337,36 @@ async function main() {
   //   },
   // });
 
-  // const users = await prisma.user.findMany({
-  //   where: {
-  //     role: UserRole.TRAVELER,
-  //   },
-  //   select: {
-  //     id: true,
-  //     country: true,
-  //     bio: true,
-  //   },
-  // });
+  const users = await prisma.user.findMany({
+    where: {
+      role: UserRole.TRAVELER,
+    },
+    select: {
+      id: true,
+      country: true,
+      bio: true,
+    },
+  });
+
+  for (const user of users) {
+    await prisma.travelerProfile.update({
+      where: {
+        userId: user.id,
+      },
+      data: {
+        gender: Gender.MALE,
+      },
+    });
+
+    await prisma.guideProfile.update({
+      where: {
+        userId: user.id,
+      },
+      data: {
+        gender: Gender.MALE,
+      },
+    });
+  }
 
   // for (const user of users) {
   //   // 1. Shuffle the interests and pick a random subset (e.g., between 1 and 4 interests)

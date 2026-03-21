@@ -1,10 +1,9 @@
-import { IUser } from "./user.interface";
+import { Gender, IUser } from "./user.interface";
 
-export interface IGuide<T = null> {
-  _id: string;
+export interface IGuide {
   id: string;
   // Professional profile
-  expertise: string[]; // City tours, Food tours
+  gender: Gender;
   specialties: string[];
   aboutMe: string;
   experienceYears: number;
@@ -40,8 +39,6 @@ export interface IGuide<T = null> {
   totalTrips: number;
   totalReviews: number;
   totalEarnings: number;
-
-  profile: T;
 
   // System
   createdAt: Date;

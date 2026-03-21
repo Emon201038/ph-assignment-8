@@ -42,6 +42,10 @@ export type GuideProfileSumAggregateOutputType = {
 
 export type GuideProfileMinAggregateOutputType = {
   id: string | null
+  gender: $Enums.Gender | null
+  bloodGroup: string | null
+  emergencyContactPhone: string | null
+  emergencyContactRelation: string | null
   userId: string | null
   experience: number | null
   aboutMe: string | null
@@ -57,6 +61,10 @@ export type GuideProfileMinAggregateOutputType = {
 
 export type GuideProfileMaxAggregateOutputType = {
   id: string | null
+  gender: $Enums.Gender | null
+  bloodGroup: string | null
+  emergencyContactPhone: string | null
+  emergencyContactRelation: string | null
   userId: string | null
   experience: number | null
   aboutMe: string | null
@@ -72,6 +80,10 @@ export type GuideProfileMaxAggregateOutputType = {
 
 export type GuideProfileCountAggregateOutputType = {
   id: number
+  gender: number
+  bloodGroup: number
+  emergencyContactPhone: number
+  emergencyContactRelation: number
   userId: number
   experience: number
   languages: number
@@ -105,6 +117,10 @@ export type GuideProfileSumAggregateInputType = {
 
 export type GuideProfileMinAggregateInputType = {
   id?: true
+  gender?: true
+  bloodGroup?: true
+  emergencyContactPhone?: true
+  emergencyContactRelation?: true
   userId?: true
   experience?: true
   aboutMe?: true
@@ -120,6 +136,10 @@ export type GuideProfileMinAggregateInputType = {
 
 export type GuideProfileMaxAggregateInputType = {
   id?: true
+  gender?: true
+  bloodGroup?: true
+  emergencyContactPhone?: true
+  emergencyContactRelation?: true
   userId?: true
   experience?: true
   aboutMe?: true
@@ -135,6 +155,10 @@ export type GuideProfileMaxAggregateInputType = {
 
 export type GuideProfileCountAggregateInputType = {
   id?: true
+  gender?: true
+  bloodGroup?: true
+  emergencyContactPhone?: true
+  emergencyContactRelation?: true
   userId?: true
   experience?: true
   languages?: true
@@ -239,6 +263,10 @@ export type GuideProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type GuideProfileGroupByOutputType = {
   id: string
+  gender: $Enums.Gender
+  bloodGroup: string | null
+  emergencyContactPhone: string | null
+  emergencyContactRelation: string | null
   userId: string
   experience: number | null
   languages: string[]
@@ -279,6 +307,10 @@ export type GuideProfileWhereInput = {
   OR?: Prisma.GuideProfileWhereInput[]
   NOT?: Prisma.GuideProfileWhereInput | Prisma.GuideProfileWhereInput[]
   id?: Prisma.StringFilter<"GuideProfile"> | string
+  gender?: Prisma.EnumGenderFilter<"GuideProfile"> | $Enums.Gender
+  bloodGroup?: Prisma.StringNullableFilter<"GuideProfile"> | string | null
+  emergencyContactPhone?: Prisma.StringNullableFilter<"GuideProfile"> | string | null
+  emergencyContactRelation?: Prisma.StringNullableFilter<"GuideProfile"> | string | null
   userId?: Prisma.StringFilter<"GuideProfile"> | string
   experience?: Prisma.IntNullableFilter<"GuideProfile"> | number | null
   languages?: Prisma.StringNullableListFilter<"GuideProfile">
@@ -297,6 +329,10 @@ export type GuideProfileWhereInput = {
 
 export type GuideProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   experience?: Prisma.SortOrderInput | Prisma.SortOrder
   languages?: Prisma.SortOrder
@@ -319,6 +355,10 @@ export type GuideProfileWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.GuideProfileWhereInput | Prisma.GuideProfileWhereInput[]
   OR?: Prisma.GuideProfileWhereInput[]
   NOT?: Prisma.GuideProfileWhereInput | Prisma.GuideProfileWhereInput[]
+  gender?: Prisma.EnumGenderFilter<"GuideProfile"> | $Enums.Gender
+  bloodGroup?: Prisma.StringNullableFilter<"GuideProfile"> | string | null
+  emergencyContactPhone?: Prisma.StringNullableFilter<"GuideProfile"> | string | null
+  emergencyContactRelation?: Prisma.StringNullableFilter<"GuideProfile"> | string | null
   experience?: Prisma.IntNullableFilter<"GuideProfile"> | number | null
   languages?: Prisma.StringNullableListFilter<"GuideProfile">
   specialties?: Prisma.StringNullableListFilter<"GuideProfile">
@@ -336,6 +376,10 @@ export type GuideProfileWhereUniqueInput = Prisma.AtLeast<{
 
 export type GuideProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   experience?: Prisma.SortOrderInput | Prisma.SortOrder
   languages?: Prisma.SortOrder
@@ -361,6 +405,10 @@ export type GuideProfileScalarWhereWithAggregatesInput = {
   OR?: Prisma.GuideProfileScalarWhereWithAggregatesInput[]
   NOT?: Prisma.GuideProfileScalarWhereWithAggregatesInput | Prisma.GuideProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"GuideProfile"> | string
+  gender?: Prisma.EnumGenderWithAggregatesFilter<"GuideProfile"> | $Enums.Gender
+  bloodGroup?: Prisma.StringNullableWithAggregatesFilter<"GuideProfile"> | string | null
+  emergencyContactPhone?: Prisma.StringNullableWithAggregatesFilter<"GuideProfile"> | string | null
+  emergencyContactRelation?: Prisma.StringNullableWithAggregatesFilter<"GuideProfile"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"GuideProfile"> | string
   experience?: Prisma.IntNullableWithAggregatesFilter<"GuideProfile"> | number | null
   languages?: Prisma.StringNullableListFilter<"GuideProfile">
@@ -378,6 +426,10 @@ export type GuideProfileScalarWhereWithAggregatesInput = {
 
 export type GuideProfileCreateInput = {
   id?: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   experience?: number | null
   languages?: Prisma.GuideProfileCreatelanguagesInput | string[]
   specialties?: Prisma.GuideProfileCreatespecialtiesInput | string[]
@@ -395,6 +447,10 @@ export type GuideProfileCreateInput = {
 
 export type GuideProfileUncheckedCreateInput = {
   id?: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   userId: string
   experience?: number | null
   languages?: Prisma.GuideProfileCreatelanguagesInput | string[]
@@ -412,6 +468,10 @@ export type GuideProfileUncheckedCreateInput = {
 
 export type GuideProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.GuideProfileUpdatelanguagesInput | string[]
   specialties?: Prisma.GuideProfileUpdatespecialtiesInput | string[]
@@ -429,6 +489,10 @@ export type GuideProfileUpdateInput = {
 
 export type GuideProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.GuideProfileUpdatelanguagesInput | string[]
@@ -446,6 +510,10 @@ export type GuideProfileUncheckedUpdateInput = {
 
 export type GuideProfileCreateManyInput = {
   id?: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   userId: string
   experience?: number | null
   languages?: Prisma.GuideProfileCreatelanguagesInput | string[]
@@ -463,6 +531,10 @@ export type GuideProfileCreateManyInput = {
 
 export type GuideProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.GuideProfileUpdatelanguagesInput | string[]
   specialties?: Prisma.GuideProfileUpdatespecialtiesInput | string[]
@@ -479,6 +551,10 @@ export type GuideProfileUpdateManyMutationInput = {
 
 export type GuideProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.GuideProfileUpdatelanguagesInput | string[]
@@ -501,6 +577,10 @@ export type GuideProfileNullableScalarRelationFilter = {
 
 export type GuideProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   languages?: Prisma.SortOrder
@@ -525,6 +605,10 @@ export type GuideProfileAvgOrderByAggregateInput = {
 
 export type GuideProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   aboutMe?: Prisma.SortOrder
@@ -540,6 +624,10 @@ export type GuideProfileMaxOrderByAggregateInput = {
 
 export type GuideProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrder
+  emergencyContactPhone?: Prisma.SortOrder
+  emergencyContactRelation?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   aboutMe?: Prisma.SortOrder
@@ -600,6 +688,10 @@ export type GuideProfileCreatespecialtiesInput = {
   set: string[]
 }
 
+export type EnumGenderFieldUpdateOperationsInput = {
+  set?: $Enums.Gender
+}
+
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
@@ -628,6 +720,10 @@ export type NullableFloatFieldUpdateOperationsInput = {
 
 export type GuideProfileCreateWithoutUserInput = {
   id?: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   experience?: number | null
   languages?: Prisma.GuideProfileCreatelanguagesInput | string[]
   specialties?: Prisma.GuideProfileCreatespecialtiesInput | string[]
@@ -644,6 +740,10 @@ export type GuideProfileCreateWithoutUserInput = {
 
 export type GuideProfileUncheckedCreateWithoutUserInput = {
   id?: string
+  gender?: $Enums.Gender
+  bloodGroup?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
   experience?: number | null
   languages?: Prisma.GuideProfileCreatelanguagesInput | string[]
   specialties?: Prisma.GuideProfileCreatespecialtiesInput | string[]
@@ -676,6 +776,10 @@ export type GuideProfileUpdateToOneWithWhereWithoutUserInput = {
 
 export type GuideProfileUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.GuideProfileUpdatelanguagesInput | string[]
   specialties?: Prisma.GuideProfileUpdatespecialtiesInput | string[]
@@ -692,6 +796,10 @@ export type GuideProfileUpdateWithoutUserInput = {
 
 export type GuideProfileUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.GuideProfileUpdatelanguagesInput | string[]
   specialties?: Prisma.GuideProfileUpdatespecialtiesInput | string[]
@@ -710,6 +818,10 @@ export type GuideProfileUncheckedUpdateWithoutUserInput = {
 
 export type GuideProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  gender?: boolean
+  bloodGroup?: boolean
+  emergencyContactPhone?: boolean
+  emergencyContactRelation?: boolean
   userId?: boolean
   experience?: boolean
   languages?: boolean
@@ -728,6 +840,10 @@ export type GuideProfileSelect<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type GuideProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  gender?: boolean
+  bloodGroup?: boolean
+  emergencyContactPhone?: boolean
+  emergencyContactRelation?: boolean
   userId?: boolean
   experience?: boolean
   languages?: boolean
@@ -746,6 +862,10 @@ export type GuideProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type GuideProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  gender?: boolean
+  bloodGroup?: boolean
+  emergencyContactPhone?: boolean
+  emergencyContactRelation?: boolean
   userId?: boolean
   experience?: boolean
   languages?: boolean
@@ -764,6 +884,10 @@ export type GuideProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type GuideProfileSelectScalar = {
   id?: boolean
+  gender?: boolean
+  bloodGroup?: boolean
+  emergencyContactPhone?: boolean
+  emergencyContactRelation?: boolean
   userId?: boolean
   experience?: boolean
   languages?: boolean
@@ -779,7 +903,7 @@ export type GuideProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type GuideProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "experience" | "languages" | "specialties" | "aboutMe" | "hourlyRate" | "rating" | "totalTours" | "bio" | "verified" | "isTopRated" | "createdAt" | "updatedAt", ExtArgs["result"]["guideProfile"]>
+export type GuideProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gender" | "bloodGroup" | "emergencyContactPhone" | "emergencyContactRelation" | "userId" | "experience" | "languages" | "specialties" | "aboutMe" | "hourlyRate" | "rating" | "totalTours" | "bio" | "verified" | "isTopRated" | "createdAt" | "updatedAt", ExtArgs["result"]["guideProfile"]>
 export type GuideProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -797,6 +921,10 @@ export type $GuideProfilePayload<ExtArgs extends runtime.Types.Extensions.Intern
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    gender: $Enums.Gender
+    bloodGroup: string | null
+    emergencyContactPhone: string | null
+    emergencyContactRelation: string | null
     userId: string
     experience: number | null
     languages: string[]
@@ -1235,6 +1363,10 @@ export interface Prisma__GuideProfileClient<T, Null = never, ExtArgs extends run
  */
 export interface GuideProfileFieldRefs {
   readonly id: Prisma.FieldRef<"GuideProfile", 'String'>
+  readonly gender: Prisma.FieldRef<"GuideProfile", 'Gender'>
+  readonly bloodGroup: Prisma.FieldRef<"GuideProfile", 'String'>
+  readonly emergencyContactPhone: Prisma.FieldRef<"GuideProfile", 'String'>
+  readonly emergencyContactRelation: Prisma.FieldRef<"GuideProfile", 'String'>
   readonly userId: Prisma.FieldRef<"GuideProfile", 'String'>
   readonly experience: Prisma.FieldRef<"GuideProfile", 'Int'>
   readonly languages: Prisma.FieldRef<"GuideProfile", 'String[]'>

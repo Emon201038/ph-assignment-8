@@ -11,9 +11,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import CustomLink from "@/components/shared/CustomLink";
+import { IGuide } from "@/interfaces/guide.interface";
 
 type Props = {
-  user: IUser;
+  user: IUser<IGuide>;
   pathname: string;
   children: React.ReactNode;
 };

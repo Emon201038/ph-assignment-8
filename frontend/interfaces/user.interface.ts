@@ -11,25 +11,19 @@ export enum Gender {
 }
 
 export interface IUser<T = null> {
-  _id: string;
   id: string;
   name: string;
   email: string;
   password: string;
   role: UserRole;
-  address: string;
   city: string;
   country: string;
   phone: string;
-  gender: Gender;
 
   // Common fields
-  profileImage?: string;
   avatar?: string;
   bio?: string;
-  languages?: string[];
   profile: T;
-  guideProfile: T;
 
   createdAt: Date;
   updatedAt?: Date;
@@ -38,13 +32,13 @@ export interface IUser<T = null> {
   isBlocked?: boolean;
 }
 
-export interface ITourist<T = null> {
-  _id: string;
-  user: IUser<ITourist>;
+export interface ITourist {
+  id: string;
+  userId: string;
+  languages: string[];
   interests: string[];
-  preferredLanguage: string;
-  preferredCurrency: string;
-  profile: T;
+  gender: Gender;
+  aboutMe: string;
   totalTrips: number;
   totalSpent: number;
   wishlistTours: string[];
@@ -57,5 +51,4 @@ export interface ITourist<T = null> {
     relationship: string;
   };
   createdAt: Date;
-  "user.name": string;
 }

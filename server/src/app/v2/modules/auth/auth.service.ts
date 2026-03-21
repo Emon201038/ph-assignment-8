@@ -145,7 +145,8 @@ const me = async (accessToken: string) => {
 
   const user = await prisma.user.findUnique({
     where: { id: verifiedToken.userId },
-    include: { guideProfile: true },
+    include: { guideProfile: true, travelerProfile: true },
+    omit: { password: true },
   });
 
   if (!user) {
@@ -153,8 +154,11 @@ const me = async (accessToken: string) => {
   }
 
   // Remove password from response
-  const { password: _, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+  const { guideProfile, travelerProfile, ...userWithoutPassword } = user;
+  return {
+    profile: guideProfile || travelerProfile || null,
+    ...userWithoutPassword,
+  };
 };
 
 const refreshTokenService = async (token: string, res: Response) => {

@@ -36,8 +36,20 @@ enum UserRole {
   ADMIN
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
 model GuideProfile {
   id String @id @default(uuid())
+
+  gender     Gender  @default(MALE)
+  bloodGroup String?
+
+  emergencyContactPhone    String?
+  emergencyContactRelation String?
 
   userId      String   @unique
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -58,9 +70,14 @@ model GuideProfile {
 model TravelerProfile {
   id String @id @default(uuid())
 
-  interests String[]
-  languages String[]
-  aboutMe   String
+  interests  String[]
+  languages  String[]
+  aboutMe    String
+  gender     Gender   @default(MALE)
+  bloodGroup String?
+
+  emergencyContactPhone    String?
+  emergencyContactRelation String?
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

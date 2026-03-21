@@ -1,4 +1,4 @@
-import { Prisma } from "../../../../../prisma/generated/client";
+import { Prisma, UserRole } from "../../../../../prisma/generated/client";
 import prisma from "../../../config/db";
 import AppError from "../../../helpers/appError";
 import { paginationHelper } from "../../../helpers/paginationHelper";
@@ -96,13 +96,26 @@ const getSingleUserFromDB = async (id: string) => {
     },
     include: {
       guideProfile: true,
+      travelerProfile: true,
+    },
+    omit: {
+      password: true,
     },
   });
 
   if (!result) {
     throw new AppError(404, "User not found");
   }
-  return result;
+
+  const { guideProfile, travelerProfile, ...userData } = result;
+  let profileInfo = null;
+  if (userData.role === UserRole.GUIDE) {
+    profileInfo = guideProfile;
+  }
+  if (userData.role === UserRole.TRAVELER) {
+    profileInfo = travelerProfile;
+  }
+  return { profile: profileInfo, ...userData };
 };
 
 const createUserInDB = async (payload: any) => {
