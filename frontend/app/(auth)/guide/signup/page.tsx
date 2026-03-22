@@ -5,7 +5,6 @@ import GuideSignupForm from "@/components/module/auth/GuideSignupForm";
 
 export default function GuideSignupPage() {
   const handleFormSubmit = (data: any) => {
-    console.log("Form submitted:", data);
     // Handle form submission here
   };
 

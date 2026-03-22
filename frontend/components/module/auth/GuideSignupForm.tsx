@@ -89,7 +89,6 @@ export default function GuideSignupForm({ onSubmit }: GuideSignupFormProps) {
       specialties: selectedSpecialties,
       languages,
     };
-    console.log("Form data:", submitData);
     if (onSubmit) {
       onSubmit(submitData);
     }

@@ -15,7 +15,6 @@ const page = async ({
   );
   const data = await res.json();
 
-  console.log(data);
   return (
     <section className="w-full px-6 md:px-20 py-10">
       <h2 className="text-2xl font-bold mb-8">Popular Nearby</h2>

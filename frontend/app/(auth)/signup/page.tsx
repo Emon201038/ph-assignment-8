@@ -16,7 +16,6 @@ export default function SignupPage() {
     };
     interests: string[];
   }) => {
-    console.log("Signup data:", data);
     // Handle signup logic here
   };
 

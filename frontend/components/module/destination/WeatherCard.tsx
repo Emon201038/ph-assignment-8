@@ -39,7 +39,6 @@ const getWeatherForRange = async (lat: number, lng: number, range: string) => {
   const startDate = `${year}-${String(startMonth > endMonth ? endMonth : startMonth).padStart(2, "0")}-01`;
   const endDate = `${year}-${String(startMonth > endMonth ? startMonth : endMonth).padStart(2, "0")}-28`;
 
-  console.log(startDate, endDate, range);
   const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lng}&start_date=${startDate}&end_date=${endDate}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum`;
 
   const res = await fetch(url, {

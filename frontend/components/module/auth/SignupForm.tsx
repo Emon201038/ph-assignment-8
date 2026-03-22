@@ -51,7 +51,6 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
       formData,
       interests: selectedInterests,
     };
-    console.log("Form data:", submitData);
     if (onSubmit) {
       onSubmit(submitData);
     }

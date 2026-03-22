@@ -13,7 +13,6 @@ export async function Navbar({
   isDashboard?: boolean;
 }) {
   const session = await auth();
-  console.log(session, "session");
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-20 py-4 bg-white dark:bg-slate-900 backdrop-blur-2xl ">
       <div className="flex items-center gap-8">
