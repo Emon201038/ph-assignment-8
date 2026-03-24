@@ -40,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const TravelerProfileModal = ({
   user,
@@ -67,6 +68,7 @@ const TravelerProfileModal = ({
     editTourist.bind(null, user.id),
     null,
   );
+  const router = useRouter();
 
   useEffect(() => {
     if (!open) {
@@ -78,7 +80,12 @@ const TravelerProfileModal = ({
     if (state && !state.success && !state.errors) {
       toast.error(state.message || "Failed to update profile");
     }
-  }, [state]);
+    if (state && state.success) {
+      toast.success("Profile updated successfully");
+      setOpen(false);
+      router.refresh();
+    }
+  }, [state, router]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

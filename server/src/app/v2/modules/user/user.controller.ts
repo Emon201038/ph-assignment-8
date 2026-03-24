@@ -45,8 +45,14 @@ const createUser = catchAsync(async (req, res, next) => {
 });
 
 const updateUser = catchAsync(async (req, res, next) => {
-  console.log(req.files, req.file);
-  const data = await UserService.updateUserInDB(req.params.id, req.body);
+  const data = await UserService.updateUserInDB(
+    req.params.id,
+    req.body,
+    req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    },
+  );
+
   sendResponse(res, {
     message: "User updated successfully",
     statusCode: 200,

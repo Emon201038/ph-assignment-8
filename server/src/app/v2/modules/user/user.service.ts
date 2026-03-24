@@ -4,6 +4,20 @@ import prisma from "../../../config/db";
 import AppError from "../../../helpers/appError";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import bcrypt from "bcryptjs";
+import { uploadFileToCloudinary } from "../../../utils/upload-files";
+import { UpdateUserSchema } from "./user.validation";
+
+const cleanObject = (obj: Record<string, any>) => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(
+      ([_, value]) =>
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        !(Array.isArray(value) && value.length === 0),
+    ),
+  );
+};
 
 const getAllUserFromDB = async (options: any, filters: any) => {
   const { limit, skip, page, sortBy, sortOrder } =
@@ -160,18 +174,88 @@ const createUserInDB = async (payload: any) => {
   return result;
 };
 
-const updateUserInDB = async (id: string, payload: UserUpdateArgs) => {
-  console.log(payload);
-  const data = await prisma.user.findFirst({
+const updateUserInDB = async (
+  id: string,
+  payload: UpdateUserSchema,
+  files: { [fieldName: string]: Express.Multer.File[] },
+) => {
+  let avatarUrl: string | undefined;
+
+  const existingUser = await prisma.user.findUnique({
+    where: { id },
+    select: { role: true },
+  });
+
+  if (files?.avatar?.length) {
+    const upload = await uploadFileToCloudinary(files.avatar[0], "avatar");
+    if (upload?.url) {
+      avatarUrl = upload.url;
+    }
+  }
+
+  const userData = cleanObject({
+    name: payload.name,
+    country: payload.country,
+    city: payload.city,
+    bio: payload.bio,
+    avatar: avatarUrl,
+  });
+
+  const guideData = cleanObject({
+    gender: payload.gender,
+    bloodGroup: payload.bloodGroup,
+    emergencyContactRelation: payload.emergencyContactRelation,
+    emergencyContactPhone: payload.emergencyContactNumber,
+    languages: payload.languages,
+    specialties: payload.specialties,
+  });
+
+  const travelerData = cleanObject({
+    gender: payload.gender,
+    bloodGroup: payload.bloodGroup,
+    emergencyContactRelation: payload.emergencyContactRelation,
+    emergencyContactPhone: payload.emergencyContactNumber,
+    interests: payload.interests,
+    // languages: payload.languages,
+  });
+
+  const result = await prisma.user.update({
+    where: { id },
+    data: {
+      ...userData,
+
+      ...(existingUser?.role === "GUIDE" &&
+        Object.keys(guideData).length > 0 && {
+          guideProfile: {
+            update: guideData,
+          },
+        }),
+
+      ...(existingUser?.role === "TRAVELER" &&
+        Object.keys(travelerData).length > 0 && {
+          travelerProfile: {
+            update: travelerData,
+          },
+        }),
+    },
+
+    include: {
+      guideProfile: true,
+      travelerProfile: true,
+    },
+  });
+
+  return result;
+};
+
+const hardDeleteUser = async (id: string) => {
+  const data = await prisma.user.delete({
     where: {
       id,
     },
-    // data: payload,
   });
   return data;
 };
-
-const hardDeleteUser = async (id: string) => {};
 
 export const UserService = {
   getAllUserFromDB,

@@ -37,5 +37,8 @@ export const updateUserSchema = z.object({
 
   interests: z.string().transform((z) => z?.split(",")?.map((i) => i.trim())),
   languages: z.array(z.string()).default([]),
-  specialities: z.array(z.string()).default([]),
+  specialties: z.array(z.string()).default([]),
 });
+
+export type CreateUserSchema = z.infer<typeof createUserSchema>;
+export type UpdateUserSchema = z.infer<typeof updateUserSchema>;
