@@ -35,4 +35,13 @@ userRoutes
     UserController.hardDeleteUser,
   );
 
+userRoutes.delete("/soft-delete/:id", UserController.softDeleteUser);
+
+userRoutes
+  .route("/emergency-contacts/:id")
+  .post(UserController.addEmergencyContact)
+  .get(UserController.getEmergencyContact)
+  .put(UserController.updateEmergencyContact)
+  .delete(UserController.removeEmergencyContact);
+
 export default userRoutes;

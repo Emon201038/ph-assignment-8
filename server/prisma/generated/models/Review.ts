@@ -437,10 +437,6 @@ export type ReviewOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type ReviewCreateNestedManyWithoutTourInput = {
   create?: Prisma.XOR<Prisma.ReviewCreateWithoutTourInput, Prisma.ReviewUncheckedCreateWithoutTourInput> | Prisma.ReviewCreateWithoutTourInput[] | Prisma.ReviewUncheckedCreateWithoutTourInput[]
   connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutTourInput | Prisma.ReviewCreateOrConnectWithoutTourInput[]

@@ -257,10 +257,73 @@ const hardDeleteUser = async (id: string) => {
   return data;
 };
 
+const softDeleteUser = async (id: string) => {
+  const data = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      isDeleted: true,
+    },
+  });
+  return data;
+};
+
+const addEmergencyContact = async (
+  userId: string,
+  { user, id, ...payload }: Prisma.EmergencyContactCreateInput,
+) => {
+  const data = await prisma.emergencyContact.create({
+    data: {
+      ...payload,
+      userId,
+    },
+  });
+  return data;
+};
+
+const getEmergencyContact = async (id: string) => {
+  const data = await prisma.emergencyContact.findMany({
+    where: {
+      userId: id,
+    },
+  });
+  return data;
+};
+
+const updateEmergencyContact = async (
+  id: string,
+  payload: Prisma.EmergencyContactUpdateInput,
+) => {
+  const data = await prisma.emergencyContact.update({
+    where: {
+      id: payload.id as string,
+    },
+    data: {
+      ...payload,
+    },
+  });
+  return data;
+};
+
+const deleteEmergencyContact = async (id: string) => {
+  const data = await prisma.emergencyContact.delete({
+    where: {
+      id,
+    },
+  });
+  return data;
+};
+
 export const UserService = {
   getAllUserFromDB,
   getSingleUserFromDB,
   createUserInDB,
   updateUserInDB,
   hardDeleteUser,
+  softDeleteUser,
+  addEmergencyContact,
+  getEmergencyContact,
+  updateEmergencyContact,
+  deleteEmergencyContact,
 };

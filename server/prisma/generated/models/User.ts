@@ -37,6 +37,8 @@ export type UserMinAggregateOutputType = {
   country: string | null
   provider: $Enums.AuthProvider | null
   providerId: string | null
+  isEmailVerified: boolean | null
+  isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +56,8 @@ export type UserMaxAggregateOutputType = {
   country: string | null
   provider: $Enums.AuthProvider | null
   providerId: string | null
+  isEmailVerified: boolean | null
+  isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +75,8 @@ export type UserCountAggregateOutputType = {
   country: number
   provider: number
   providerId: number
+  isEmailVerified: number
+  isDeleted: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,6 +96,8 @@ export type UserMinAggregateInputType = {
   country?: true
   provider?: true
   providerId?: true
+  isEmailVerified?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +115,8 @@ export type UserMaxAggregateInputType = {
   country?: true
   provider?: true
   providerId?: true
+  isEmailVerified?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +134,8 @@ export type UserCountAggregateInputType = {
   country?: true
   provider?: true
   providerId?: true
+  isEmailVerified?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -214,6 +226,8 @@ export type UserGroupByOutputType = {
   country: string
   provider: $Enums.AuthProvider | null
   providerId: string | null
+  isEmailVerified: boolean
+  isDeleted: boolean
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -252,6 +266,8 @@ export type UserWhereInput = {
   country?: Prisma.StringFilter<"User"> | string
   provider?: Prisma.EnumAuthProviderNullableFilter<"User"> | $Enums.AuthProvider | null
   providerId?: Prisma.StringNullableFilter<"User"> | string | null
+  isEmailVerified?: Prisma.BoolFilter<"User"> | boolean
+  isDeleted?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   guideProfile?: Prisma.XOR<Prisma.GuideProfileNullableScalarRelationFilter, Prisma.GuideProfileWhereInput> | null
@@ -260,6 +276,8 @@ export type UserWhereInput = {
   reviews?: Prisma.ReviewListRelationFilter
   guides?: Prisma.ReviewListRelationFilter
   travelerProfile?: Prisma.XOR<Prisma.TravelerProfileNullableScalarRelationFilter, Prisma.TravelerProfileWhereInput> | null
+  emergencyContacts?: Prisma.EmergencyContactListRelationFilter
+  loggedInDevices?: Prisma.LoggedInDeviceListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -275,6 +293,8 @@ export type UserOrderByWithRelationInput = {
   country?: Prisma.SortOrder
   provider?: Prisma.SortOrderInput | Prisma.SortOrder
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isEmailVerified?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   guideProfile?: Prisma.GuideProfileOrderByWithRelationInput
@@ -283,6 +303,8 @@ export type UserOrderByWithRelationInput = {
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   guides?: Prisma.ReviewOrderByRelationAggregateInput
   travelerProfile?: Prisma.TravelerProfileOrderByWithRelationInput
+  emergencyContacts?: Prisma.EmergencyContactOrderByRelationAggregateInput
+  loggedInDevices?: Prisma.LoggedInDeviceOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -301,6 +323,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   country?: Prisma.StringFilter<"User"> | string
   provider?: Prisma.EnumAuthProviderNullableFilter<"User"> | $Enums.AuthProvider | null
   providerId?: Prisma.StringNullableFilter<"User"> | string | null
+  isEmailVerified?: Prisma.BoolFilter<"User"> | boolean
+  isDeleted?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   guideProfile?: Prisma.XOR<Prisma.GuideProfileNullableScalarRelationFilter, Prisma.GuideProfileWhereInput> | null
@@ -309,6 +333,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   reviews?: Prisma.ReviewListRelationFilter
   guides?: Prisma.ReviewListRelationFilter
   travelerProfile?: Prisma.XOR<Prisma.TravelerProfileNullableScalarRelationFilter, Prisma.TravelerProfileWhereInput> | null
+  emergencyContacts?: Prisma.EmergencyContactListRelationFilter
+  loggedInDevices?: Prisma.LoggedInDeviceListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -324,6 +350,8 @@ export type UserOrderByWithAggregationInput = {
   country?: Prisma.SortOrder
   provider?: Prisma.SortOrderInput | Prisma.SortOrder
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isEmailVerified?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -347,6 +375,8 @@ export type UserScalarWhereWithAggregatesInput = {
   country?: Prisma.StringWithAggregatesFilter<"User"> | string
   provider?: Prisma.EnumAuthProviderNullableWithAggregatesFilter<"User"> | $Enums.AuthProvider | null
   providerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  isEmailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  isDeleted?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -364,6 +394,8 @@ export type UserCreateInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileCreateNestedOneWithoutUserInput
@@ -372,6 +404,8 @@ export type UserCreateInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -387,6 +421,8 @@ export type UserUncheckedCreateInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileUncheckedCreateNestedOneWithoutUserInput
@@ -395,6 +431,8 @@ export type UserUncheckedCreateInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewUncheckedCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileUncheckedCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -410,6 +448,8 @@ export type UserUpdateInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUpdateOneWithoutUserNestedInput
@@ -418,6 +458,8 @@ export type UserUpdateInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -433,6 +475,8 @@ export type UserUncheckedUpdateInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -441,6 +485,8 @@ export type UserUncheckedUpdateInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUncheckedUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUncheckedUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -456,6 +502,8 @@ export type UserCreateManyInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -473,6 +521,8 @@ export type UserUpdateManyMutationInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -490,18 +540,20 @@ export type UserUncheckedUpdateManyInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type UserNullableScalarRelationFilter = {
-  is?: Prisma.UserWhereInput | null
-  isNot?: Prisma.UserWhereInput | null
 }
 
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -517,6 +569,8 @@ export type UserCountOrderByAggregateInput = {
   country?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  isEmailVerified?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -534,6 +588,8 @@ export type UserMaxOrderByAggregateInput = {
   country?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  isEmailVerified?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -551,8 +607,38 @@ export type UserMinOrderByAggregateInput = {
   country?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  isEmailVerified?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserCreateNestedOneWithoutEmergencyContactsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEmergencyContactsInput, Prisma.UserUncheckedCreateWithoutEmergencyContactsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEmergencyContactsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutEmergencyContactsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEmergencyContactsInput, Prisma.UserUncheckedCreateWithoutEmergencyContactsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEmergencyContactsInput
+  upsert?: Prisma.UserUpsertWithoutEmergencyContactsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEmergencyContactsInput, Prisma.UserUpdateWithoutEmergencyContactsInput>, Prisma.UserUncheckedUpdateWithoutEmergencyContactsInput>
+}
+
+export type UserCreateNestedOneWithoutLoggedInDevicesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLoggedInDevicesInput, Prisma.UserUncheckedCreateWithoutLoggedInDevicesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLoggedInDevicesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLoggedInDevicesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLoggedInDevicesInput, Prisma.UserUncheckedCreateWithoutLoggedInDevicesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLoggedInDevicesInput
+  upsert?: Prisma.UserUpsertWithoutLoggedInDevicesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLoggedInDevicesInput, Prisma.UserUpdateWithoutLoggedInDevicesInput>, Prisma.UserUncheckedUpdateWithoutLoggedInDevicesInput>
 }
 
 export type UserCreateNestedOneWithoutGuidesInput = {
@@ -651,6 +737,246 @@ export type UserUpdateOneRequiredWithoutTravelerProfileNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTravelerProfileInput, Prisma.UserUpdateWithoutTravelerProfileInput>, Prisma.UserUncheckedUpdateWithoutTravelerProfileInput>
 }
 
+export type UserCreateWithoutEmergencyContactsInput = {
+  id?: string
+  name: string
+  email: string
+  password?: string | null
+  role?: $Enums.UserRole
+  avatar?: string | null
+  bio?: string | null
+  phone?: string | null
+  city: string
+  country: string
+  provider?: $Enums.AuthProvider | null
+  providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  guideProfile?: Prisma.GuideProfileCreateNestedOneWithoutUserInput
+  trips?: Prisma.TripCreateNestedManyWithoutGuideInput
+  tours?: Prisma.TourCreateNestedManyWithoutCreatorInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  guides?: Prisma.ReviewCreateNestedManyWithoutGuideInput
+  travelerProfile?: Prisma.TravelerProfileCreateNestedOneWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutEmergencyContactsInput = {
+  id?: string
+  name: string
+  email: string
+  password?: string | null
+  role?: $Enums.UserRole
+  avatar?: string | null
+  bio?: string | null
+  phone?: string | null
+  city: string
+  country: string
+  provider?: $Enums.AuthProvider | null
+  providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  guideProfile?: Prisma.GuideProfileUncheckedCreateNestedOneWithoutUserInput
+  trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
+  tours?: Prisma.TourUncheckedCreateNestedManyWithoutCreatorInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  guides?: Prisma.ReviewUncheckedCreateNestedManyWithoutGuideInput
+  travelerProfile?: Prisma.TravelerProfileUncheckedCreateNestedOneWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutEmergencyContactsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutEmergencyContactsInput, Prisma.UserUncheckedCreateWithoutEmergencyContactsInput>
+}
+
+export type UserUpsertWithoutEmergencyContactsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutEmergencyContactsInput, Prisma.UserUncheckedUpdateWithoutEmergencyContactsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutEmergencyContactsInput, Prisma.UserUncheckedCreateWithoutEmergencyContactsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutEmergencyContactsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutEmergencyContactsInput, Prisma.UserUncheckedUpdateWithoutEmergencyContactsInput>
+}
+
+export type UserUpdateWithoutEmergencyContactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guideProfile?: Prisma.GuideProfileUpdateOneWithoutUserNestedInput
+  trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
+  tours?: Prisma.TourUpdateManyWithoutCreatorNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  guides?: Prisma.ReviewUpdateManyWithoutGuideNestedInput
+  travelerProfile?: Prisma.TravelerProfileUpdateOneWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutEmergencyContactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guideProfile?: Prisma.GuideProfileUncheckedUpdateOneWithoutUserNestedInput
+  trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
+  tours?: Prisma.TourUncheckedUpdateManyWithoutCreatorNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  guides?: Prisma.ReviewUncheckedUpdateManyWithoutGuideNestedInput
+  travelerProfile?: Prisma.TravelerProfileUncheckedUpdateOneWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutLoggedInDevicesInput = {
+  id?: string
+  name: string
+  email: string
+  password?: string | null
+  role?: $Enums.UserRole
+  avatar?: string | null
+  bio?: string | null
+  phone?: string | null
+  city: string
+  country: string
+  provider?: $Enums.AuthProvider | null
+  providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  guideProfile?: Prisma.GuideProfileCreateNestedOneWithoutUserInput
+  trips?: Prisma.TripCreateNestedManyWithoutGuideInput
+  tours?: Prisma.TourCreateNestedManyWithoutCreatorInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  guides?: Prisma.ReviewCreateNestedManyWithoutGuideInput
+  travelerProfile?: Prisma.TravelerProfileCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLoggedInDevicesInput = {
+  id?: string
+  name: string
+  email: string
+  password?: string | null
+  role?: $Enums.UserRole
+  avatar?: string | null
+  bio?: string | null
+  phone?: string | null
+  city: string
+  country: string
+  provider?: $Enums.AuthProvider | null
+  providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  guideProfile?: Prisma.GuideProfileUncheckedCreateNestedOneWithoutUserInput
+  trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
+  tours?: Prisma.TourUncheckedCreateNestedManyWithoutCreatorInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  guides?: Prisma.ReviewUncheckedCreateNestedManyWithoutGuideInput
+  travelerProfile?: Prisma.TravelerProfileUncheckedCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutLoggedInDevicesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLoggedInDevicesInput, Prisma.UserUncheckedCreateWithoutLoggedInDevicesInput>
+}
+
+export type UserUpsertWithoutLoggedInDevicesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLoggedInDevicesInput, Prisma.UserUncheckedUpdateWithoutLoggedInDevicesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLoggedInDevicesInput, Prisma.UserUncheckedCreateWithoutLoggedInDevicesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLoggedInDevicesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLoggedInDevicesInput, Prisma.UserUncheckedUpdateWithoutLoggedInDevicesInput>
+}
+
+export type UserUpdateWithoutLoggedInDevicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guideProfile?: Prisma.GuideProfileUpdateOneWithoutUserNestedInput
+  trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
+  tours?: Prisma.TourUpdateManyWithoutCreatorNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  guides?: Prisma.ReviewUpdateManyWithoutGuideNestedInput
+  travelerProfile?: Prisma.TravelerProfileUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLoggedInDevicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guideProfile?: Prisma.GuideProfileUncheckedUpdateOneWithoutUserNestedInput
+  trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
+  tours?: Prisma.TourUncheckedUpdateManyWithoutCreatorNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  guides?: Prisma.ReviewUncheckedUpdateManyWithoutGuideNestedInput
+  travelerProfile?: Prisma.TravelerProfileUncheckedUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutGuidesInput = {
   id?: string
   name: string
@@ -664,6 +990,8 @@ export type UserCreateWithoutGuidesInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileCreateNestedOneWithoutUserInput
@@ -671,6 +999,8 @@ export type UserCreateWithoutGuidesInput = {
   tours?: Prisma.TourCreateNestedManyWithoutCreatorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   travelerProfile?: Prisma.TravelerProfileCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGuidesInput = {
@@ -686,6 +1016,8 @@ export type UserUncheckedCreateWithoutGuidesInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileUncheckedCreateNestedOneWithoutUserInput
@@ -693,6 +1025,8 @@ export type UserUncheckedCreateWithoutGuidesInput = {
   tours?: Prisma.TourUncheckedCreateNestedManyWithoutCreatorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   travelerProfile?: Prisma.TravelerProfileUncheckedCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGuidesInput = {
@@ -713,6 +1047,8 @@ export type UserCreateWithoutReviewsInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileCreateNestedOneWithoutUserInput
@@ -720,6 +1056,8 @@ export type UserCreateWithoutReviewsInput = {
   tours?: Prisma.TourCreateNestedManyWithoutCreatorInput
   guides?: Prisma.ReviewCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -735,6 +1073,8 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileUncheckedCreateNestedOneWithoutUserInput
@@ -742,6 +1082,8 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   tours?: Prisma.TourUncheckedCreateNestedManyWithoutCreatorInput
   guides?: Prisma.ReviewUncheckedCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileUncheckedCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -773,6 +1115,8 @@ export type UserUpdateWithoutGuidesInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUpdateOneWithoutUserNestedInput
@@ -780,6 +1124,8 @@ export type UserUpdateWithoutGuidesInput = {
   tours?: Prisma.TourUpdateManyWithoutCreatorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   travelerProfile?: Prisma.TravelerProfileUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGuidesInput = {
@@ -795,6 +1141,8 @@ export type UserUncheckedUpdateWithoutGuidesInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -802,6 +1150,8 @@ export type UserUncheckedUpdateWithoutGuidesInput = {
   tours?: Prisma.TourUncheckedUpdateManyWithoutCreatorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   travelerProfile?: Prisma.TravelerProfileUncheckedUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutReviewsInput = {
@@ -828,6 +1178,8 @@ export type UserUpdateWithoutReviewsInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUpdateOneWithoutUserNestedInput
@@ -835,6 +1187,8 @@ export type UserUpdateWithoutReviewsInput = {
   tours?: Prisma.TourUpdateManyWithoutCreatorNestedInput
   guides?: Prisma.ReviewUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -850,6 +1204,8 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -857,6 +1213,8 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   tours?: Prisma.TourUncheckedUpdateManyWithoutCreatorNestedInput
   guides?: Prisma.ReviewUncheckedUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUncheckedUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutToursInput = {
@@ -872,6 +1230,8 @@ export type UserCreateWithoutToursInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileCreateNestedOneWithoutUserInput
@@ -879,6 +1239,8 @@ export type UserCreateWithoutToursInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutToursInput = {
@@ -894,6 +1256,8 @@ export type UserUncheckedCreateWithoutToursInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileUncheckedCreateNestedOneWithoutUserInput
@@ -901,6 +1265,8 @@ export type UserUncheckedCreateWithoutToursInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewUncheckedCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileUncheckedCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutToursInput = {
@@ -932,6 +1298,8 @@ export type UserUpdateWithoutToursInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUpdateOneWithoutUserNestedInput
@@ -939,6 +1307,8 @@ export type UserUpdateWithoutToursInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutToursInput = {
@@ -954,6 +1324,8 @@ export type UserUncheckedUpdateWithoutToursInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -961,6 +1333,8 @@ export type UserUncheckedUpdateWithoutToursInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUncheckedUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUncheckedUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTripsInput = {
@@ -976,6 +1350,8 @@ export type UserCreateWithoutTripsInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileCreateNestedOneWithoutUserInput
@@ -983,6 +1359,8 @@ export type UserCreateWithoutTripsInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTripsInput = {
@@ -998,6 +1376,8 @@ export type UserUncheckedCreateWithoutTripsInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1005,6 +1385,8 @@ export type UserUncheckedCreateWithoutTripsInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewUncheckedCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileUncheckedCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTripsInput = {
@@ -1036,6 +1418,8 @@ export type UserUpdateWithoutTripsInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUpdateOneWithoutUserNestedInput
@@ -1043,6 +1427,8 @@ export type UserUpdateWithoutTripsInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTripsInput = {
@@ -1058,6 +1444,8 @@ export type UserUncheckedUpdateWithoutTripsInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1065,6 +1453,8 @@ export type UserUncheckedUpdateWithoutTripsInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUncheckedUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUncheckedUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGuideProfileInput = {
@@ -1080,6 +1470,8 @@ export type UserCreateWithoutGuideProfileInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -1087,6 +1479,8 @@ export type UserCreateWithoutGuideProfileInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGuideProfileInput = {
@@ -1102,6 +1496,8 @@ export type UserUncheckedCreateWithoutGuideProfileInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -1109,6 +1505,8 @@ export type UserUncheckedCreateWithoutGuideProfileInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewUncheckedCreateNestedManyWithoutGuideInput
   travelerProfile?: Prisma.TravelerProfileUncheckedCreateNestedOneWithoutUserInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGuideProfileInput = {
@@ -1140,6 +1538,8 @@ export type UserUpdateWithoutGuideProfileInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -1147,6 +1547,8 @@ export type UserUpdateWithoutGuideProfileInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGuideProfileInput = {
@@ -1162,6 +1564,8 @@ export type UserUncheckedUpdateWithoutGuideProfileInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -1169,6 +1573,8 @@ export type UserUncheckedUpdateWithoutGuideProfileInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUncheckedUpdateManyWithoutGuideNestedInput
   travelerProfile?: Prisma.TravelerProfileUncheckedUpdateOneWithoutUserNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTravelerProfileInput = {
@@ -1184,6 +1590,8 @@ export type UserCreateWithoutTravelerProfileInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileCreateNestedOneWithoutUserInput
@@ -1191,6 +1599,8 @@ export type UserCreateWithoutTravelerProfileInput = {
   tours?: Prisma.TourCreateNestedManyWithoutCreatorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewCreateNestedManyWithoutGuideInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTravelerProfileInput = {
@@ -1206,6 +1616,8 @@ export type UserUncheckedCreateWithoutTravelerProfileInput = {
   country: string
   provider?: $Enums.AuthProvider | null
   providerId?: string | null
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guideProfile?: Prisma.GuideProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1213,6 +1625,8 @@ export type UserUncheckedCreateWithoutTravelerProfileInput = {
   tours?: Prisma.TourUncheckedCreateNestedManyWithoutCreatorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   guides?: Prisma.ReviewUncheckedCreateNestedManyWithoutGuideInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutUserInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTravelerProfileInput = {
@@ -1244,6 +1658,8 @@ export type UserUpdateWithoutTravelerProfileInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUpdateOneWithoutUserNestedInput
@@ -1251,6 +1667,8 @@ export type UserUpdateWithoutTravelerProfileInput = {
   tours?: Prisma.TourUpdateManyWithoutCreatorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUpdateManyWithoutGuideNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTravelerProfileInput = {
@@ -1266,6 +1684,8 @@ export type UserUncheckedUpdateWithoutTravelerProfileInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.NullableEnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider | null
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guideProfile?: Prisma.GuideProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1273,6 +1693,8 @@ export type UserUncheckedUpdateWithoutTravelerProfileInput = {
   tours?: Prisma.TourUncheckedUpdateManyWithoutCreatorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   guides?: Prisma.ReviewUncheckedUpdateManyWithoutGuideNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutUserNestedInput
+  loggedInDevices?: Prisma.LoggedInDeviceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1285,6 +1707,8 @@ export type UserCountOutputType = {
   tours: number
   reviews: number
   guides: number
+  emergencyContacts: number
+  loggedInDevices: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1292,6 +1716,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   tours?: boolean | UserCountOutputTypeCountToursArgs
   reviews?: boolean | UserCountOutputTypeCountReviewsArgs
   guides?: boolean | UserCountOutputTypeCountGuidesArgs
+  emergencyContacts?: boolean | UserCountOutputTypeCountEmergencyContactsArgs
+  loggedInDevices?: boolean | UserCountOutputTypeCountLoggedInDevicesArgs
 }
 
 /**
@@ -1332,6 +1758,20 @@ export type UserCountOutputTypeCountGuidesArgs<ExtArgs extends runtime.Types.Ext
   where?: Prisma.ReviewWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountEmergencyContactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmergencyContactWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLoggedInDevicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoggedInDeviceWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1346,6 +1786,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   country?: boolean
   provider?: boolean
   providerId?: boolean
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guideProfile?: boolean | Prisma.User$guideProfileArgs<ExtArgs>
@@ -1354,6 +1796,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   guides?: boolean | Prisma.User$guidesArgs<ExtArgs>
   travelerProfile?: boolean | Prisma.User$travelerProfileArgs<ExtArgs>
+  emergencyContacts?: boolean | Prisma.User$emergencyContactsArgs<ExtArgs>
+  loggedInDevices?: boolean | Prisma.User$loggedInDevicesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1370,6 +1814,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   country?: boolean
   provider?: boolean
   providerId?: boolean
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1387,6 +1833,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   country?: boolean
   provider?: boolean
   providerId?: boolean
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1404,11 +1852,13 @@ export type UserSelectScalar = {
   country?: boolean
   provider?: boolean
   providerId?: boolean
+  isEmailVerified?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "avatar" | "bio" | "phone" | "city" | "country" | "provider" | "providerId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "avatar" | "bio" | "phone" | "city" | "country" | "provider" | "providerId" | "isEmailVerified" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guideProfile?: boolean | Prisma.User$guideProfileArgs<ExtArgs>
   trips?: boolean | Prisma.User$tripsArgs<ExtArgs>
@@ -1416,6 +1866,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   guides?: boolean | Prisma.User$guidesArgs<ExtArgs>
   travelerProfile?: boolean | Prisma.User$travelerProfileArgs<ExtArgs>
+  emergencyContacts?: boolean | Prisma.User$emergencyContactsArgs<ExtArgs>
+  loggedInDevices?: boolean | Prisma.User$loggedInDevicesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1430,6 +1882,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
     guides: Prisma.$ReviewPayload<ExtArgs>[]
     travelerProfile: Prisma.$TravelerProfilePayload<ExtArgs> | null
+    emergencyContacts: Prisma.$EmergencyContactPayload<ExtArgs>[]
+    loggedInDevices: Prisma.$LoggedInDevicePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1444,6 +1898,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     country: string
     provider: $Enums.AuthProvider | null
     providerId: string | null
+    isEmailVerified: boolean
+    isDeleted: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1846,6 +2302,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   reviews<T extends Prisma.User$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   guides<T extends Prisma.User$guidesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guidesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   travelerProfile<T extends Prisma.User$travelerProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$travelerProfileArgs<ExtArgs>>): Prisma.Prisma__TravelerProfileClient<runtime.Types.Result.GetResult<Prisma.$TravelerProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  emergencyContacts<T extends Prisma.User$emergencyContactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$emergencyContactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmergencyContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  loggedInDevices<T extends Prisma.User$loggedInDevicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$loggedInDevicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoggedInDevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1887,6 +2345,8 @@ export interface UserFieldRefs {
   readonly country: Prisma.FieldRef<"User", 'String'>
   readonly provider: Prisma.FieldRef<"User", 'AuthProvider'>
   readonly providerId: Prisma.FieldRef<"User", 'String'>
+  readonly isEmailVerified: Prisma.FieldRef<"User", 'Boolean'>
+  readonly isDeleted: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -2408,6 +2868,54 @@ export type User$travelerProfileArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   include?: Prisma.TravelerProfileInclude<ExtArgs> | null
   where?: Prisma.TravelerProfileWhereInput
+}
+
+/**
+ * User.emergencyContacts
+ */
+export type User$emergencyContactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmergencyContact
+   */
+  select?: Prisma.EmergencyContactSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmergencyContact
+   */
+  omit?: Prisma.EmergencyContactOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmergencyContactInclude<ExtArgs> | null
+  where?: Prisma.EmergencyContactWhereInput
+  orderBy?: Prisma.EmergencyContactOrderByWithRelationInput | Prisma.EmergencyContactOrderByWithRelationInput[]
+  cursor?: Prisma.EmergencyContactWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmergencyContactScalarFieldEnum | Prisma.EmergencyContactScalarFieldEnum[]
+}
+
+/**
+ * User.loggedInDevices
+ */
+export type User$loggedInDevicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoggedInDevice
+   */
+  select?: Prisma.LoggedInDeviceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoggedInDevice
+   */
+  omit?: Prisma.LoggedInDeviceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoggedInDeviceInclude<ExtArgs> | null
+  where?: Prisma.LoggedInDeviceWhereInput
+  orderBy?: Prisma.LoggedInDeviceOrderByWithRelationInput | Prisma.LoggedInDeviceOrderByWithRelationInput[]
+  cursor?: Prisma.LoggedInDeviceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoggedInDeviceScalarFieldEnum | Prisma.LoggedInDeviceScalarFieldEnum[]
 }
 
 /**

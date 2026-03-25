@@ -51,6 +51,8 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  EmergencyContact: 'EmergencyContact',
+  LoggedInDevice: 'LoggedInDevice',
   Destination: 'Destination',
   TopAttraction: 'TopAttraction',
   Review: 'Review',
@@ -78,6 +80,33 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const EmergencyContactScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phone: 'phone',
+  email: 'email',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmergencyContactScalarFieldEnum = (typeof EmergencyContactScalarFieldEnum)[keyof typeof EmergencyContactScalarFieldEnum]
+
+
+export const LoggedInDeviceScalarFieldEnum = {
+  id: 'id',
+  device: 'device',
+  ipAddress: 'ipAddress',
+  country: 'country',
+  city: 'city',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LoggedInDeviceScalarFieldEnum = (typeof LoggedInDeviceScalarFieldEnum)[keyof typeof LoggedInDeviceScalarFieldEnum]
 
 
 export const DestinationScalarFieldEnum = {
@@ -220,6 +249,8 @@ export const UserScalarFieldEnum = {
   country: 'country',
   provider: 'provider',
   providerId: 'providerId',
+  isEmailVerified: 'isEmailVerified',
+  isDeleted: 'isDeleted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -676,10 +676,6 @@ export type DestinationCreatelanguagesInput = {
   set: string[]
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
 export type FloatFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -704,10 +700,6 @@ export type DestinationUpdatebestSeasonInput = {
 export type DestinationUpdatelanguagesInput = {
   set?: string[]
   push?: string | string[]
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
 }
 
 export type DestinationCreateNestedOneWithoutAttractionsInput = {

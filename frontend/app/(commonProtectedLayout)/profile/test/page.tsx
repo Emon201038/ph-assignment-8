@@ -1,16 +1,12 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import {
   LayoutDashboard,
   Compass,
   BookOpen,
-  Luggage,
   Users,
   HelpCircle,
   LogOut,
-  CheckCircle2,
   Edit,
   PlaneTakeoff,
   ArrowRight,
@@ -23,36 +19,14 @@ import {
   Droplet,
   Leaf,
   Plus,
-  Menu,
   Settings,
   Phone,
-  Share2,
   Mail,
   MapPin,
 } from "lucide-react";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import CustomLink from "@/components/shared/CustomLink";
+import { headers } from "next/headers";
 
-export default function ProfilePage() {
-  const navItems = [
-    { name: "Dashboard", icon: LayoutDashboard, href: "/profile/test" },
-    { name: "Expeditions", icon: Compass, href: "#" },
-    { name: "Journal", icon: BookOpen, href: "#" },
-    { name: "Settings", icon: Settings, href: "/profile/test/settings" },
-    { name: "Community", icon: Users, href: "#" },
-  ];
-
-  const bottomNavItems = [
-    { name: "Support", icon: HelpCircle, href: "#" },
-    { name: "Logout", icon: LogOut, href: "#", isError: true },
-  ];
-
+export default async function ProfilePage() {
   const user = {
     name: "Alex Rivers",
     email: "alexrivers@me.com",

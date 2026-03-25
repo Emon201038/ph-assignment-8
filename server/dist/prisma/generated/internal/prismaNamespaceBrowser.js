@@ -48,7 +48,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.TravelerProfileScalarFieldEnum = exports.GuideProfileScalarFieldEnum = exports.UserScalarFieldEnum = exports.TripScalarFieldEnum = exports.TripIncludeItemScalarFieldEnum = exports.TripIncludeScalarFieldEnum = exports.TourItineraryScalarFieldEnum = exports.TourScalarFieldEnum = exports.ReviewScalarFieldEnum = exports.TopAttractionScalarFieldEnum = exports.DestinationScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.TravelerProfileScalarFieldEnum = exports.GuideProfileScalarFieldEnum = exports.UserScalarFieldEnum = exports.TripScalarFieldEnum = exports.TripIncludeItemScalarFieldEnum = exports.TripIncludeScalarFieldEnum = exports.TourItineraryScalarFieldEnum = exports.TourScalarFieldEnum = exports.ReviewScalarFieldEnum = exports.TopAttractionScalarFieldEnum = exports.DestinationScalarFieldEnum = exports.LoggedInDeviceScalarFieldEnum = exports.EmergencyContactScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/index-browser"));
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -75,6 +75,8 @@ exports.JsonNull = runtime.JsonNull;
  */
 exports.AnyNull = runtime.AnyNull;
 exports.ModelName = {
+    EmergencyContact: 'EmergencyContact',
+    LoggedInDevice: 'LoggedInDevice',
     Destination: 'Destination',
     TopAttraction: 'TopAttraction',
     Review: 'Review',
@@ -96,6 +98,25 @@ exports.TransactionIsolationLevel = runtime.makeStrictEnum({
     RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
 });
+exports.EmergencyContactScalarFieldEnum = {
+    id: 'id',
+    name: 'name',
+    phone: 'phone',
+    email: 'email',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.LoggedInDeviceScalarFieldEnum = {
+    id: 'id',
+    device: 'device',
+    ipAddress: 'ipAddress',
+    country: 'country',
+    city: 'city',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
 exports.DestinationScalarFieldEnum = {
     id: 'id',
     name: 'name',
@@ -204,6 +225,8 @@ exports.UserScalarFieldEnum = {
     country: 'country',
     provider: 'provider',
     providerId: 'providerId',
+    isEmailVerified: 'isEmailVerified',
+    isDeleted: 'isDeleted',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };

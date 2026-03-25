@@ -59,8 +59,8 @@ __exportStar(require("./enums"), exports);
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Destinations
- * const destinations = await prisma.destination.findMany()
+ * // Fetch zero or more EmergencyContacts
+ * const emergencyContacts = await prisma.emergencyContact.findMany()
  * ```
  *
  * Read more in our [docs](https://pris.ly/d/client).

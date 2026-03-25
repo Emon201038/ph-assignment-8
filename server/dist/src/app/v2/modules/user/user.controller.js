@@ -51,7 +51,7 @@ const createUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
     });
 }));
 const updateUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield user_service_1.UserService.updateUserInDB(req.params.id, req.body);
+    const data = yield user_service_1.UserService.updateUserInDB(req.params.id, req.body, req.files);
     (0, sendResponse_1.sendResponse)(res, {
         message: "User updated successfully",
         statusCode: 200,
@@ -68,10 +68,60 @@ const hardDeleteUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaite
         data,
     });
 }));
+const softDeleteUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.UserService.softDeleteUser(req.params.id);
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "User deleted successfully",
+        statusCode: 200,
+        success: true,
+        data,
+    });
+}));
+const addEmergencyContact = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.UserService.addEmergencyContact(req.params.id, req.body);
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "Emergency contact added successfully",
+        statusCode: 200,
+        success: true,
+        data,
+    });
+}));
+const removeEmergencyContact = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.UserService.deleteEmergencyContact(req.params.id);
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "Emergency contact removed successfully",
+        statusCode: 200,
+        success: true,
+        data,
+    });
+}));
+const getEmergencyContact = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.UserService.getEmergencyContact(req.params.id);
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "Emergency contact fetched successfully",
+        statusCode: 200,
+        success: true,
+        data,
+    });
+}));
+const updateEmergencyContact = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.UserService.updateEmergencyContact(req.params.id, req.body);
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "Emergency contact updated successfully",
+        statusCode: 200,
+        success: true,
+        data,
+    });
+}));
 exports.UserController = {
     getAllUsers,
     getSingleUser,
     createUser,
     updateUser,
     hardDeleteUser,
+    softDeleteUser,
+    addEmergencyContact,
+    removeEmergencyContact,
+    getEmergencyContact,
+    updateEmergencyContact,
 };

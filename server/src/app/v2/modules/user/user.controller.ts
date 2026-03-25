@@ -71,10 +71,68 @@ const hardDeleteUser = catchAsync(async (req, res, next) => {
   });
 });
 
+const softDeleteUser = catchAsync(async (req, res, next) => {
+  const data = await UserService.softDeleteUser(req.params.id);
+  sendResponse(res, {
+    message: "User deleted successfully",
+    statusCode: 200,
+    success: true,
+    data,
+  });
+});
+
+const addEmergencyContact = catchAsync(async (req, res, next) => {
+  const data = await UserService.addEmergencyContact(req.params.id, req.body);
+  sendResponse(res, {
+    message: "Emergency contact added successfully",
+    statusCode: 200,
+    success: true,
+    data,
+  });
+});
+
+const removeEmergencyContact = catchAsync(async (req, res, next) => {
+  const data = await UserService.deleteEmergencyContact(req.params.id);
+  sendResponse(res, {
+    message: "Emergency contact removed successfully",
+    statusCode: 200,
+    success: true,
+    data,
+  });
+});
+
+const getEmergencyContact = catchAsync(async (req, res, next) => {
+  const data = await UserService.getEmergencyContact(req.params.id);
+  sendResponse(res, {
+    message: "Emergency contact fetched successfully",
+    statusCode: 200,
+    success: true,
+    data,
+  });
+});
+
+const updateEmergencyContact = catchAsync(async (req, res, next) => {
+  const data = await UserService.updateEmergencyContact(
+    req.params.id,
+    req.body,
+  );
+  sendResponse(res, {
+    message: "Emergency contact updated successfully",
+    statusCode: 200,
+    success: true,
+    data,
+  });
+});
+
 export const UserController = {
   getAllUsers,
   getSingleUser,
   createUser,
   updateUser,
   hardDeleteUser,
+  softDeleteUser,
+  addEmergencyContact,
+  removeEmergencyContact,
+  getEmergencyContact,
+  updateEmergencyContact,
 };

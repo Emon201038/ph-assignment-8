@@ -50,3 +50,12 @@ export interface ITourist {
   emergencyContactNumber: string;
   createdAt: Date;
 }
+
+export interface IEmergencyContact {
+  name: string;
+  phone: string;
+  email: string;
+  id: string;
+  userId: string;
+  createdAt: string;
+}

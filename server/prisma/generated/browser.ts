@@ -18,6 +18,16 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model EmergencyContact
+ * 
+ */
+export type EmergencyContact = Prisma.EmergencyContactModel
+/**
+ * Model LoggedInDevice
+ * 
+ */
+export type LoggedInDevice = Prisma.LoggedInDeviceModel
+/**
  * Model Destination
  * 
  */

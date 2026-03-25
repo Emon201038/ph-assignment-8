@@ -8,6 +8,8 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/EmergencyContact'
+export type * from './models/LoggedInDevice'
 export type * from './models/Destination'
 export type * from './models/TopAttraction'
 export type * from './models/Review'

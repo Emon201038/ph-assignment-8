@@ -8,6 +8,7 @@ const user_controller_1 = require("./user.controller");
 const validateRequest_1 = require("../../../middlewares/validateRequest");
 const user_validation_1 = require("./user.validation");
 const checkAuth_1 = require("../../../middlewares/checkAuth");
+const uploadFile_1 = require("../../../middlewares/uploadFile");
 const userRoutes = express_1.default.Router();
 userRoutes
     .route("/")
@@ -16,6 +17,22 @@ userRoutes
 userRoutes
     .route("/:id")
     .get(user_controller_1.UserController.getSingleUser)
-    .put((0, checkAuth_1.checkAuth)("ADMIN", "TRAVELER", "GUIDE"), (0, validateRequest_1.validateRequest)(user_validation_1.updateUserSchema), user_controller_1.UserController.updateUser)
+    .put(uploadFile_1.uploadImage.fields([
+    {
+        name: "avatar",
+        maxCount: 1,
+    },
+    {
+        name: "banner",
+        maxCount: 1,
+    },
+]), (0, checkAuth_1.checkAuth)("ADMIN", "TRAVELER", "GUIDE"), (0, validateRequest_1.validateRequest)(user_validation_1.updateUserSchema), user_controller_1.UserController.updateUser)
     .delete((0, checkAuth_1.checkAuth)("ADMIN", "TRAVELER", "GUIDE"), user_controller_1.UserController.hardDeleteUser);
+userRoutes.delete("/soft-delete/:id", user_controller_1.UserController.softDeleteUser);
+userRoutes
+    .route("/emergency-contacts/:id")
+    .post(user_controller_1.UserController.addEmergencyContact)
+    .get(user_controller_1.UserController.getEmergencyContact)
+    .put(user_controller_1.UserController.updateEmergencyContact)
+    .delete(user_controller_1.UserController.removeEmergencyContact);
 exports.default = userRoutes;

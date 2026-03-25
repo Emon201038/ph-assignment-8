@@ -12,16 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const db_1 = require("./app/config/db");
 const app_1 = __importDefault(require("./app"));
 const env_1 = require("./app/config/env");
-const seed_admin_1 = require("./app/config/seed-admin");
-const enums_1 = require("../prisma/generated/enums");
 // import { connectRedis } from "./app/config/redis.config";
 let server;
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, db_1.connectDB)();
+        // await connectDB();
         server = app_1.default.listen(env_1.envVars.PORT, () => {
             console.log(`Server is running on port ${env_1.envVars.PORT}`);
         });
@@ -33,10 +30,8 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 (() => __awaiter(void 0, void 0, void 0, function* () {
     // await connectRedis();
-    console.log("UserRole:", enums_1.UserRole);
-    console.log("Gender:", enums_1.Gender);
     yield startServer();
-    yield (0, seed_admin_1.seedAdmin)();
+    // await seedAdmin();
 }))();
 process.on("unhandledRejection", (error) => {
     if (server) {

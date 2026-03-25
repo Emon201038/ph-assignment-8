@@ -1,6 +1,6 @@
 export interface IResponse<T> {
   success: boolean;
-  message: true;
+  message: string;
   data: T;
   meta?: IMeta;
 }
