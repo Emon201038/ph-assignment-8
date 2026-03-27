@@ -73,15 +73,15 @@ export default async function BookTripPage({
           <TripParticipants trip={trip}>
             <div className="space-y-2 pt-4 border-t text-xs text-muted-foreground">
               <p className="flex items-start gap-2">
-                <Check className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                <Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />
                 Free cancellation up to 24 hours before
               </p>
               <p className="flex items-start gap-2">
-                <Check className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                <Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />
                 Instant confirmation
               </p>
               <p className="flex items-start gap-2">
-                <Check className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                <Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />
                 Mobile ticket accepted
               </p>
             </div>

@@ -6,7 +6,7 @@ import React from "react";
 
 type Props = {
   href: string;
-  matchType?: "exact" | "last" | "startsWith" | "endsWith";
+  matchType?: "exact" | "last" | "startsWith" | "endsWith" | "includes";
   matchStyle?: string;
   className?: string;
   children: React.ReactNode;
@@ -33,6 +33,9 @@ const CustomLink = ({
     }
     if (matchType === "endsWith") {
       return pathname.endsWith(href);
+    }
+    if (matchType === "includes") {
+      return pathname.includes(href);
     }
     return false;
   };

@@ -62,7 +62,7 @@ const page = () => {
               className="border-b last:border-0 pb-6 last:pb-0"
             >
               <div className="flex items-start gap-4">
-                <div className="relative h-10 w-10 flex-shrink-0">
+                <div className="relative h-10 w-10 shrink-0">
                   <Image
                     src={review.userAvatar || "/placeholder.svg"}
                     alt={review.userName}

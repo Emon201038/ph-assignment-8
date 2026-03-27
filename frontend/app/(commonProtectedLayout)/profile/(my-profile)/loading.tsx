@@ -6,6 +6,7 @@ export default function GuideProfileLoading() {
     <div className="space-y-4 mb-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
+        header
         <Skeleton className="h-6 w-32" />
       </div>
 

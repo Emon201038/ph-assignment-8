@@ -1,14 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  BadgeCheck,
-  ShieldCheck,
-  Compass,
-  Edit,
-  Trash2Icon,
-  HeartPulse,
-  PlusCircle,
-} from "lucide-react";
+import { Compass } from "lucide-react";
 
 export default function SettingsPage() {
   return (
