@@ -30,6 +30,8 @@ authRouter.post(
   AuthController.loginWithFacebook,
 );
 
+authRouter.post("/verify-otp", AuthController.verify2FA);
+
 // Get current user
 authRouter.get("/me", AuthController.getMe);
 

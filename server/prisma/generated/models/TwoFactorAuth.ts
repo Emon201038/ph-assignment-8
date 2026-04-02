@@ -205,16 +205,16 @@ export type TwoFactorAuthOrderByWithRelationInput = {
 
 export type TwoFactorAuthWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  userId?: string
   AND?: Prisma.TwoFactorAuthWhereInput | Prisma.TwoFactorAuthWhereInput[]
   OR?: Prisma.TwoFactorAuthWhereInput[]
   NOT?: Prisma.TwoFactorAuthWhereInput | Prisma.TwoFactorAuthWhereInput[]
-  userId?: Prisma.StringFilter<"TwoFactorAuth"> | string
   secret?: Prisma.StringNullableFilter<"TwoFactorAuth"> | string | null
   isEnabled?: Prisma.BoolFilter<"TwoFactorAuth"> | boolean
   createdAt?: Prisma.DateTimeFilter<"TwoFactorAuth"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TwoFactorAuth"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "userId">
 
 export type TwoFactorAuthOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

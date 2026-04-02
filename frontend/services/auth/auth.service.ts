@@ -131,13 +131,18 @@ const loginSchema = z.object({
   password: z
     .string("password is required")
     .min(6, "password must be minimum 6 digit"),
+  deviceId: z.string("deviceId is required").min(1, "deviceId is required"),
+  rememberMe: z.boolean().default(false),
 });
 
 export const login = async (prevState: unknown, formData: FormData) => {
   const payload = {
     email: formData.get("email"),
     password: formData.get("password"),
+    deviceId: formData.get("deviceId"),
+    rememberMe: formData.get("rememberMe") === "on",
   };
+
   try {
     const redirectTo = formData.get("redirect") || null;
     const validatedPayload = zodValidator(payload, loginSchema);
@@ -152,10 +157,129 @@ export const login = async (prevState: unknown, formData: FormData) => {
     const res = await serverFetch.post(`/v2/auth/login`, {
       method: "POST",
       credentials: "include",
-      body: JSON.stringify({
-        email: formData.get("email"),
-        password: formData.get("password"),
-      }),
+      body: JSON.stringify(validatedPayload.data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+
+    if (!data?.success) {
+      throw new Error(data?.message);
+    }
+
+    if (data?.data?.status === "requires-otp" && data?.data?.id) {
+      redirect(
+        `/two-factor-authentication?id=${data?.data?.id}&user_id=${data?.data?.userId}&rememberMe=${data?.data?.rememberMe}`,
+      );
+      // throw data;
+    }
+
+    const cookiesHeaders = res.headers.getSetCookie();
+    let accessTokenObject: null | any = null;
+    let refreshTokenObject: null | any = null;
+
+    if (cookiesHeaders && cookiesHeaders.length > 0) {
+      cookiesHeaders.forEach((c) => {
+        const parsed = cookie.parse(c);
+        if (parsed["accessToken"]) {
+          accessTokenObject = parsed;
+        }
+        if (parsed["refreshToken"]) {
+          refreshTokenObject = parsed;
+        }
+      });
+
+      if (!accessTokenObject) {
+        throw new Error("No access token found");
+      }
+      if (!refreshTokenObject) {
+        throw new Error("No refresh token found");
+      }
+
+      await setCookie("accessToken", accessTokenObject.accessToken, {
+        httpOnly: true,
+        sameSite: accessTokenObject.SameSite || "none",
+        maxAge: parseInt(accessTokenObject["Max-Age"]),
+        path: accessTokenObject.path,
+        secure: true,
+      });
+      await setCookie("refreshToken", refreshTokenObject.refreshToken, {
+        httpOnly: true,
+        sameSite: refreshTokenObject.SameSite || "none",
+        maxAge: parseInt(refreshTokenObject["Max-Age"]),
+        path: refreshTokenObject.path,
+        secure: true,
+      });
+    } else {
+      throw new Error("No get set cookie found");
+    }
+
+    const verifiedToken: JwtPayload | string = jwt.verify(
+      accessTokenObject["accessToken"],
+      process.env.JWT_ACCESS_TOKEN_SECRET as string,
+    );
+    if (typeof verifiedToken === "string") {
+      throw new Error("Failed to verify token");
+    }
+
+    if (redirectTo) {
+      const requestedPath = redirectTo.toString();
+      if (isValidRedirectForRole(requestedPath, verifiedToken.role)) {
+        redirect(requestedPath);
+      } else {
+        redirect("/profile");
+      }
+    } else {
+      redirect("/profile");
+    }
+  } catch (error: any) {
+    console.log(error);
+    if (error?.digest?.startsWith("NEXT_REDIRECT")) {
+      throw error;
+    }
+    return {
+      success: false,
+      message: error?.message,
+      errors: [],
+      formData: payload,
+      data: error?.data,
+    };
+  }
+};
+
+export const verify2FA = async (prevState: unknown, formData: FormData) => {
+  const schema = z.object({
+    deviceId: z.string("deviceId is required").min(1, "deviceId is required"),
+    id: z.string("id is required").min(1, "id is required"),
+    userId: z.string("userId is required").min(1, "userId is required"),
+    otp: z.string("OTP is required").min(6, "OTP must be minimum 6 digit"),
+    rememberMe: z.boolean().default(false),
+  });
+
+  const payload = {
+    deviceId: formData.get("deviceId"),
+    id: formData.get("id"),
+    userId: formData.get("userId"),
+    otp: formData.get("otp"),
+    rememberMe: formData.get("rememberMe") === "true",
+  };
+  const redirectTo = formData.get("redirect") || null;
+  try {
+    const validatedPayload = zodValidator(payload, schema);
+    if (!validatedPayload.success) {
+      return {
+        success: false,
+        errors: validatedPayload.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+    const res = await serverFetch.post(`/v2/auth/verify-otp`, {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(validatedPayload.data),
       headers: {
         "Content-Type": "application/json",
       },
@@ -220,10 +344,10 @@ export const login = async (prevState: unknown, formData: FormData) => {
       if (isValidRedirectForRole(requestedPath, verifiedToken.role)) {
         redirect(requestedPath);
       } else {
-        redirect(getDefaultDashboardRoute(verifiedToken.role));
+        redirect("/profile");
       }
     } else {
-      redirect(getDefaultDashboardRoute(verifiedToken.role));
+      redirect("/profile");
     }
   } catch (error: any) {
     console.log(error);
@@ -235,6 +359,7 @@ export const login = async (prevState: unknown, formData: FormData) => {
       message: error?.message,
       errors: [],
       formData: payload,
+      data: error?.data,
     };
   }
 };
@@ -323,6 +448,8 @@ export const verifyOtp = async (prevState: unknown, formData: FormData) => {
     };
   }
 };
+
+export const resend2fa = async (prevState: unknown, formData: FormData) => {};
 
 export const sendOtp = async (email: string) => {
   try {

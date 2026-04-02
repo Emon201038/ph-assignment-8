@@ -6,6 +6,8 @@ export const loginSchema = z.object({
     .string("Password must be string")
     .min(1, "Password is required")
     .min(6, "Password must be minimum 6 characters"),
+  deviceId: z.string().min(1, "Device ID is required"),
+  rememberMe: z.boolean().default(false),
 });
 
 export const googleLoginSchema = z.object({

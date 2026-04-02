@@ -232,10 +232,10 @@ export type LoggedInDeviceOrderByWithRelationInput = {
 
 export type LoggedInDeviceWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  deviceId?: string
   AND?: Prisma.LoggedInDeviceWhereInput | Prisma.LoggedInDeviceWhereInput[]
   OR?: Prisma.LoggedInDeviceWhereInput[]
   NOT?: Prisma.LoggedInDeviceWhereInput | Prisma.LoggedInDeviceWhereInput[]
-  deviceId?: Prisma.StringFilter<"LoggedInDevice"> | string
   ipAddress?: Prisma.StringNullableFilter<"LoggedInDevice"> | string | null
   country?: Prisma.StringNullableFilter<"LoggedInDevice"> | string | null
   city?: Prisma.StringNullableFilter<"LoggedInDevice"> | string | null
@@ -244,7 +244,7 @@ export type LoggedInDeviceWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"LoggedInDevice"> | Date | string
   isTrusted?: Prisma.BoolFilter<"LoggedInDevice"> | boolean
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "deviceId">
 
 export type LoggedInDeviceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState, useEffect } from "react";
+import { useState, useActionState, useEffect, use } from "react";
 import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ import { login } from "@/services/auth/auth.service";
 export default function LoginForm({ redirect }: { redirect?: string }) {
   const [showPassword, setShowPassword] = useState(false);
   const [data, loginAction, isPending] = useActionState(login, null);
+  const [deviceId, setDeviceId] = useState<string | null>();
 
   useEffect(() => {
     if (data && !data?.success && data.message) {
@@ -22,9 +23,22 @@ export default function LoginForm({ redirect }: { redirect?: string }) {
     }
   }, [data]);
 
+  useEffect(() => {
+    const storedDeviceId = localStorage.getItem("device_id");
+    if (!storedDeviceId) {
+      const newDeviceId = crypto.randomUUID();
+      localStorage.setItem("device_id", newDeviceId);
+      setDeviceId(newDeviceId);
+    } else {
+      setDeviceId(storedDeviceId);
+    }
+  }, []);
+
   return (
     <form action={loginAction} className="space-y-5">
       {redirect && <input type="hidden" name="redirect" value={redirect} />}
+
+      {deviceId && <input type="hidden" name="deviceId" value={deviceId} />}
 
       <div className="space-y-2">
         <Label
@@ -92,7 +106,7 @@ export default function LoginForm({ redirect }: { redirect?: string }) {
       <div className="flex items-center space-x-2 py-1">
         <Checkbox
           id="remember"
-          name="remember"
+          name="rememberMe"
           className="w-4 h-4 rounded text-primary border border-slate-300 dark:border-slate-600"
         />
         <Label

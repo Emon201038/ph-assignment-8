@@ -5,9 +5,18 @@ import { generateJwt, verifyJwt } from "../../../utils/jwt";
 import { envVars } from "../../../config/env";
 import { sendEmail } from "../../../utils/sendEmail";
 import prisma from "../../../config/db";
-import { AuthProvider } from "../../../../../prisma/generated/enums";
+import { AuthProvider, OTPType } from "../../../../../prisma/generated/enums";
+import { generateOtp } from "../../../helpers/generate-otp";
 
-const login = async (res: Response, email: string, password: string) => {
+interface ILogin {
+  email: string;
+  password: string;
+  deviceId: string;
+  rememberMe: boolean;
+}
+
+const login = async (res: Response, body: ILogin) => {
+  const { email, password, deviceId, rememberMe } = body;
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
@@ -25,6 +34,36 @@ const login = async (res: Response, email: string, password: string) => {
   const isPassMatched = await bcrypt.compare(password, user.password);
   if (!isPassMatched) {
     throw new AppError(400, "Incorrect password");
+  }
+
+  const twoFactor = await prisma.twoFactorAuth.findUnique({
+    where: { userId: user.id },
+  });
+  if (twoFactor?.isEnabled) {
+    const otp = generateOtp(6);
+    const otpDoc = await prisma.oTP.create({
+      data: {
+        userId: user.id,
+        otp: await bcrypt.hash(otp, 10),
+        type: OTPType.TWO_FACTOR,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+      },
+    });
+    sendEmail({
+      subject: "Two-factor authentication",
+      to: user.email,
+      templateName: "otp-email",
+      templateData: { otp, otpExpiresInMinutes: 10 },
+    });
+    console.log("OTP: ", otp);
+    return {
+      status: "requires-otp",
+      message:
+        "Two-factor authentication is enabled. Please enter the OTP to continue.",
+      id: otpDoc.id,
+      userId: user.id,
+      rememberMe,
+    };
   }
 
   const accessToken = generateJwt(
@@ -59,6 +98,22 @@ const login = async (res: Response, email: string, password: string) => {
     secure: true,
     sameSite: "none",
     httpOnly: true,
+  });
+
+  await prisma.loggedInDevice.upsert({
+    where: {
+      deviceId,
+    },
+    create: {
+      userId: user.id,
+      deviceId,
+      isTrusted: rememberMe,
+    },
+    update: {
+      userId: user.id,
+      deviceId,
+      isTrusted: rememberMe,
+    },
   });
 };
 
@@ -309,6 +364,95 @@ const changePassword = async (
   return updatedUser;
 };
 
+const verify2FA = async (
+  payload: {
+    id: string;
+    userId: string;
+    otp: string;
+    deviceId: string;
+    rememberMe: boolean;
+  },
+  res: Response,
+) => {
+  const user = await prisma.user.findUnique({
+    where: { id: payload.userId },
+  });
+
+  if (!user) {
+    throw new AppError(404, "No user found");
+  }
+
+  const otpDoc = await prisma.oTP.findUnique({
+    where: { id: payload.id },
+  });
+
+  if (!otpDoc) {
+    throw new AppError(404, "No 2FA found");
+  }
+
+  const isOtpMatched = await bcrypt.compare(payload.otp, otpDoc.otp);
+  if (!isOtpMatched) {
+    throw new AppError(400, "Incorrect OTP");
+  }
+
+  const isExpired = otpDoc.expiresAt < new Date(Date.now());
+  if (isExpired) {
+    throw new AppError(400, "OTP expired");
+  }
+
+  const updated2FA = await prisma.oTP.delete({
+    where: { id: payload.id },
+  });
+
+  await prisma.loggedInDevice.upsert({
+    where: {
+      deviceId: payload.deviceId,
+    },
+    update: {
+      isTrusted: payload.rememberMe,
+    },
+    create: {
+      userId: payload.userId,
+      deviceId: payload.deviceId,
+      isTrusted: payload.rememberMe,
+    },
+  });
+
+  const accessToken = generateJwt(
+    {
+      userId: user.id,
+      role: user.role,
+      email: user.email,
+    },
+    envVars.JWT_ACCESS_TOKEN_SECRET,
+    envVars.JWT_ACCESS_TOKEN_EXPIRES_IN,
+  );
+
+  const refreshToken = generateJwt(
+    {
+      userId: user.id,
+      role: user.role,
+      email: user.email,
+    },
+    envVars.JWT_REFRESH_TOKEN_SECRET,
+    envVars.JWT_REFRESH_TOKEN_EXPIRES_IN,
+  );
+
+  res.cookie("accessToken", accessToken, {
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: true,
+    sameSite: "none",
+    httpOnly: true,
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    maxAge: 90 * 24 * 60 * 60 * 1000,
+    secure: true,
+    sameSite: "none",
+    httpOnly: true,
+  });
+};
+
 export const AuthService = {
   login,
   loginWithProvider,
@@ -317,4 +461,5 @@ export const AuthService = {
   forgotPassword,
   resetPassword,
   changePassword,
+  verify2FA,
 };
