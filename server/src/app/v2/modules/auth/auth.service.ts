@@ -39,7 +39,63 @@ const login = async (res: Response, body: ILogin) => {
   const twoFactor = await prisma.twoFactorAuth.findUnique({
     where: { userId: user.id },
   });
+  const session = await prisma.loggedInDevice.findFirst({
+    where: { userId: user.id, deviceId },
+  });
+  console.log(session);
   if (twoFactor?.isEnabled) {
+    if (session && session.isTrusted) {
+      const accessToken = generateJwt(
+        {
+          userId: user.id,
+          role: user.role,
+          email: user.email,
+        },
+        envVars.JWT_ACCESS_TOKEN_SECRET,
+        envVars.JWT_ACCESS_TOKEN_EXPIRES_IN,
+      );
+
+      const refreshToken = generateJwt(
+        {
+          userId: user.id,
+          role: user.role,
+          email: user.email,
+        },
+        envVars.JWT_REFRESH_TOKEN_SECRET,
+        envVars.JWT_REFRESH_TOKEN_EXPIRES_IN,
+      );
+
+      res.cookie("accessToken", accessToken, {
+        maxAge: 24 * 60 * 60 * 1000,
+        secure: true,
+        sameSite: "none",
+        httpOnly: true,
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 90 * 24 * 60 * 60 * 1000,
+        secure: true,
+        sameSite: "none",
+        httpOnly: true,
+      });
+
+      await prisma.loggedInDevice.upsert({
+        where: {
+          deviceId,
+        },
+        create: {
+          userId: user.id,
+          deviceId,
+          isTrusted: rememberMe,
+        },
+        update: {
+          userId: user.id,
+          deviceId,
+          isTrusted: rememberMe,
+        },
+      });
+      return;
+    }
     const otp = generateOtp(6);
     const otpDoc = await prisma.oTP.create({
       data: {
@@ -55,7 +111,6 @@ const login = async (res: Response, body: ILogin) => {
       templateName: "otp-email",
       templateData: { otp, otpExpiresInMinutes: 10 },
     });
-    console.log("OTP: ", otp);
     return {
       status: "requires-otp",
       message:
@@ -208,6 +263,7 @@ const me = async (accessToken: string) => {
     throw new AppError(404, "User not found");
   }
 
+  console.log(user);
   // Remove password from response
   const { guideProfile, travelerProfile, ...userWithoutPassword } = user;
   return {

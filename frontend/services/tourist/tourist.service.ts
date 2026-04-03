@@ -7,46 +7,76 @@ import { serverFetch } from "@/lib/server-fetch";
 import { IResponse } from "@/interfaces";
 import { revalidateTag } from "next/cache";
 
-const touristSchema = z.object({
-  name: z.string("name is required").min(2, "name is required"),
-  email: z.email("Invalide email address"),
-  phone: z.string("phone is required").min(10, "phone is required"),
-  password: z
-    .string("password is required")
-    .min(6, "password must be minimum 6 digit"),
-  image: z.file("image is required").optional(),
-  bio: z.string().optional(),
-  interests: z
-    .string()
-    .optional()
-    .transform((z) => {
-      return z?.split(",")?.map((i) => i.trim());
-    })
-    .default([]),
-  preferredLanguage: z.string().optional(),
-  gender: z.enum(Object.values(Gender), "Invalide gender").default(Gender.MALE),
-});
+const touristSchema = z
+  .object({
+    name: z.string("name is required").min(2, "name is required"),
+    email: z.email("Invalide email address"),
+    phone: z.string("phone is required").min(10, "phone is required"),
+    password: z
+      .string("password is required")
+      .min(6, "password must be minimum 6 digit"),
+    image: z.any().optional(),
+    bio: z.string().optional(),
+    interests: z
+      .string()
+      .optional()
+      .transform((z) => {
+        return z?.split(",")?.map((i) => i.trim());
+      })
+      .default([]),
+    preferredLanguage: z.string().optional(),
+    gender: z
+      .enum(Object.values(Gender), "Invalide gender")
+      .default(Gender.MALE),
+    country: z.string().nullable().optional(),
+    city: z.string().nullable().optional(),
+    address: z.string("address is required").min(2, "address is required"),
+  })
+  .superRefine((data, ctx) => {
+    if (data?.address) {
+      const [city, country] = data?.address?.split(",");
+      if (!country) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "country is required. Format: city, country",
+        });
+      }
+      if (!city) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          input: data?.address,
+          path: ["address"],
+          message: "city is required. Format: city, country",
+        });
+      }
+
+      data.city = city?.trim();
+      data.country = country?.trim();
+    }
+  });
 
 export const createTouristAction = async (
   initialState: unknown,
   formData: FormData,
 ) => {
+  const payload = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+    image: formData.get("image") || null,
+    preferredLanguage: formData.get("preferredLanguage") || "",
+    interests: formData.get("interests") || "",
+    bio: formData.get("bio") || "",
+    phone: formData.get("phone") || "",
+    gender: formData.get("gender") as Gender,
+    address: formData.get("address") || "",
+    agree: formData.get("agree"),
+  };
+  console.log(payload);
   try {
-    const payload = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      password: formData.get("password"),
-      image: formData.get("image") || null,
-      preferredLanguage: formData.get("preferredLanguage") || "",
-      interests: formData.get("interests") || "",
-      bio: formData.get("bio") || "",
-      phone: formData.get("phone") || "",
-      gender: formData.get("gender") as Gender,
-      address: formData.get("address") || "",
-    };
-
     const validationResult = zodValidator(payload, touristSchema);
 
+    console.log({ validationResult: validationResult.data, formData: payload });
     if (!validationResult.success && validationResult.errors) {
       return {
         success: false,
@@ -67,26 +97,41 @@ export const createTouristAction = async (
 
     const modifiedFormData = new FormData();
 
-    modifiedFormData.append("name", payload?.name as string);
-    modifiedFormData.append("email", payload?.email as string);
-    modifiedFormData.append("password", payload?.password as string);
+    modifiedFormData.append("name", validationResult?.data?.name as string);
+    modifiedFormData.append("email", validationResult?.data?.email as string);
+    modifiedFormData.append(
+      "password",
+      validationResult?.data?.password as string,
+    );
     if ((formData.get("image") as File)?.size) {
-      modifiedFormData.append("image", payload?.image as Blob);
+      modifiedFormData.append("image", validationResult?.data?.image as Blob);
     }
     modifiedFormData.append(
       "preferredLanguage",
-      payload?.preferredLanguage as string,
+      validationResult?.data?.preferredLanguage as string,
     );
-    modifiedFormData.append("interests", payload?.interests as string);
-    modifiedFormData.append("bio", payload?.bio as string);
-    modifiedFormData.append("phone", payload?.phone as string);
-    modifiedFormData.append("gender", payload?.gender as string);
-    modifiedFormData.append("address", payload?.address as string);
+    modifiedFormData.append(
+      "interests",
+      validationResult?.data?.interests as string,
+    );
+    modifiedFormData.append("bio", validationResult?.data?.bio as string);
+    modifiedFormData.append("phone", validationResult?.data?.phone as string);
+    modifiedFormData.append("gender", validationResult?.data?.gender as string);
+    modifiedFormData.append(
+      "address",
+      validationResult?.data?.address as string,
+    );
 
-    const res = await serverFetch.post(`/tourists`, {
+    const res = await serverFetch.post(`/v2/users`, {
       method: "POST",
       credentials: "include",
-      body: modifiedFormData,
+      body: JSON.stringify({
+        ...validationResult?.data,
+        languages: (validationResult?.data?.preferredLanguage as string)?.split(
+          ",",
+        ),
+      }),
+      headers: { "Content-Type": "application/json" },
     });
 
     const data = await res.json();
@@ -106,6 +151,8 @@ export const createTouristAction = async (
     return {
       success: false,
       message: error?.message,
+      data: null,
+      formData: payload,
     };
   }
 };

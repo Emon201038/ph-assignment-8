@@ -1,10 +1,21 @@
-import { Prisma, UserRole } from "../../../../../prisma/generated/client";
+import {
+  Gender,
+  Prisma,
+  TravelerProfile,
+  User,
+  UserRole,
+} from "../../../../../prisma/generated/client";
 import prisma from "../../../config/db";
 import AppError from "../../../helpers/appError";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import bcrypt from "bcryptjs";
 import { uploadFileToCloudinary } from "../../../utils/upload-files";
 import { UpdateUserSchema } from "./user.validation";
+import {
+  TravelerProfileCreateInput,
+  UserCreateNestedOneWithoutTravelerProfileInput,
+} from "../../../../generated/models";
+import { date } from "zod";
 
 const cleanObject = (obj: Record<string, any>) => {
   return Object.fromEntries(
@@ -133,6 +144,8 @@ const getSingleUserFromDB = async (id: string) => {
 };
 
 const createUserInDB = async (payload: any) => {
+  console.log(payload);
+  // throw new AppError(400, "Email already in use");
   const { name, email, password, role, country, city, avatar, bio, phone } =
     payload;
 
@@ -145,19 +158,50 @@ const createUserInDB = async (payload: any) => {
     throw new AppError(400, "Email already in use");
   }
 
+  // Base user data
+  const userData: any = {
+    name,
+    email,
+    password: await bcrypt.hash(password, 10),
+    role: role ? role.toUpperCase() : "TRAVELER",
+    country: country || null,
+    city: city || null,
+    avatar: avatar || null,
+    bio: bio || null,
+    phone: phone || null,
+  };
+
+  // Traveler Profile
+  if (role === "TRAVELER") {
+    userData.travelerProfile = {
+      create: {
+        gender: payload.gender as Gender,
+        bloodGroup: payload.bloodGroup,
+        languages: payload.languages || [],
+        interests: payload.interests || [],
+        dateOfBirth: payload.dateOfBirth,
+        aboutMe: payload.bio,
+      },
+    };
+  }
+
+  // Guide Profile
+  if (role === "GUIDE") {
+    userData.guideProfile = {
+      create: {
+        gender: payload.gender as Gender,
+        bloodGroup: payload.bloodGroup,
+        languages: payload.languages || [],
+        specialties: payload.specialties || [],
+        dateOfBirth: payload.dateOfBirth,
+        bio: payload.bio,
+      },
+    };
+  }
+
   // Create user
   const result = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: await bcrypt.hash(password, 10),
-      role: role ? role.toUpperCase() : "TRAVELER",
-      country: country || "Unknown",
-      city: city || "Unknown",
-      avatar: avatar || null,
-      bio: bio || null,
-      phone: phone || null,
-    },
+    data: userData,
     select: {
       id: true,
       name: true,

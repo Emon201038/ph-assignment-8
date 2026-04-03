@@ -61,7 +61,7 @@ const Sidebar = async () => {
         <div className="w-12 h-12 rounded-xl mb-2 overflow-hidden border">
           <Image
             alt={user.name}
-            src={user.avatar || "/images/default-avatar.png"}
+            src={user.avatar || "/images/default_avatar.png"}
             width={48}
             height={48}
             className="w-full h-full object-cover"

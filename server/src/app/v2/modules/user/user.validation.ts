@@ -9,9 +9,14 @@ export const createUserSchema = z.object({
     .min(6, "Password must be at least 6 characters long"),
 
   role: z.enum(UserRole).default(UserRole.TRAVELER),
-
+  gender: z.enum(Gender).default(Gender.MALE),
   country: z.string().optional(),
   city: z.string().optional(),
+  bio: z.string(),
+  phone: z.string().optional(),
+  interests: z.array(z.string()).default([]),
+  languages: z.array(z.string()).default([]),
+  specialties: z.array(z.string()).default([]),
 });
 
 export const updateUserSchema = z.object({

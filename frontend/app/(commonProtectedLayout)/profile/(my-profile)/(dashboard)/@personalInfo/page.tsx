@@ -28,8 +28,8 @@ const page = async () => {
         {/* Avatar */}
         <div className="bg-white dark:bg-slate-900 p-1.5 rounded-full shadow-lg relative">
           <Image
-            src={user.avatar || "/images/default-avatar.png"}
-            alt="User profile picture close up"
+            src={user.avatar || "/images/default_avatar.png"}
+            alt={user.name + " avatar"}
             width={128}
             height={128}
             className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32"

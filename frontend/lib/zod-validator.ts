@@ -1,6 +1,13 @@
-import { ZodObject } from "zod";
+import z, { ZodObject } from "zod";
 
-export const zodValidator = <T>(payload: T, schema: ZodObject) => {
+export const zodValidator = <T>(
+  payload: T,
+  schema: ZodObject,
+): {
+  success: boolean;
+  data?: z.infer<typeof schema>;
+  errors?: { field: string; message: string }[];
+} => {
   const validatedPayload = schema.safeParse(payload);
 
   if (!validatedPayload.success) {
@@ -17,7 +24,6 @@ export const zodValidator = <T>(payload: T, schema: ZodObject) => {
 
   return {
     success: validatedPayload.success,
-    data: validatedPayload.data,
-    message: "",
+    data: validatedPayload.data as z.infer<typeof schema>,
   };
 };

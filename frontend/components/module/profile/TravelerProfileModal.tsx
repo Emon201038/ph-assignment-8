@@ -50,6 +50,7 @@ const TravelerProfileModal = ({
   isEdit?: boolean;
   children?: React.ReactNode;
 }) => {
+  console.log(user);
   const [interests, setInterests] = React.useState<
     { label: string; value: string }[]
   >(

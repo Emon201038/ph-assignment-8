@@ -6,19 +6,6 @@ import SignupForm from "@/components/module/auth/SignupForm";
 import Image from "next/image";
 
 export default function SignupPage() {
-  const handleSignupSubmit = (data: {
-    formData: {
-      fullName: string;
-      email: string;
-      password: string;
-      gender: string;
-      agreeToTerms: boolean;
-    };
-    interests: string[];
-  }) => {
-    // Handle signup logic here
-  };
-
   return (
     <main className="flex flex-1 justify-center py-8 md:py-12 px-4 md:px-0">
       <div className="layout-content-container flex flex-col max-w-250 w-full gap-8">
@@ -95,7 +82,7 @@ export default function SignupPage() {
               Start your journey with TourBuddy today.
             </p>
 
-            <SignupForm onSubmit={handleSignupSubmit} />
+            <SignupForm />
 
             <div className="relative flex items-center gap-4 my-8">
               <div className="grow border-t border-slate-200 dark:border-slate-800"></div>
