@@ -45,7 +45,7 @@ const EmergencyContactModal = ({
       router.refresh();
       setOpen(false);
     }
-    if (state && !state.success && !state.errors.length) {
+    if (state && !state.success && !state?.errors?.length) {
       toast.error(state.message || "Failed to add emergency contact");
     }
   }, [state]);

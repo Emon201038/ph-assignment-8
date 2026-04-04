@@ -27,6 +27,10 @@ export default function OtpForm({ id, email }: { id: string; email: string }) {
   const [canResend, setCanResend] = useState(false);
   const [countdown, setCountdown] = useState(6);
   const [state, action, isPending] = useActionState(verifyOtp, null);
+  const [resendState, resendAction, isResending] = useActionState(
+    sendOtp,
+    null,
+  );
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -54,19 +58,30 @@ export default function OtpForm({ id, email }: { id: string; email: string }) {
     }
   }, [state]);
 
+  useEffect(() => {
+    if (
+      resendState &&
+      !resendState.success &&
+      (!resendState.errors || resendState?.errors?.length === 0)
+    ) {
+      toast.error(resendState?.message);
+    }
+    if (resendState && resendState.success) {
+      toast.success(resendState?.message);
+      const params = new URLSearchParams(searchParams.toString());
+      setCanResend(false);
+      setCountdown(60);
+      params.set("session_id", resendState?.data?._id);
+      router.push(`/forgot-password/verify?${params.toString()}`);
+    }
+  }, [resendState, router, searchParams]);
+
   const handleResend = async () => {
     if (!canResend) return;
     const params = new URLSearchParams(searchParams.toString());
-    const res = await sendOtp(email);
-    if (res?.success) {
-      toast.success(res?.message);
-      setCanResend(false);
-      setCountdown(60);
-      params.set("session_id", res?.data?._id);
-      router.push(`/forgot-password/verify?${params.toString()}`);
-    } else {
-      toast.error(res?.message);
-    }
+    const formData = new FormData();
+    formData.append("email", email);
+    resendAction(formData);
   };
 
   return (
