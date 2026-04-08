@@ -6,6 +6,7 @@ import tripRoutes from "../modules/trip/trip.routes";
 import reviewRoutes from "../modules/review/review.routes";
 import authRouter from "../modules/auth/auth.routes";
 import otpRoutes from "../modules/otp/otp.routes";
+import twoFactorRoutes from "../modules/two-factor/two-factor.routes";
 
 const routerv2 = express.Router();
 
@@ -33,6 +34,10 @@ const routes: { path: string; route: express.Router }[] = [
   {
     path: "/auth",
     route: authRouter,
+  },
+  {
+    path: "/two-factor",
+    route: twoFactorRoutes,
   },
   {
     path: "/otp",

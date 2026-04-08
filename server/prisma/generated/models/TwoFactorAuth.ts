@@ -27,6 +27,7 @@ export type AggregateTwoFactorAuth = {
 export type TwoFactorAuthMinAggregateOutputType = {
   id: string | null
   userId: string | null
+  email: string | null
   method: $Enums.TwoFactorMethod | null
   secret: string | null
   isEnabled: boolean | null
@@ -37,6 +38,7 @@ export type TwoFactorAuthMinAggregateOutputType = {
 export type TwoFactorAuthMaxAggregateOutputType = {
   id: string | null
   userId: string | null
+  email: string | null
   method: $Enums.TwoFactorMethod | null
   secret: string | null
   isEnabled: boolean | null
@@ -47,6 +49,7 @@ export type TwoFactorAuthMaxAggregateOutputType = {
 export type TwoFactorAuthCountAggregateOutputType = {
   id: number
   userId: number
+  email: number
   method: number
   secret: number
   isEnabled: number
@@ -59,6 +62,7 @@ export type TwoFactorAuthCountAggregateOutputType = {
 export type TwoFactorAuthMinAggregateInputType = {
   id?: true
   userId?: true
+  email?: true
   method?: true
   secret?: true
   isEnabled?: true
@@ -69,6 +73,7 @@ export type TwoFactorAuthMinAggregateInputType = {
 export type TwoFactorAuthMaxAggregateInputType = {
   id?: true
   userId?: true
+  email?: true
   method?: true
   secret?: true
   isEnabled?: true
@@ -79,6 +84,7 @@ export type TwoFactorAuthMaxAggregateInputType = {
 export type TwoFactorAuthCountAggregateInputType = {
   id?: true
   userId?: true
+  email?: true
   method?: true
   secret?: true
   isEnabled?: true
@@ -162,6 +168,7 @@ export type TwoFactorAuthGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 export type TwoFactorAuthGroupByOutputType = {
   id: string
   userId: string
+  email: string | null
   method: $Enums.TwoFactorMethod
   secret: string | null
   isEnabled: boolean
@@ -193,6 +200,7 @@ export type TwoFactorAuthWhereInput = {
   NOT?: Prisma.TwoFactorAuthWhereInput | Prisma.TwoFactorAuthWhereInput[]
   id?: Prisma.StringFilter<"TwoFactorAuth"> | string
   userId?: Prisma.StringFilter<"TwoFactorAuth"> | string
+  email?: Prisma.StringNullableFilter<"TwoFactorAuth"> | string | null
   method?: Prisma.EnumTwoFactorMethodFilter<"TwoFactorAuth"> | $Enums.TwoFactorMethod
   secret?: Prisma.StringNullableFilter<"TwoFactorAuth"> | string | null
   isEnabled?: Prisma.BoolFilter<"TwoFactorAuth"> | boolean
@@ -204,6 +212,7 @@ export type TwoFactorAuthWhereInput = {
 export type TwoFactorAuthOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   method?: Prisma.SortOrder
   secret?: Prisma.SortOrderInput | Prisma.SortOrder
   isEnabled?: Prisma.SortOrder
@@ -218,6 +227,7 @@ export type TwoFactorAuthWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.TwoFactorAuthWhereInput | Prisma.TwoFactorAuthWhereInput[]
   OR?: Prisma.TwoFactorAuthWhereInput[]
   NOT?: Prisma.TwoFactorAuthWhereInput | Prisma.TwoFactorAuthWhereInput[]
+  email?: Prisma.StringNullableFilter<"TwoFactorAuth"> | string | null
   method?: Prisma.EnumTwoFactorMethodFilter<"TwoFactorAuth"> | $Enums.TwoFactorMethod
   secret?: Prisma.StringNullableFilter<"TwoFactorAuth"> | string | null
   isEnabled?: Prisma.BoolFilter<"TwoFactorAuth"> | boolean
@@ -229,6 +239,7 @@ export type TwoFactorAuthWhereUniqueInput = Prisma.AtLeast<{
 export type TwoFactorAuthOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   method?: Prisma.SortOrder
   secret?: Prisma.SortOrderInput | Prisma.SortOrder
   isEnabled?: Prisma.SortOrder
@@ -245,6 +256,7 @@ export type TwoFactorAuthScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TwoFactorAuthScalarWhereWithAggregatesInput | Prisma.TwoFactorAuthScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"TwoFactorAuth"> | string
   userId?: Prisma.StringWithAggregatesFilter<"TwoFactorAuth"> | string
+  email?: Prisma.StringNullableWithAggregatesFilter<"TwoFactorAuth"> | string | null
   method?: Prisma.EnumTwoFactorMethodWithAggregatesFilter<"TwoFactorAuth"> | $Enums.TwoFactorMethod
   secret?: Prisma.StringNullableWithAggregatesFilter<"TwoFactorAuth"> | string | null
   isEnabled?: Prisma.BoolWithAggregatesFilter<"TwoFactorAuth"> | boolean
@@ -254,6 +266,7 @@ export type TwoFactorAuthScalarWhereWithAggregatesInput = {
 
 export type TwoFactorAuthCreateInput = {
   id?: string
+  email?: string | null
   method?: $Enums.TwoFactorMethod
   secret?: string | null
   isEnabled?: boolean
@@ -265,6 +278,7 @@ export type TwoFactorAuthCreateInput = {
 export type TwoFactorAuthUncheckedCreateInput = {
   id?: string
   userId: string
+  email?: string | null
   method?: $Enums.TwoFactorMethod
   secret?: string | null
   isEnabled?: boolean
@@ -274,6 +288,7 @@ export type TwoFactorAuthUncheckedCreateInput = {
 
 export type TwoFactorAuthUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   method?: Prisma.EnumTwoFactorMethodFieldUpdateOperationsInput | $Enums.TwoFactorMethod
   secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -285,6 +300,7 @@ export type TwoFactorAuthUpdateInput = {
 export type TwoFactorAuthUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   method?: Prisma.EnumTwoFactorMethodFieldUpdateOperationsInput | $Enums.TwoFactorMethod
   secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -295,6 +311,7 @@ export type TwoFactorAuthUncheckedUpdateInput = {
 export type TwoFactorAuthCreateManyInput = {
   id?: string
   userId: string
+  email?: string | null
   method?: $Enums.TwoFactorMethod
   secret?: string | null
   isEnabled?: boolean
@@ -304,6 +321,7 @@ export type TwoFactorAuthCreateManyInput = {
 
 export type TwoFactorAuthUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   method?: Prisma.EnumTwoFactorMethodFieldUpdateOperationsInput | $Enums.TwoFactorMethod
   secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -314,6 +332,7 @@ export type TwoFactorAuthUpdateManyMutationInput = {
 export type TwoFactorAuthUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   method?: Prisma.EnumTwoFactorMethodFieldUpdateOperationsInput | $Enums.TwoFactorMethod
   secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -324,6 +343,7 @@ export type TwoFactorAuthUncheckedUpdateManyInput = {
 export type TwoFactorAuthCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   method?: Prisma.SortOrder
   secret?: Prisma.SortOrder
   isEnabled?: Prisma.SortOrder
@@ -334,6 +354,7 @@ export type TwoFactorAuthCountOrderByAggregateInput = {
 export type TwoFactorAuthMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   method?: Prisma.SortOrder
   secret?: Prisma.SortOrder
   isEnabled?: Prisma.SortOrder
@@ -344,6 +365,7 @@ export type TwoFactorAuthMaxOrderByAggregateInput = {
 export type TwoFactorAuthMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   method?: Prisma.SortOrder
   secret?: Prisma.SortOrder
   isEnabled?: Prisma.SortOrder
@@ -409,6 +431,7 @@ export type TwoFactorAuthUncheckedUpdateManyWithoutUserNestedInput = {
 
 export type TwoFactorAuthCreateWithoutUserInput = {
   id?: string
+  email?: string | null
   method?: $Enums.TwoFactorMethod
   secret?: string | null
   isEnabled?: boolean
@@ -418,6 +441,7 @@ export type TwoFactorAuthCreateWithoutUserInput = {
 
 export type TwoFactorAuthUncheckedCreateWithoutUserInput = {
   id?: string
+  email?: string | null
   method?: $Enums.TwoFactorMethod
   secret?: string | null
   isEnabled?: boolean
@@ -457,6 +481,7 @@ export type TwoFactorAuthScalarWhereInput = {
   NOT?: Prisma.TwoFactorAuthScalarWhereInput | Prisma.TwoFactorAuthScalarWhereInput[]
   id?: Prisma.StringFilter<"TwoFactorAuth"> | string
   userId?: Prisma.StringFilter<"TwoFactorAuth"> | string
+  email?: Prisma.StringNullableFilter<"TwoFactorAuth"> | string | null
   method?: Prisma.EnumTwoFactorMethodFilter<"TwoFactorAuth"> | $Enums.TwoFactorMethod
   secret?: Prisma.StringNullableFilter<"TwoFactorAuth"> | string | null
   isEnabled?: Prisma.BoolFilter<"TwoFactorAuth"> | boolean
@@ -466,6 +491,7 @@ export type TwoFactorAuthScalarWhereInput = {
 
 export type TwoFactorAuthCreateManyUserInput = {
   id?: string
+  email?: string | null
   method?: $Enums.TwoFactorMethod
   secret?: string | null
   isEnabled?: boolean
@@ -475,6 +501,7 @@ export type TwoFactorAuthCreateManyUserInput = {
 
 export type TwoFactorAuthUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   method?: Prisma.EnumTwoFactorMethodFieldUpdateOperationsInput | $Enums.TwoFactorMethod
   secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -484,6 +511,7 @@ export type TwoFactorAuthUpdateWithoutUserInput = {
 
 export type TwoFactorAuthUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   method?: Prisma.EnumTwoFactorMethodFieldUpdateOperationsInput | $Enums.TwoFactorMethod
   secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -493,6 +521,7 @@ export type TwoFactorAuthUncheckedUpdateWithoutUserInput = {
 
 export type TwoFactorAuthUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   method?: Prisma.EnumTwoFactorMethodFieldUpdateOperationsInput | $Enums.TwoFactorMethod
   secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -505,6 +534,7 @@ export type TwoFactorAuthUncheckedUpdateManyWithoutUserInput = {
 export type TwoFactorAuthSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  email?: boolean
   method?: boolean
   secret?: boolean
   isEnabled?: boolean
@@ -516,6 +546,7 @@ export type TwoFactorAuthSelect<ExtArgs extends runtime.Types.Extensions.Interna
 export type TwoFactorAuthSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  email?: boolean
   method?: boolean
   secret?: boolean
   isEnabled?: boolean
@@ -527,6 +558,7 @@ export type TwoFactorAuthSelectCreateManyAndReturn<ExtArgs extends runtime.Types
 export type TwoFactorAuthSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  email?: boolean
   method?: boolean
   secret?: boolean
   isEnabled?: boolean
@@ -538,6 +570,7 @@ export type TwoFactorAuthSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
 export type TwoFactorAuthSelectScalar = {
   id?: boolean
   userId?: boolean
+  email?: boolean
   method?: boolean
   secret?: boolean
   isEnabled?: boolean
@@ -545,7 +578,7 @@ export type TwoFactorAuthSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TwoFactorAuthOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "method" | "secret" | "isEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["twoFactorAuth"]>
+export type TwoFactorAuthOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "email" | "method" | "secret" | "isEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["twoFactorAuth"]>
 export type TwoFactorAuthInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -564,6 +597,7 @@ export type $TwoFactorAuthPayload<ExtArgs extends runtime.Types.Extensions.Inter
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
+    email: string | null
     method: $Enums.TwoFactorMethod
     secret: string | null
     isEnabled: boolean
@@ -995,6 +1029,7 @@ export interface Prisma__TwoFactorAuthClient<T, Null = never, ExtArgs extends ru
 export interface TwoFactorAuthFieldRefs {
   readonly id: Prisma.FieldRef<"TwoFactorAuth", 'String'>
   readonly userId: Prisma.FieldRef<"TwoFactorAuth", 'String'>
+  readonly email: Prisma.FieldRef<"TwoFactorAuth", 'String'>
   readonly method: Prisma.FieldRef<"TwoFactorAuth", 'TwoFactorMethod'>
   readonly secret: Prisma.FieldRef<"TwoFactorAuth", 'String'>
   readonly isEnabled: Prisma.FieldRef<"TwoFactorAuth", 'Boolean'>

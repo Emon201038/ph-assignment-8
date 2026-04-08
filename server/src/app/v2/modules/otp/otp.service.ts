@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import prisma from "../../../config/db";
 import { SendOtpSchema } from "./otp.validation";
 import { generateOtp } from "../../../helpers/generate-otp";
+import AppError from "../../../helpers/appError";
 
 const sendOtp = async (payload: SendOtpSchema) => {
   const otp = generateOtp(6);
@@ -9,7 +10,7 @@ const sendOtp = async (payload: SendOtpSchema) => {
   let userId: string;
   let email: string | undefined;
 
-  if (payload.type === "PASSWORD_RESET") {
+  if (payload.email) {
     email = payload.email;
 
     const user = await prisma.user.findUnique({
@@ -22,8 +23,10 @@ const sendOtp = async (payload: SendOtpSchema) => {
     }
 
     userId = user.id;
-  } else {
+  } else if (payload.userId) {
     userId = payload.userId;
+  } else {
+    throw new AppError(400, "Email or userId is required");
   }
 
   const hashedOtp = await bcrypt.hash(otp, 10);

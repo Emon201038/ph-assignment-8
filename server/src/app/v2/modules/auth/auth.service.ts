@@ -1,7 +1,5 @@
 import { Response } from "express";
 import bcrypt from "bcryptjs";
-import speakeasy from "speakeasy";
-import QRCode from "qrcode";
 
 import AppError from "../../../helpers/appError";
 import { generateJwt, verifyJwt } from "../../../utils/jwt";
@@ -131,6 +129,10 @@ const login = async (res: Response, body: ILogin) => {
     const otpDoc = await prisma.oTP.create({
       data: {
         userId: user.id,
+        email:
+          twoFactor.method === TwoFactorMethod.EMAIL
+            ? (twoFactor?.email as string)
+            : user.email,
         otp: await bcrypt.hash(otp, 10),
         type: OTPType.TWO_FACTOR,
         expiresAt: new Date(Date.now() + 10 * 60 * 1000),
@@ -138,7 +140,10 @@ const login = async (res: Response, body: ILogin) => {
     });
     sendEmail({
       subject: "Two-factor authentication",
-      to: user.email,
+      to:
+        twoFactor.method === TwoFactorMethod.EMAIL
+          ? (twoFactor?.email as string)
+          : user.email,
       templateName: "otp-email",
       templateData: { otp, otpExpiresInMinutes: 10 },
     });
@@ -547,27 +552,6 @@ const verify2FA = async (payload: VerifyOtpSchema, res: Response) => {
   });
 };
 
-const enable2FA = async (
-  userId: string,
-  email: string,
-  method: TwoFactorMethod,
-) => {
-  if (method === TwoFactorMethod.TOTP) {
-    const secret = speakeasy.generateSecret({
-      name: `TourBuddy (${email})`,
-    });
-
-    const qrCode = await QRCode.toDataURL(secret.otpauth_url as string);
-
-    return {
-      qrCode,
-      secret: secret.base32,
-    };
-  }
-
-  return null;
-};
-
 export const AuthService = {
   login,
   loginWithProvider,
@@ -577,5 +561,4 @@ export const AuthService = {
   resetPassword,
   changePassword,
   verify2FA,
-  enable2FA,
 };

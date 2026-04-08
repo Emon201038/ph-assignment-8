@@ -707,13 +707,60 @@ export const registerTwoFactor = async (
       };
     }
 
-    const res = await serverFetch.post("/v2/auth/two-factor/register", {
+    const res = await serverFetch.post("/v2/two-factor/register", {
       body: JSON.stringify(validatedPayload.data),
       headers: {
         "Content-Type": "application/json",
       },
     });
     const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message,
+      errors: [],
+      formData: payload,
+    };
+  }
+};
+
+export const send2faOtp = async (prevState: unknown, formData: FormData) => {
+  const schema = z.object({
+    email: z.email("Invalid email address").min(1, "email is required"),
+    id: z.string().nullable().optional(),
+    type: z
+      .enum(["PASSWORD_RESET", "TWO_FACTOR", "AUTH_VERIFICATION"])
+      .nullable()
+      .optional(),
+  });
+  const payload = {
+    email: formData.get("email"),
+    id: formData.get("id"),
+    type: formData.get("type"),
+  };
+  try {
+    const validatedPayload = zodValidator(payload, schema);
+    if (!validatedPayload.success) {
+      return {
+        success: false,
+        errors: validatedPayload.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+
+    const res = await serverFetch.post(
+      `/v2/two-factor/send-otp?doc_id=${validatedPayload?.data?.id}`,
+      {
+        body: JSON.stringify(validatedPayload.data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    const data = await res.json();
+    if (!data?.success) throw new Error(data?.message);
     return data;
   } catch (error: any) {
     return {

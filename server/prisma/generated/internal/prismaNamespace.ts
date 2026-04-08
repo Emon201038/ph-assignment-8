@@ -1602,6 +1602,7 @@ export type LoggedInDeviceScalarFieldEnum = (typeof LoggedInDeviceScalarFieldEnu
 export const TwoFactorAuthScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  email: 'email',
   method: 'method',
   secret: 'secret',
   isEnabled: 'isEnabled',
@@ -1652,6 +1653,7 @@ export const OTPScalarFieldEnum = {
   id: 'id',
   type: 'type',
   userId: 'userId',
+  email: 'email',
   otp: 'otp',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'

@@ -67,6 +67,13 @@ const TwoFactorModal = ({ children }: Props) => {
           </DialogHeader>
 
           <form action={action}>
+            <input type="hidden" name="id" value={state?.data?.id || ""} />
+            <input
+              type="hidden"
+              name="email"
+              value={state?.data?.email || ""}
+            />
+            <input type="hidden" name="type" value={state?.data?.type || ""} />
             <h1>Choose how to confirm that it's you</h1>
             <RadioGroup
               name="method"

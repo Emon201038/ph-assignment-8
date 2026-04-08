@@ -65,10 +65,4 @@ authRouter.post(
   AuthController.changePassword,
 );
 
-authRouter.post(
-  "/two-factor/register",
-  checkAuth(...Object.values(UserRole)),
-  AuthController.register2fa,
-);
-
 export default authRouter;
