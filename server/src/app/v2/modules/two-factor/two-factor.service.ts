@@ -21,7 +21,21 @@ const enable2FA = async (
       name: `TourBuddy (${email})`,
     });
 
-    const qrCode = await QRCode.toDataURL(secret.otpauth_url as string);
+    await prisma.twoFactorAuth.upsert({
+      where: { userId },
+      update: {
+        totpSecret: secret.base32,
+        method: TwoFactorMethod.TOTP,
+      },
+      create: {
+        userId,
+        email,
+        method: TwoFactorMethod.TOTP,
+        totpSecret: secret.base32,
+      },
+    });
+
+    const qrCode = await QRCode.toDataURL(secret.otpauth_url!);
 
     return {
       qrCode,
@@ -30,6 +44,46 @@ const enable2FA = async (
   }
 
   return null;
+};
+
+const verifyTotpOtp = async (userId: string, otp: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new AppError(404, "No user found");
+  }
+
+  const twoFactorAuth = await prisma.twoFactorAuth.findUnique({
+    where: { userId },
+    select: {
+      totpSecret: true,
+    },
+  });
+
+  if (!twoFactorAuth) {
+    throw new AppError(404, "Failed to verify OTP");
+  }
+
+  const verified = speakeasy.totp.verify({
+    secret: twoFactorAuth.totpSecret as string,
+    encoding: "base32",
+    token: otp,
+    window: 1,
+  });
+
+  if (!verified) {
+    throw new AppError(400, "Invalid OTP");
+  }
+
+  await prisma.twoFactorAuth.update({
+    where: { userId },
+    data: {
+      isEnabled: true,
+      method: TwoFactorMethod.TOTP,
+    },
+  });
 };
 
 const sendOtp = async (userId: string, email: string, docId: string | null) => {
@@ -119,7 +173,7 @@ const sendOtp = async (userId: string, email: string, docId: string | null) => {
   return otpDoc;
 };
 
-const verifyOtp = async (
+const verifyEmailOtp = async (
   userId: string,
   otp: string,
   docId: string,
@@ -186,7 +240,8 @@ const get2FA = async (userId: string) => {
 export const TwoFactorService = {
   enable2FA,
   sendOtp,
-  verifyOtp,
+  verifyEmailOtp,
+  verifyTotpOtp,
   disable2FA,
   get2FA,
 };

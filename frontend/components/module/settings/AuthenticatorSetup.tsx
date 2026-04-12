@@ -1,3 +1,4 @@
+import InputFieldError from "@/components/shared/InputFieldError";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,9 +9,10 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { verifyTotpOtp } from "@/services/auth/auth.service";
 import { ChevronLeftIcon } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 
 type Props = {
@@ -112,6 +114,20 @@ const EnterOtp = ({
   setOtpOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setRootOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const [state, verifyOtp, isPending] = useActionState(verifyTotpOtp, null);
+
+  useEffect(() => {
+    if (!state) return;
+    if (state?.success) {
+      toast.success("Two-factor authentication setup successful.");
+
+      setRootOpen(false);
+      setOtpOpen(false);
+    } else if (!state?.success && !state?.errors?.length) {
+      toast.error(state?.message || "Error verifying OTP. Please try again.");
+    }
+  }, [state]);
+
   return (
     <div>
       <Dialog open={otpOpen} onOpenChange={setOtpOpen}>
@@ -135,15 +151,20 @@ const EnterOtp = ({
             </DialogDescription>
           </DialogHeader>
           {/* Add OTP input field here */}
-          <Field>
-            <FieldLabel htmlFor="otp" className="w-full">
-              Verification Code
-            </FieldLabel>
-            <FieldContent>
-              <Input id="otp" />
-            </FieldContent>
-          </Field>
-          <Button>Verify</Button>
+          <form action={verifyOtp} className="space-y-2">
+            <Field>
+              <FieldLabel htmlFor="otp" className="w-full">
+                Verification Code
+              </FieldLabel>
+              <FieldContent>
+                <Input id="otp" name="otp" />
+              </FieldContent>
+              <InputFieldError state={state} field="otp" />
+            </Field>
+            <Button disabled={isPending} className="w-full">
+              {isPending ? "Verifying..." : "Verify"}
+            </Button>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

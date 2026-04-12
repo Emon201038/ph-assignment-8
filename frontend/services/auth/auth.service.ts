@@ -463,6 +463,47 @@ export const verifyOtp = async (prevState: unknown, formData: FormData) => {
   }
 };
 
+export const verifyTotpOtp = async (prevState: unknown, formData: FormData) => {
+  const schema = z.object({
+    otp: z.string("OTP is required").min(6, "OTP must be minimum 6 digit"),
+  });
+  const payload = {
+    otp: formData.get("otp"),
+  };
+  try {
+    const validatedPayload = zodValidator(payload, schema);
+    if (!validatedPayload.success) {
+      return {
+        success: false,
+        errors: validatedPayload.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+
+    const data = await serverFetch.post(`/v2/two-factor/verify-totp-otp`, {
+      body: JSON.stringify(validatedPayload.data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const res = await data.json();
+
+    if (!res?.success) {
+      throw new Error(res?.message);
+    }
+
+    return { ...res, formData: payload };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message,
+      errors: [],
+      formData: payload,
+    };
+  }
+};
+
 export const resend2fa = async (prevState: unknown, formData: FormData) => {};
 
 export const sendOtp = async (prevState: unknown, formData: FormData) => {

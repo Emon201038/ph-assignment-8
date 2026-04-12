@@ -31,14 +31,15 @@ model LoggedInDevice {
 }
 
 model TwoFactorAuth {
-  id        String          @id @default(uuid())
-  userId    String          @unique
-  email     String?
-  method    TwoFactorMethod @default(EMAIL)
-  secret    String?
-  isEnabled Boolean         @default(false)
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id         String          @id @default(uuid())
+  userId     String          @unique
+  email      String?
+  method     TwoFactorMethod @default(EMAIL)
+  secret     String?
+  totpSecret String?
+  isEnabled  Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

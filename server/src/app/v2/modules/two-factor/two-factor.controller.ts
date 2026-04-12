@@ -13,7 +13,7 @@ const register2fa = catchAsync(async (req, res, next) => {
     message: "2FA registered successfully",
     success: true,
     data: await TwoFactorService.enable2FA(
-      user.id,
+      user.userId,
       user.email,
       req.body.method,
     ),
@@ -38,7 +38,7 @@ const sendOtp = catchAsync(async (req, res, next) => {
   });
 });
 
-const verifyOtp = catchAsync(async (req, res, next) => {
+const verifyEmailOtp = catchAsync(async (req, res, next) => {
   const user = req.user;
   if (!user) {
     throw new AppError(404, "No user found");
@@ -47,11 +47,28 @@ const verifyOtp = catchAsync(async (req, res, next) => {
     statusCode: 200,
     message: "Otp verified successfully",
     success: true,
-    data: await TwoFactorService.verifyOtp(
+    data: await TwoFactorService.verifyEmailOtp(
       user.userId,
       req.body.otp,
       req.body.id,
     ),
+  });
+});
+const verifyTotpOtp = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  if (!user) {
+    throw new AppError(404, "No user found");
+  }
+  const otp = req.body.otp;
+  if (!otp) {
+    throw new AppError(400, "Otp is required");
+  }
+
+  sendResponse(res, {
+    statusCode: 200,
+    message: "Otp verified successfully",
+    success: true,
+    data: await TwoFactorService.verifyTotpOtp(user.userId, req.body.otp),
   });
 });
 
@@ -84,7 +101,8 @@ const get2fa = catchAsync(async (req, res, next) => {
 export const TwoFactorController = {
   register2fa,
   sendOtp,
-  verifyOtp,
+  verifyEmailOtp,
+  verifyTotpOtp,
   disable2fa,
   get2fa,
 };

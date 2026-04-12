@@ -18,7 +18,12 @@ twoFactorRoutes.post(
 twoFactorRoutes.post(
   "/verify-otp",
   checkAuth(...Object.values(UserRole)),
-  TwoFactorController.verifyOtp,
+  TwoFactorController.verifyEmailOtp,
+);
+twoFactorRoutes.post(
+  "/verify-totp-otp",
+  checkAuth(...Object.values(UserRole)),
+  TwoFactorController.verifyTotpOtp,
 );
 twoFactorRoutes.post(
   "/disable",

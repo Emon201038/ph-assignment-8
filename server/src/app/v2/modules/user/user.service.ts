@@ -144,12 +144,9 @@ const getSingleUserFromDB = async (id: string) => {
 };
 
 const createUserInDB = async (payload: any) => {
-  console.log(payload);
-  // throw new AppError(400, "Email already in use");
   const { name, email, password, role, country, city, avatar, bio, phone } =
     payload;
 
-  // Check if user already exists
   const existingUser = await prisma.user.findUnique({
     where: { email },
   });
@@ -158,7 +155,6 @@ const createUserInDB = async (payload: any) => {
     throw new AppError(400, "Email already in use");
   }
 
-  // Base user data
   const userData: any = {
     name,
     email,

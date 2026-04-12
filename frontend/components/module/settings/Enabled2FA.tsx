@@ -125,6 +125,34 @@ const Enabled2FA = (props: Props) => {
             We'll now ask for a login code whenever you log in on a device that
             we don't recognise.
           </DialogDescription>
+
+          <div>
+            <h1>Authentication app</h1>
+            <div className="border rounded-md p-3 hover:bg-primary/3 flex justify-between items-center">
+              <Label
+                htmlFor="authenticator-otp"
+                className="cursor-pointer flex-col justify-start items-start gap-1 flex-1"
+              >
+                <h1 className="font-medium">Authentication App</h1>
+                <p className="text-sm opacity-60">
+                  You&apos;ll get a code from your authentication app.
+                </p>
+              </Label>
+              <Switch
+                checked={enabled}
+                id="authenticator-otp"
+                onCheckedChange={(checked) => {
+                  if (!checked) setOpenAlertDialog(true);
+                }}
+              />
+              <AlertDialogComponent
+                openAlertDialog={openAlertDialog}
+                setOpenAlertDialog={setOpenAlertDialog}
+                setEnabled={setEnabled}
+                setTwoFactorData={props.setTwoFactorData}
+              />
+            </div>
+          </div>
         </DialogHeader>
       </DialogContent>
     );

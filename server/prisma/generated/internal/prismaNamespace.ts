@@ -1605,6 +1605,7 @@ export const TwoFactorAuthScalarFieldEnum = {
   email: 'email',
   method: 'method',
   secret: 'secret',
+  totpSecret: 'totpSecret',
   isEnabled: 'isEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
