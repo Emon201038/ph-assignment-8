@@ -552,6 +552,14 @@ const verify2FA = async (payload: VerifyOtpSchema, res: Response) => {
   });
 };
 
+const savedDevices = async (userId: string) => {
+  const devices = await prisma.loggedInDevice.findMany({
+    where: { userId },
+  });
+
+  return devices.filter((d) => d.os);
+};
+
 export const AuthService = {
   login,
   loginWithProvider,
@@ -561,4 +569,5 @@ export const AuthService = {
   resetPassword,
   changePassword,
   verify2FA,
+  savedDevices,
 };

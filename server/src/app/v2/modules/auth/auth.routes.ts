@@ -65,4 +65,10 @@ authRouter.post(
   AuthController.changePassword,
 );
 
+authRouter.get(
+  "/devices",
+  checkAuth(UserRole.TRAVELER, UserRole.GUIDE, UserRole.ADMIN),
+  AuthController.getSavedDevices,
+);
+
 export default authRouter;

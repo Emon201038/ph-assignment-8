@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { User, Mail, Lock, Eye, EyeOff, Phone, FileText } from "lucide-react";
 import { toast } from "sonner";
+import { v4 as uuid } from "uuid";
 import InputFieldError from "@/components/shared/InputFieldError";
 import { IInputErrorState } from "@/lib/getInputFieldError";
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ export default function SignupForm({ tourist }: { tourist?: IUser<ITourist> }) {
     const storedDeviceId = localStorage.getItem("device_id");
 
     if (!storedDeviceId) {
-      const newDeviceId = crypto.randomUUID();
+      const newDeviceId = uuid();
       localStorage.setItem("device_id", newDeviceId);
       setDeviceId(newDeviceId);
     } else {

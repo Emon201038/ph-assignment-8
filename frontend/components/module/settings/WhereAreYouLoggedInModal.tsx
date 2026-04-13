@@ -11,39 +11,51 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import React from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { serverFetch } from "@/lib/server-fetch";
+import React, { useEffect } from "react";
+import { toast } from "sonner";
 
 type Props = {
   children: React.ReactNode;
 };
 
-const sessions = [
-  {
-    id: "current",
-    device: "Windows - Chrome",
-    location: "Dhaka, Bangladesh",
-    lastActive: "Active now",
-    current: true,
-  },
-  {
-    id: "mobile",
-    device: "Android - Chrome",
-    location: "Dhaka, Bangladesh",
-    lastActive: "2 hours ago",
-    current: false,
-  },
-  {
-    id: "tablet",
-    device: "iPad - Safari",
-    location: "Chattogram, Bangladesh",
-    lastActive: "Yesterday",
-    current: false,
-  },
-];
+interface DeviceSession {
+  id: string;
+  deviceId: string;
+  os: string;
+  browserName: string;
+  updatedAt: string;
+}
 
 const WhereAreYouLoggedInModal = ({ children }: Props) => {
+  const [open, setOpen] = React.useState(false);
+  const [devices, setDevices] = React.useState<DeviceSession[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await serverFetch.get("/v2/auth/devices");
+        const data = await res.json();
+        if (data?.success) {
+          setDevices(data.data);
+        }
+      } catch (error) {
+        toast.error("Failed to fetch device sessions");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (open) {
+      fetchData();
+    }
+  }, [open]);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -55,27 +67,46 @@ const WhereAreYouLoggedInModal = ({ children }: Props) => {
         </DialogHeader>
 
         <div className="space-y-3 py-2">
-          {sessions.map((session) => (
-            <div
-              key={session.id}
-              className="flex items-start justify-between gap-3 rounded-lg border p-3"
-            >
-              <div>
-                <p className="font-medium text-sm">{session.device}</p>
-                <p className="text-muted-foreground text-sm">
-                  {session.location} • {session.lastActive}
-                </p>
-              </div>
+          {isLoading ? (
+            <>
+              <Skeleton className="w-full h-16.5" />
+              <Skeleton className="w-full h-16.5" />
+              <Skeleton className="w-full h-16.5" />
+            </>
+          ) : null}
+          {!isLoading && !devices.length && (
+            <p className="text-muted-foreground text-sm">
+              No device sessions found
+            </p>
+          )}
+          {!isLoading &&
+            devices.length &&
+            devices.map((session) => (
+              <div
+                key={session.id}
+                className="flex items-start justify-between gap-3 rounded-lg border p-3"
+              >
+                <div>
+                  <p className="font-medium text-sm">
+                    {session.os} - {session.browserName}
+                  </p>
+                  <p className="text-muted-foreground text-sm">
+                    {new Date(session.updatedAt).toLocaleString("en-US", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}
+                  </p>
+                </div>
 
-              {session.current ? (
-                <Badge variant="secondary">Current device</Badge>
-              ) : (
-                <Button variant="outline" size="sm">
-                  Sign out
-                </Button>
-              )}
-            </div>
-          ))}
+                {session.deviceId === localStorage.getItem("device_id") ? (
+                  <Badge variant="secondary">Current device</Badge>
+                ) : (
+                  <Button variant="outline" size="sm">
+                    Sign out
+                  </Button>
+                )}
+              </div>
+            ))}
 
           <div className="flex justify-end gap-2 pt-1">
             <DialogClose asChild>

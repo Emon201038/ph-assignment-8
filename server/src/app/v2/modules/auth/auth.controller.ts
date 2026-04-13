@@ -1,4 +1,5 @@
 import { AuthProvider } from "../../../../../prisma/generated/enums";
+import AppError from "../../../helpers/appError";
 import { catchAsync } from "../../../utils/catchAsync";
 import { sendResponse } from "../../../utils/sendResponse";
 import { AuthService } from "./auth.service";
@@ -129,6 +130,19 @@ const verify2FA = catchAsync(async (req, res, next) => {
   });
 });
 
+const getSavedDevices = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  if (!user) {
+    throw new AppError(403, "You are not logged in");
+  }
+  sendResponse(res, {
+    statusCode: 200,
+    message: "Devices retrieved successfully",
+    success: true,
+    data: await AuthService.savedDevices(req.user.userId),
+  });
+});
+
 export const AuthController = {
   login,
   loginWithGoogle,
@@ -139,4 +153,5 @@ export const AuthController = {
   resetPassword,
   changePassword,
   verify2FA,
+  getSavedDevices,
 };

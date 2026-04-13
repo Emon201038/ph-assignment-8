@@ -7,7 +7,9 @@ export const getDeviceInfo = () => {
   const deviceName =
     result.device.vendor && result.device.model
       ? `${result.device.vendor} ${result.device.model}`
-      : result.os.name + " Desktop";
+      : result.device.type === "mobile"
+        ? `${result.os.name} Mobile`
+        : `${result.os.name} Desktop`;
 
   return {
     deviceName,

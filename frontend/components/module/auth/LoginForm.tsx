@@ -4,6 +4,7 @@ import { useState, useActionState, useEffect, use } from "react";
 import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import { v4 as uuid } from "uuid";
 import InputFieldError from "@/components/shared/InputFieldError";
 import { IInputErrorState } from "@/lib/getInputFieldError";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { login } from "@/services/auth/auth.service";
 import { getDeviceInfo } from "@/lib/getDeviceInfo";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export default function LoginForm({ redirect }: { redirect?: string }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +35,7 @@ export default function LoginForm({ redirect }: { redirect?: string }) {
   useEffect(() => {
     const storedDeviceId = localStorage.getItem("device_id");
     if (!storedDeviceId) {
-      const newDeviceId = crypto.randomUUID();
+      const newDeviceId = uuid();
       localStorage.setItem("device_id", newDeviceId);
       setDeviceId(newDeviceId);
     } else {
