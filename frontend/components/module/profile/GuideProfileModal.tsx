@@ -27,8 +27,8 @@ import { IGuide } from "@/interfaces/guide.interface";
 import { Gender, IUser, UserRole } from "@/interfaces/user.interface";
 import { IInputErrorState } from "@/lib/getInputFieldError";
 import {
+  editGuide,
   editTourist,
-  editUser,
   guideSchema,
 } from "@/services/tourist/tourist.service";
 import {
@@ -81,8 +81,8 @@ const GuideProfileModal = ({ user, children, isEdit = true }: Props) => {
   );
   const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
   const fileRef = React.useRef<HTMLInputElement>(null);
-  const [state, updateProfile, isPending] = useActionState<EditGuideState>(
-    editTourist.bind(null, user.id),
+  const [state, updateProfile, isPending] = useActionState(
+    editGuide.bind(null, user.id),
     null,
   );
   const router = useRouter();

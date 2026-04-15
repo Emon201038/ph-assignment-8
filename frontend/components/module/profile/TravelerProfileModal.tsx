@@ -30,7 +30,6 @@ import InputFieldError from "@/components/shared/InputFieldError";
 import { IInputErrorState } from "@/lib/getInputFieldError";
 import {
   editTourist,
-  editUser,
   travelerSchema,
 } from "@/services/tourist/tourist.service";
 import { Gender, ITourist, IUser, UserRole } from "@/interfaces/user.interface";
