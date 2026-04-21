@@ -179,7 +179,7 @@ export const deleteTourist = async (
   }
 };
 
-export const travelerSchema = z.object({
+const travelerSchema = z.object({
   name: z.string("name is required").min(2, "name is required"),
   interests: z.array(z.string("interests is required")),
   gender: z.enum(Object.values(Gender), "Invalide gender").default(Gender.MALE),

@@ -1,5 +1,5 @@
 import z from "zod";
-import { TwoFactorMethod } from "../../../../generated/enums";
+import { TwoFactorMethod } from "../../../../../prisma/generated/enums";
 
 export const loginSchema = z.object({
   email: z.string().email("Email is required"),

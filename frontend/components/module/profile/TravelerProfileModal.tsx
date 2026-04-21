@@ -28,10 +28,7 @@ import { MultiSelect } from "@/components/ui/multi-select";
 import { TOURIST_PREFERENCES } from "@/constants/user";
 import InputFieldError from "@/components/shared/InputFieldError";
 import { IInputErrorState } from "@/lib/getInputFieldError";
-import {
-  editTourist,
-  travelerSchema,
-} from "@/services/tourist/tourist.service";
+import { editTourist } from "@/services/tourist/tourist.service";
 import { Gender, ITourist, IUser, UserRole } from "@/interfaces/user.interface";
 import Image from "next/image";
 import {
@@ -70,7 +67,7 @@ const TravelerProfileModal = ({
   const fileRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
   const [state, updateProfile, isPending] = useActionState(
-    (editTourist<z.infer<typeof travelerSchema>>).bind(null, user.id),
+    editTourist.bind(null, user.id),
     null,
   );
   const router = useRouter();

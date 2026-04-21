@@ -14,7 +14,7 @@ export const getGuides = async (queryString?: string) => {
   return data;
 };
 
-export const guideSchema = z.object({
+const guideSchema = z.object({
   name: z.string("name is required").min(2, "name is required"),
   specilities: z.array(z.string("specilities is required")),
   gender: z.enum(Object.values(Gender), "Invalide gender").default(Gender.MALE),

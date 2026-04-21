@@ -25,6 +25,9 @@ type Props = {
   children: React.ReactNode;
 };
 
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
 const TwoFactorModal = ({ children }: Props) => {
   const [open, setOpen] = React.useState(false);
   const [openAuthenticator, setOpenAuthenticator] = React.useState(false);
@@ -46,13 +49,14 @@ const TwoFactorModal = ({ children }: Props) => {
     const fetchTwoFactorData = async () => {
       setIsLoading(true);
       try {
-        const data = await serverFetch.get("/v2/two-factor/get", {
+        const data = await fetch(`${BACKEND_API_URL}/api/v2/two-factor/get`, {
           next: {
             tags: ["two-factor-data"],
           },
+          credentials: "include",
         });
         const res = await data.json();
-        console.log(res);
+        console.log(res, "response from server");
         setTwoFactorData(res?.data);
       } catch (error) {
         toast.error("Failed to fetch two-factor data");

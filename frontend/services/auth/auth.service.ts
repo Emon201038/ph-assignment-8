@@ -3,17 +3,12 @@ import { parse } from "cookie";
 import { deleteCookie, getCookie, setCookie } from "@/lib/cookies";
 import { verifyToken } from "@/lib/jwtHandlers";
 import { serverFetch } from "@/lib/server-fetch";
-import {
-  getDefaultDashboardRoute,
-  isValidRedirectForRole,
-} from "@/lib/auth-utils";
+import { isValidRedirectForRole } from "@/lib/auth-utils";
 import { redirect } from "next/navigation";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { zodValidator } from "@/lib/zod-validator";
 import z from "zod";
 import cookie from "cookie";
-import { de, is } from "date-fns/locale";
-import { TwoFactorMethod } from "@/interfaces";
 
 export const getNewAccessToken = async () => {
   try {
@@ -127,19 +122,6 @@ export const getNewAccessToken = async () => {
   }
 };
 
-const loginSchema = z.object({
-  email: z.email("Invalid email address"),
-  password: z
-    .string("password is required")
-    .min(6, "password must be minimum 6 digit"),
-  deviceId: z.string("deviceId is required").min(1, "deviceId is required"),
-  rememberMe: z.boolean().default(false),
-  deviceName: z.string().nullable().optional(),
-  browserName: z.string().nullable().optional(),
-  os: z.string().nullable().optional(),
-  deviceType: z.string().nullable().optional(),
-});
-
 export const login = async (prevState: unknown, formData: FormData) => {
   const payload = {
     email: formData.get("email"),
@@ -152,6 +134,18 @@ export const login = async (prevState: unknown, formData: FormData) => {
     deviceType: formData.get("deviceType"),
   };
 
+  const loginSchema = z.object({
+    email: z.email("Invalid email address"),
+    password: z
+      .string("password is required")
+      .min(6, "password must be minimum 6 digit"),
+    deviceId: z.string("deviceId is required").min(1, "deviceId is required"),
+    rememberMe: z.boolean().default(false),
+    deviceName: z.string().nullable().optional(),
+    browserName: z.string().nullable().optional(),
+    os: z.string().nullable().optional(),
+    deviceType: z.string().nullable().optional(),
+  });
   try {
     const redirectTo = formData.get("redirect") || null;
     const validatedPayload = zodValidator(payload, loginSchema);
@@ -262,7 +256,7 @@ export const verify2FA = async (prevState: unknown, formData: FormData) => {
   const schema = z.object({
     deviceId: z.string("deviceId is required").min(1, "deviceId is required"),
     id: z.string("id is required").nullable().optional(),
-    method: z.enum(TwoFactorMethod, "Method is required"),
+    method: z.enum(["EMAIL", "TOTP", "PASS_KEY"], "Invalid method"),
     userId: z.string("userId is required").min(1, "userId is required"),
     otp: z.string("OTP is required").min(6, "OTP must be minimum 6 digit"),
     rememberMe: z.boolean().default(false),
@@ -297,7 +291,7 @@ export const verify2FA = async (prevState: unknown, formData: FormData) => {
     }
 
     if (
-      validatedPayload.data?.method === TwoFactorMethod.EMAIL &&
+      validatedPayload.data?.method === "EMAIL" &&
       !validatedPayload.data?.id
     ) {
       throw new Error("id is required");
