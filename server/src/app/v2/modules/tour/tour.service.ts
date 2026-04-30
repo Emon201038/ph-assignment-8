@@ -36,6 +36,12 @@ const getAllTourFromDB = async (options: any, filters: any) => {
                 },
               },
               {
+                id: {
+                  contains: searchTerm,
+                  mode: "insensitive",
+                },
+              },
+              {
                 city: {
                   contains: searchTerm,
                   mode: "insensitive",

@@ -242,6 +242,54 @@ const interests = [
   "nightlife",
 ];
 
+const updateTripDate = async () => {
+  const now = new Date();
+
+  const next30Days = new Date();
+  next30Days.setDate(now.getDate() + 30);
+  const result = await prisma.trip.findMany({
+    where: {
+      startDate: {
+        lte: next30Days,
+      },
+    },
+    skip: 0,
+    take: 40,
+    include: {
+      tour: {
+        select: {
+          id: true,
+          durationDays: true,
+        },
+      },
+    },
+  });
+
+  let updatedTrip = [];
+  for (let index = 0; index < result.length; index++) {
+    const element = result[index];
+    const newStartDate = new Date(element.startDate);
+    newStartDate.setDate(newStartDate.getDate() + 30);
+
+    const newEndDate = new Date(newStartDate);
+    newEndDate.setDate(newEndDate.getDate() + element.tour.durationDays);
+
+    const data = await prisma.trip.update({
+      where: {
+        id: element.id,
+      },
+      data: {
+        endDate: newEndDate,
+        startDate: newStartDate,
+      },
+    });
+
+    updatedTrip.push(data);
+  }
+
+  return updatedTrip;
+};
+
 async function main() {
   // ========== OLD SEEDING CODE (COMMENTED OUT) ==========
   // Uncomment the sections below to re-seed the database with initial data

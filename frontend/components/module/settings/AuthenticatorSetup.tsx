@@ -12,7 +12,8 @@ import { Input } from "@/components/ui/input";
 import { verifyTotpOtp } from "@/services/auth/auth.service";
 import { ChevronLeftIcon } from "lucide-react";
 import Image from "next/image";
-import React, { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import React, { useActionState, useEffect, useTransition } from "react";
 import { toast } from "sonner";
 
 type Props = {
@@ -115,6 +116,8 @@ const EnterOtp = ({
   setRootOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [state, verifyOtp, isPending] = useActionState(verifyTotpOtp, null);
+  const [isTransectionPending, transection] = useTransition();
+  const router = useRouter();
 
   useEffect(() => {
     if (!state) return;
@@ -123,6 +126,9 @@ const EnterOtp = ({
 
       setRootOpen(false);
       setOtpOpen(false);
+      transection(() => {
+        router.refresh();
+      });
     } else if (!state?.success && !state?.errors?.length) {
       toast.error(state?.message || "Error verifying OTP. Please try again.");
     }

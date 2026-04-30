@@ -1,31 +1,6 @@
-import {
-  Building2,
-  Calendar,
-  Camera,
-  ChevronRight,
-  Church,
-  Grip,
-  Heart,
-  Mail,
-  MapPin,
-  Medal,
-  MountainSnow,
-  Search,
-  Share2,
-  Star,
-  Trees,
-  Umbrella,
-} from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { serverFetch } from "@/lib/server-fetch";
 import DestinationCard from "@/components/module/destination/DestinationCard";
 import { IDestination } from "@/interfaces/destination.interface";
-import DestinationSearch from "@/components/module/destination/DestinationSearch";
-import { headers } from "next/headers";
 
 export default async function Destinations({
   searchParams,
@@ -55,7 +30,6 @@ export default async function Destinations({
           No Destination Found!!!
         </div>
       )}
-      {/* More Destinations Grid */}
     </>
   );
 }
