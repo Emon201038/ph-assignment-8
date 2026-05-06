@@ -18,15 +18,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useDebounce } from "@/hooks/useDebounce";
-import { getSingleTour, getTours } from "@/action/tour";
 import { ITour } from "@/interfaces/tour.interface";
 import Image from "next/image";
 import { serverFetch } from "@/lib/server-fetch";
-
-export interface Tour {
-  id: string;
-  title: string;
-}
 
 interface TourSearchSelectProps {
   value?: string;
@@ -49,55 +43,80 @@ export function TourSearchSelect({
 }: TourSearchSelectProps) {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [tours, setTours] = React.useState<ITour[]>([]);
+  const [options, setOptions] = React.useState<ITour[]>([]);
+  const [selected, setSelected] = React.useState<ITour | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
-  const inputRef = React.useRef<HTMLInputElement>(null);
 
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
+  // ✅ Fetch selected tour (only if not already loaded)
   React.useEffect(() => {
-    const fetchTour = async () => {
-      const res = await serverFetch.get(`/v2/tours/${value}`);
-      const data = await res.json();
-      if (!data?.success) {
-        setTours([]);
+    const fetchSelected = async () => {
+      if (!value) {
+        setSelected(null);
         return;
       }
-      setTours([data.data]); // Adjust based on your API response structure
+
+      if (selected?.id === value) return;
+
+      try {
+        const res = await serverFetch.get(`/v2/tours/${value}`);
+        const data = await res.json();
+
+        if (data?.success) {
+          setSelected(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching selected tour:", error);
+      }
     };
-    if (value && !tours.some((tour) => tour.id === value)) {
-      fetchTour();
-    }
+
+    fetchSelected();
   }, [value]);
 
-  // Fetch tours based on search query
+  // ✅ Fetch tours list (search + initial load)
   React.useEffect(() => {
-    const fetchTours = async () => {
-      if (!open) return;
+    if (!open) return;
 
+    const fetchTours = async () => {
       setIsLoading(true);
+
       try {
-        const res = await serverFetch.get(
-          `/v2/tours?searchTerm=${debouncedSearchQuery}`,
-        );
+        const query = debouncedSearchQuery
+          ? `?searchTerm=${debouncedSearchQuery}`
+          : "?limit=10";
+
+        const res = await serverFetch.get(`/v2/tours${query}`);
         const data = await res.json();
+
         if (!data?.success) {
-          setTours([]);
+          setOptions([]);
           return;
         }
-        setTours(data.data as ITour[]); // Adjust based on your API response structure
+
+        const newTours = data.data as ITour[];
+
+        setOptions((prev) => {
+          // keep selected in list if missing
+          if (selected && !newTours.some((t) => t.id === selected.id)) {
+            return [selected, ...newTours];
+          }
+
+          return newTours;
+        });
       } catch (error) {
         console.error("Error fetching tours:", error);
-        setTours([]);
+        setOptions([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchTours();
-  }, [debouncedSearchQuery, open]);
+  }, [debouncedSearchQuery, open, selected]);
 
-  // Load initial tours when popover opens
+  // ✅ Handle open/close behavior
   React.useEffect(() => {
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 0);
@@ -106,8 +125,6 @@ export function TourSearchSelect({
     }
   }, [open]);
 
-  const selectedTour = tours.find((tour) => tour.id === value);
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild id={id}>
@@ -115,15 +132,17 @@ export function TourSearchSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          aria-label="Select tour"
           className={cn("w-full justify-between", className)}
           disabled={disabled}
         >
           <span className="truncate">
-            {selectedTour ? selectedTour.title : placeholder}
+            {selected ? selected.title : placeholder}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
+
       <PopoverContent
         className="w-[--radix-popover-trigger-width] p-0"
         align="start"
@@ -141,12 +160,13 @@ export function TourSearchSelect({
             value={searchQuery}
             onValueChange={setSearchQuery}
           />
+
           <CommandList className="max-h-75 overflow-y-auto">
             {isLoading ? (
               <div className="flex items-center justify-center py-6">
                 <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
               </div>
-            ) : tours.length === 0 ? (
+            ) : options.length === 0 ? (
               <CommandEmpty>
                 {searchQuery
                   ? "No tours found."
@@ -154,31 +174,39 @@ export function TourSearchSelect({
               </CommandEmpty>
             ) : (
               <CommandGroup>
-                {tours.map((tour) => (
+                {options.map((tour) => (
                   <CommandItem
                     key={tour.id}
                     value={tour.id}
                     onSelect={(currentValue) => {
+                      const selectedTour = options.find(
+                        (t) => t.id === currentValue,
+                      );
+
+                      setSelected(selectedTour || null);
                       onValueChange?.(
                         currentValue === value ? "" : currentValue,
                       );
                       setOpen(false);
                     }}
-                    className="cursor-pointer justify-start"
+                    className="cursor-pointer flex items-center gap-2"
                   >
                     <Check
                       className={cn(
-                        "mr-2 h-4 w-4",
+                        "h-4 w-4",
                         value === tour.id ? "opacity-100" : "opacity-0",
                       )}
                     />
+
                     <Image
-                      src={tour.image}
+                      src={tour.image || "/placeholder.png"}
                       alt={tour.title}
                       width={32}
                       height={32}
+                      className="rounded object-cover"
                     />
-                    {tour.title}
+
+                    <span className="truncate">{tour.title}</span>
                   </CommandItem>
                 ))}
               </CommandGroup>
