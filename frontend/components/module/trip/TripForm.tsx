@@ -83,6 +83,7 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
         <FieldLabel htmlFor="guideId">Assign Guide</FieldLabel>
         <FieldContent>
           <GuideSearchSelect
+            selectedTourId={trip?.tour?.id || selectedTourId}
             value={trip?.guide?.id || selectedGuideId}
             onValueChange={setSelectedGuideId}
             id="guideId"

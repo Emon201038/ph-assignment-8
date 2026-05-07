@@ -50,7 +50,6 @@ export function TourSearchSelect({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
-  // ✅ Fetch selected tour (only if not already loaded)
   React.useEffect(() => {
     const fetchSelected = async () => {
       if (!value) {
@@ -75,7 +74,6 @@ export function TourSearchSelect({
     fetchSelected();
   }, [value]);
 
-  // ✅ Fetch tours list (search + initial load)
   React.useEffect(() => {
     if (!open) return;
 
@@ -116,7 +114,6 @@ export function TourSearchSelect({
     fetchTours();
   }, [debouncedSearchQuery, open, selected]);
 
-  // ✅ Handle open/close behavior
   React.useEffect(() => {
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 0);

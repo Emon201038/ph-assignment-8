@@ -1,13 +1,21 @@
-import { ManagementPageLoading } from "@/components/shared/ManagementPageLoader";
+"use client";
+import { AssignGuides } from "@/components/module/tour/AssignGuide";
+import { useState } from "react";
 
 const TouristsManagementLoading = () => {
+  const [selectedGuides, setSelectedGuides] = useState<string[]>([]);
   return (
-    <ManagementPageLoading
-      columns={10}
-      hasActionButton
-      filterCount={5}
-      filterWidths={["w-48", "w-32", "w-40", "w-24", "w-36"]}
-    />
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        console.log(formData.getAll("guides"));
+        console.log(selectedGuides);
+      }}
+    >
+      <AssignGuides />
+      <button>Submit</button>
+    </form>
   );
 };
 

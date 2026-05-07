@@ -78,6 +78,11 @@ export type Review = Prisma.ReviewModel
  */
 export type Tour = Prisma.TourModel
 /**
+ * Model Tour_Guide
+ * 
+ */
+export type Tour_Guide = Prisma.Tour_GuideModel
+/**
  * Model TourItinerary
  * 
  */
@@ -112,3 +117,8 @@ export type GuideProfile = Prisma.GuideProfileModel
  * 
  */
 export type TravelerProfile = Prisma.TravelerProfileModel
+/**
+ * Model AdminProfile
+ * 
+ */
+export type AdminProfile = Prisma.AdminProfileModel

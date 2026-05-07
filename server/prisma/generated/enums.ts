@@ -92,3 +92,15 @@ export const Gender = {
 } as const
 
 export type Gender = (typeof Gender)[keyof typeof Gender]
+
+
+export const AdminPermission = {
+  MANAGE_USERS: 'MANAGE_USERS',
+  MANAGE_TOURS: 'MANAGE_TOURS',
+  MANAGE_BOOKINGS: 'MANAGE_BOOKINGS',
+  VIEW_ANALYTICS: 'VIEW_ANALYTICS',
+  MANAGE_PAYMENTS: 'MANAGE_PAYMENTS',
+  SUPER_ADMIN_ACCESS: 'SUPER_ADMIN_ACCESS'
+} as const
+
+export type AdminPermission = (typeof AdminPermission)[keyof typeof AdminPermission]

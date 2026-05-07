@@ -59,13 +59,15 @@ export const ModelName = {
   OTP: 'OTP',
   Review: 'Review',
   Tour: 'Tour',
+  Tour_Guide: 'Tour_Guide',
   TourItinerary: 'TourItinerary',
   TripInclude: 'TripInclude',
   TripIncludeItem: 'TripIncludeItem',
   Trip: 'Trip',
   User: 'User',
   GuideProfile: 'GuideProfile',
-  TravelerProfile: 'TravelerProfile'
+  TravelerProfile: 'TravelerProfile',
+  AdminProfile: 'AdminProfile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -218,6 +220,14 @@ export const TourScalarFieldEnum = {
 export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
 
 
+export const Tour_GuideScalarFieldEnum = {
+  tourId: 'tourId',
+  guideId: 'guideId'
+} as const
+
+export type Tour_GuideScalarFieldEnum = (typeof Tour_GuideScalarFieldEnum)[keyof typeof Tour_GuideScalarFieldEnum]
+
+
 export const TourItineraryScalarFieldEnum = {
   id: 'id',
   tourId: 'tourId',
@@ -334,6 +344,21 @@ export const TravelerProfileScalarFieldEnum = {
 } as const
 
 export type TravelerProfileScalarFieldEnum = (typeof TravelerProfileScalarFieldEnum)[keyof typeof TravelerProfileScalarFieldEnum]
+
+
+export const AdminProfileScalarFieldEnum = {
+  id: 'id',
+  permissions: 'permissions',
+  isSuperAdmin: 'isSuperAdmin',
+  gender: 'gender',
+  bloodGroup: 'bloodGroup',
+  emergencyContactPhone: 'emergencyContactPhone',
+  emergencyContactRelation: 'emergencyContactRelation',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminProfileScalarFieldEnum = (typeof AdminProfileScalarFieldEnum)[keyof typeof AdminProfileScalarFieldEnum]
 
 
 export const SortOrder = {

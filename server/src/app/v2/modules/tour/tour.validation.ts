@@ -40,4 +40,14 @@ export const createTourSchema = z.object({
   featured: z.boolean().default(false),
 });
 
+export const toggleTourGuideSchema = z.object({
+  guideId: z
+    .string({
+      error: "Guide ID is required",
+    })
+    .min(1, "Guide ID is required"),
+});
+
 export type CreateTourInput = z.infer<typeof createTourSchema>;
+
+export type ToggleTourGuideInput = z.infer<typeof toggleTourGuideSchema>;

@@ -45,9 +45,12 @@ import { InputNumber } from "../dashboard/tour/NumberInput";
 import { TOUR_DIFFICULTY } from "@/constants/tours";
 import { useRouter } from "next/navigation";
 import useBeforeUnload from "@/hooks/useBeforeUnload";
+import { AssignGuides } from "./AssignGuide";
+import { IUser } from "@/interfaces/user.interface";
 
 interface TourFormProps {
   tourData?: ITour;
+  guides?: IUser[];
   onSuccess?: () => void;
   onClose?: () => void;
 }
@@ -58,7 +61,12 @@ interface Destination {
   id: string;
 }
 
-const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
+const TourForm = ({
+  tourData,
+  guides = [],
+  onSuccess,
+  onClose,
+}: TourFormProps) => {
   useBeforeUnload(true);
   const isEdit = !!tourData;
   const [category, setCategory] = useState(
@@ -70,9 +78,11 @@ const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
   );
   const [selectedDestination, setSelectedDestination] =
     useState<Destination | null>(null);
+  useState<Destination | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
+  const [selectedGuides, setSelectedGuides] = useState<IUser[]>([]);
 
   const action = !isEdit ? createTour : updateTour;
   const [state, formAction, isPending] = useActionState(action, null);
@@ -379,6 +389,10 @@ const TourForm = ({ tourData, onSuccess, onClose }: TourFormProps) => {
         {/* Additional Settings */}
         <div className="space-y-3 pt-4 border-t">
           <h3 className="font-semibold text-base">Additional Settings</h3>
+          <AssignGuides
+            values={selectedGuides}
+            onValueChange={setSelectedGuides}
+          />
           <FieldGroup className="space-y-2 gap-0">
             {[
               { label: "Published tour", field: "isPublished" },

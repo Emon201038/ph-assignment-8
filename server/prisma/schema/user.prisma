@@ -31,6 +31,7 @@ model User {
   travelerProfile TravelerProfile?
   guideProfile    GuideProfile?
   adminProfile    AdminProfile?
+  tourGuides      Tour_Guide[]
 }
 
 enum AuthProvider {

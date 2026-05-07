@@ -3,6 +3,7 @@ import { pick } from "../../../helpers/pick";
 import { catchAsync } from "../../../utils/catchAsync";
 import { sendResponse } from "../../../utils/sendResponse";
 import { TourService } from "./tour.service";
+import { ToggleTourGuideInput } from "./tour.validation";
 
 const getAllTours = catchAsync(async (req, res, next) => {
   const options = pick(req.query, paginationHelper.paginationFields);
@@ -78,10 +79,38 @@ const updateTour = catchAsync(async (req, res, next) => {
   });
 });
 
+const getGuides = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    message: "Guides fetched successfully",
+    statusCode: 200,
+    success: true,
+    data: await TourService.getTourGuides(
+      req.params.id as string,
+      req.query?.searchTerm as string,
+    ),
+  });
+});
+
+const toggleTourGuide = catchAsync(async (req, res, next) => {
+  const { guideId } = req.body as ToggleTourGuideInput;
+  const { message, data } = await TourService.toggleTourGuide(
+    req.params.id,
+    guideId,
+  );
+  sendResponse(res, {
+    message,
+    statusCode: 200,
+    success: true,
+    data,
+  });
+});
+
 export const TourController = {
   getAllTours,
   getSingleTour,
   createTour,
   deleteTour,
   updateTour,
+  getGuides,
+  toggleTourGuide,
 };

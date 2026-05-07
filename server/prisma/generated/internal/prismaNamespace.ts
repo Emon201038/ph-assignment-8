@@ -392,13 +392,15 @@ export const ModelName = {
   OTP: 'OTP',
   Review: 'Review',
   Tour: 'Tour',
+  Tour_Guide: 'Tour_Guide',
   TourItinerary: 'TourItinerary',
   TripInclude: 'TripInclude',
   TripIncludeItem: 'TripIncludeItem',
   Trip: 'Trip',
   User: 'User',
   GuideProfile: 'GuideProfile',
-  TravelerProfile: 'TravelerProfile'
+  TravelerProfile: 'TravelerProfile',
+  AdminProfile: 'AdminProfile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "emergencyContact" | "loggedInDevice" | "twoFactorAuth" | "destination" | "topAttraction" | "oTP" | "review" | "tour" | "tourItinerary" | "tripInclude" | "tripIncludeItem" | "trip" | "user" | "guideProfile" | "travelerProfile"
+    modelProps: "emergencyContact" | "loggedInDevice" | "twoFactorAuth" | "destination" | "topAttraction" | "oTP" | "review" | "tour" | "tour_Guide" | "tourItinerary" | "tripInclude" | "tripIncludeItem" | "trip" | "user" | "guideProfile" | "travelerProfile" | "adminProfile"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1010,6 +1012,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Tour_Guide: {
+      payload: Prisma.$Tour_GuidePayload<ExtArgs>
+      fields: Prisma.Tour_GuideFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.Tour_GuideFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.Tour_GuideFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload>
+        }
+        findFirst: {
+          args: Prisma.Tour_GuideFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.Tour_GuideFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload>
+        }
+        findMany: {
+          args: Prisma.Tour_GuideFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload>[]
+        }
+        create: {
+          args: Prisma.Tour_GuideCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload>
+        }
+        createMany: {
+          args: Prisma.Tour_GuideCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.Tour_GuideCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload>[]
+        }
+        delete: {
+          args: Prisma.Tour_GuideDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload>
+        }
+        update: {
+          args: Prisma.Tour_GuideUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload>
+        }
+        deleteMany: {
+          args: Prisma.Tour_GuideDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.Tour_GuideUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.Tour_GuideUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload>[]
+        }
+        upsert: {
+          args: Prisma.Tour_GuideUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Tour_GuidePayload>
+        }
+        aggregate: {
+          args: Prisma.Tour_GuideAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTour_Guide>
+        }
+        groupBy: {
+          args: Prisma.Tour_GuideGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Tour_GuideGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.Tour_GuideCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Tour_GuideCountAggregateOutputType> | number
+        }
+      }
+    }
     TourItinerary: {
       payload: Prisma.$TourItineraryPayload<ExtArgs>
       fields: Prisma.TourItineraryFieldRefs
@@ -1528,6 +1604,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AdminProfile: {
+      payload: Prisma.$AdminProfilePayload<ExtArgs>
+      fields: Prisma.AdminProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.AdminProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload>
+        }
+        findMany: {
+          args: Prisma.AdminProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload>[]
+        }
+        create: {
+          args: Prisma.AdminProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload>
+        }
+        createMany: {
+          args: Prisma.AdminProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdminProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.AdminProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload>
+        }
+        update: {
+          args: Prisma.AdminProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdminProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.AdminProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.AdminProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminProfile>
+        }
+        groupBy: {
+          args: Prisma.AdminProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminProfileCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1701,6 +1851,14 @@ export const TourScalarFieldEnum = {
 export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
 
 
+export const Tour_GuideScalarFieldEnum = {
+  tourId: 'tourId',
+  guideId: 'guideId'
+} as const
+
+export type Tour_GuideScalarFieldEnum = (typeof Tour_GuideScalarFieldEnum)[keyof typeof Tour_GuideScalarFieldEnum]
+
+
 export const TourItineraryScalarFieldEnum = {
   id: 'id',
   tourId: 'tourId',
@@ -1817,6 +1975,21 @@ export const TravelerProfileScalarFieldEnum = {
 } as const
 
 export type TravelerProfileScalarFieldEnum = (typeof TravelerProfileScalarFieldEnum)[keyof typeof TravelerProfileScalarFieldEnum]
+
+
+export const AdminProfileScalarFieldEnum = {
+  id: 'id',
+  permissions: 'permissions',
+  isSuperAdmin: 'isSuperAdmin',
+  gender: 'gender',
+  bloodGroup: 'bloodGroup',
+  emergencyContactPhone: 'emergencyContactPhone',
+  emergencyContactRelation: 'emergencyContactRelation',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminProfileScalarFieldEnum = (typeof AdminProfileScalarFieldEnum)[keyof typeof AdminProfileScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2023,6 +2196,20 @@ export type EnumGenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 export type ListEnumGenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Gender[]'>
     
 
+
+/**
+ * Reference to a field of type 'AdminPermission[]'
+ */
+export type ListEnumAdminPermissionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminPermission[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AdminPermission'
+ */
+export type EnumAdminPermissionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminPermission'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2126,6 +2313,7 @@ export type GlobalOmitConfig = {
   oTP?: Prisma.OTPOmit
   review?: Prisma.ReviewOmit
   tour?: Prisma.TourOmit
+  tour_Guide?: Prisma.Tour_GuideOmit
   tourItinerary?: Prisma.TourItineraryOmit
   tripInclude?: Prisma.TripIncludeOmit
   tripIncludeItem?: Prisma.TripIncludeItemOmit
@@ -2133,6 +2321,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   guideProfile?: Prisma.GuideProfileOmit
   travelerProfile?: Prisma.TravelerProfileOmit
+  adminProfile?: Prisma.AdminProfileOmit
 }
 
 /* Types for Logging */

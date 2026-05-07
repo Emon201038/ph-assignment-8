@@ -422,10 +422,100 @@ const updateTourInDB = async (
   return result;
 };
 
+const getTourGuides = async (tourId: string, searchTerm?: string) => {
+  let whereConditions: Prisma.Tour_GuideWhereInput[] = [
+    {
+      tourId,
+    },
+  ];
+
+  if (searchTerm) {
+    whereConditions.push({
+      AND: [
+        {
+          guide: {
+            OR: [
+              {
+                name: {
+                  contains: searchTerm,
+                  mode: "insensitive",
+                },
+              },
+              {
+                email: {
+                  contains: searchTerm,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          },
+        },
+      ],
+    });
+  }
+
+  console.log(whereConditions);
+
+  const result = await prisma.tour_Guide.findMany({
+    where: { AND: whereConditions },
+    take: 10,
+    select: {
+      guide: {
+        select: {
+          name: true,
+          phone: true,
+          city: true,
+          avatar: true,
+        },
+      },
+    },
+  });
+  return result;
+};
+
+const toggleTourGuide = async (tourId: string, guideId: string) => {
+  const isExists = await prisma.tour_Guide.findUnique({
+    where: {
+      tourId_guideId: {
+        guideId,
+        tourId,
+      },
+    },
+  });
+
+  let returnData = null;
+  let message = "";
+  if (isExists) {
+    returnData = await prisma.tour_Guide.delete({
+      where: {
+        tourId_guideId: {
+          guideId,
+          tourId,
+        },
+      },
+    });
+    message = "Guide removed from tour successfully";
+  } else {
+    returnData = await prisma.tour_Guide.create({
+      data: {
+        tourId,
+        guideId,
+      },
+    });
+    message = "Guide added to tour successfully";
+  }
+  return {
+    message,
+    data: returnData,
+  };
+};
+
 export const TourService = {
   getAllTourFromDB,
   getSingleTour,
   createTourInDB,
   deleteTour,
   updateTourInDB,
+  getTourGuides,
+  toggleTourGuide,
 };

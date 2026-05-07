@@ -27,8 +27,19 @@ model Tour {
   itineraries TourItinerary[]
   reviews     Review[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  tourGuides Tour_Guide[]
+}
+
+model Tour_Guide {
+  tourId  String
+  guideId String
+
+  tour  Tour @relation(fields: [tourId], references: [id])
+  guide User @relation(fields: [guideId], references: [id])
+
+  @@id([tourId, guideId])
 }
 
 model TourItinerary {
