@@ -38,7 +38,7 @@ const cleanObject = (obj) => {
 };
 const getAllUserFromDB = (options, filters) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, skip, page, sortBy, sortOrder } = paginationHelper_1.paginationHelper.calculatePagination(options);
-    const { searchTerm, role, topGuides } = filters, filtersData = __rest(filters, ["searchTerm", "role", "topGuides"]);
+    const { searchTerm, role, topGuides, specialties, interests, languages, gender } = filters, filtersData = __rest(filters, ["searchTerm", "role", "topGuides", "specialties", "interests", "languages", "gender"]);
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
@@ -60,7 +60,7 @@ const getAllUserFromDB = (options, filters) => __awaiter(void 0, void 0, void 0,
     }
     if (topGuides) {
         andConditions.push({
-            role: "GUIDE",
+            role: client_1.UserRole.GUIDE,
             guideProfile: {
                 rating: {
                     gte: 4.5,
@@ -71,6 +71,86 @@ const getAllUserFromDB = (options, filters) => __awaiter(void 0, void 0, void 0,
     if (role) {
         andConditions.push({
             role: role.toUpperCase(),
+        });
+    }
+    if (specialties) {
+        andConditions.push({
+            guideProfile: {
+                specialties: {
+                    has: specialties,
+                },
+            },
+        });
+    }
+    if (languages) {
+        if (role.toUpperCase() === client_1.UserRole.GUIDE) {
+            if (Array.isArray(languages)) {
+                andConditions.push({
+                    guideProfile: {
+                        languages: {
+                            hasSome: languages,
+                        },
+                    },
+                });
+            }
+            else {
+                andConditions.push({
+                    guideProfile: {
+                        languages: {
+                            has: languages,
+                        },
+                    },
+                });
+            }
+        }
+        else if (role.toUpperCase() === client_1.UserRole.TRAVELER) {
+            if (Array.isArray(languages)) {
+                andConditions.push({
+                    travelerProfile: {
+                        languages: {
+                            hasSome: languages,
+                        },
+                    },
+                });
+            }
+            else {
+                andConditions.push({
+                    travelerProfile: {
+                        languages: {
+                            has: languages,
+                        },
+                    },
+                });
+            }
+        }
+    }
+    if (gender) {
+        if (role.toUpperCase() === client_1.UserRole.GUIDE) {
+            andConditions.push({
+                guideProfile: {
+                    gender: {
+                        equals: gender.toUpperCase(),
+                    },
+                },
+            });
+        }
+        else if (role.toUpperCase() === client_1.UserRole.TRAVELER) {
+            andConditions.push({
+                travelerProfile: {
+                    gender: {
+                        equals: gender.toUpperCase(),
+                    },
+                },
+            });
+        }
+    }
+    if (interests) {
+        andConditions.push({
+            travelerProfile: {
+                interests: {
+                    has: interests,
+                },
+            },
         });
     }
     if (Object.keys(filtersData).length) {
@@ -88,7 +168,10 @@ const getAllUserFromDB = (options, filters) => __awaiter(void 0, void 0, void 0,
             AND: andConditions,
         },
         include: {
-            guideProfile: topGuides || (role || "").toUpperCase() === "GUIDE" ? true : false,
+            guideProfile: topGuides || (role || "").toUpperCase() === client_1.UserRole.GUIDE
+                ? true
+                : false,
+            travelerProfile: (role || "").toUpperCase() === client_1.UserRole.TRAVELER ? true : false,
         },
         take: limit,
         skip: skip,
@@ -107,7 +190,10 @@ const getAllUserFromDB = (options, filters) => __awaiter(void 0, void 0, void 0,
             page,
             limit,
         },
-        data: users,
+        data: users.map((_a) => {
+            var { guideProfile, travelerProfile } = _a, user = __rest(_a, ["guideProfile", "travelerProfile"]);
+            return (Object.assign(Object.assign({}, user), { profile: guideProfile || travelerProfile }));
+        }),
     };
 });
 const getSingleUserFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -138,26 +224,52 @@ const getSingleUserFromDB = (id) => __awaiter(void 0, void 0, void 0, function* 
 });
 const createUserInDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, role, country, city, avatar, bio, phone } = payload;
-    // Check if user already exists
     const existingUser = yield db_1.default.user.findUnique({
         where: { email },
     });
     if (existingUser) {
         throw new appError_1.default(400, "Email already in use");
     }
+    const userData = {
+        name,
+        email,
+        password: yield bcryptjs_1.default.hash(password, 10),
+        role: role ? role.toUpperCase() : client_1.UserRole.TRAVELER,
+        country: country || null,
+        city: city || null,
+        avatar: avatar || null,
+        bio: bio || null,
+        phone: phone || null,
+    };
+    // Traveler Profile
+    if (role === client_1.UserRole.TRAVELER) {
+        userData.travelerProfile = {
+            create: {
+                gender: payload.gender,
+                bloodGroup: payload.bloodGroup,
+                languages: payload.languages || [],
+                interests: payload.interests || [],
+                dateOfBirth: payload.dateOfBirth,
+                aboutMe: payload.bio,
+            },
+        };
+    }
+    // Guide Profile
+    if (role === client_1.UserRole.GUIDE) {
+        userData.guideProfile = {
+            create: {
+                gender: payload.gender,
+                bloodGroup: payload.bloodGroup,
+                languages: payload.languages || [],
+                specialties: payload.specialties || [],
+                dateOfBirth: payload.dateOfBirth,
+                bio: payload.bio,
+            },
+        };
+    }
     // Create user
     const result = yield db_1.default.user.create({
-        data: {
-            name,
-            email,
-            password: yield bcryptjs_1.default.hash(password, 10),
-            role: role ? role.toUpperCase() : "TRAVELER",
-            country: country || "Unknown",
-            city: city || "Unknown",
-            avatar: avatar || null,
-            bio: bio || null,
-            phone: phone || null,
-        },
+        data: userData,
         select: {
             id: true,
             name: true,
@@ -194,27 +306,25 @@ const updateUserInDB = (id, payload, files) => __awaiter(void 0, void 0, void 0,
     const guideData = cleanObject({
         gender: payload.gender,
         bloodGroup: payload.bloodGroup,
-        emergencyContactRelation: payload.emergencyContactRelation,
-        emergencyContactPhone: payload.emergencyContactNumber,
         languages: payload.languages,
         specialties: payload.specialties,
+        dateOfBirth: payload.dateOfBirth,
     });
     const travelerData = cleanObject({
         gender: payload.gender,
         bloodGroup: payload.bloodGroup,
-        emergencyContactRelation: payload.emergencyContactRelation,
-        emergencyContactPhone: payload.emergencyContactNumber,
         interests: payload.interests,
+        dateOfBirth: payload.dateOfBirth,
         // languages: payload.languages,
     });
     const result = yield db_1.default.user.update({
         where: { id },
-        data: Object.assign(Object.assign(Object.assign({}, userData), ((existingUser === null || existingUser === void 0 ? void 0 : existingUser.role) === "GUIDE" &&
+        data: Object.assign(Object.assign(Object.assign({}, userData), ((existingUser === null || existingUser === void 0 ? void 0 : existingUser.role) === client_1.UserRole.GUIDE &&
             Object.keys(guideData).length > 0 && {
             guideProfile: {
                 update: guideData,
             },
-        })), ((existingUser === null || existingUser === void 0 ? void 0 : existingUser.role) === "TRAVELER" &&
+        })), ((existingUser === null || existingUser === void 0 ? void 0 : existingUser.role) === client_1.UserRole.TRAVELER &&
             Object.keys(travelerData).length > 0 && {
             travelerProfile: {
                 update: travelerData,

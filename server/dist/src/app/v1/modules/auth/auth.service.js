@@ -119,7 +119,6 @@ const forgotPassword = (email) => __awaiter(void 0, void 0, void 0, function* ()
     return otpDoc;
 });
 const resetPassword = (token, newPassword, confirmPassword) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(token, confirmPassword, newPassword);
     const verifiedToken = (0, jwt_1.verifyJwt)(token, env_1.envVars.JWT_ACCESS_TOKEN_SECRET);
     if (typeof verifiedToken === "string") {
         throw new appError_1.default(400, "Failed to verify token");

@@ -46,41 +46,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GuideService = void 0;
-const queryBuilder_1 = require("../../../lib/queryBuilder");
 const user_interface_1 = require("../user/user.interface");
 const user_model_1 = __importDefault(require("../user/user.model"));
 const mongoose_1 = __importStar(require("mongoose"));
 const appError_1 = __importDefault(require("../../../helpers/appError"));
 const guide_model_1 = require("./guide.model");
 const httpStatus_1 = require("../../../utils/httpStatus");
-const queryBuilderByPipline_1 = require("../../../lib/queryBuilderByPipline");
 const booking_model_1 = require("../booking/booking.model");
+const db_1 = __importDefault(require("../../../config/db"));
 const getGuides = (queryString) => __awaiter(void 0, void 0, void 0, function* () {
-    const builder = new queryBuilder_1.QueryBuilder(guide_model_1.Guide, Object.assign({}, queryString));
-    const res = yield builder
-        .filter()
-        .search(["email", "name", "phone"])
-        .paginate()
-        .select(["-password"])
-        .execWithMeta();
-    const builder2 = new queryBuilderByPipline_1.DynamicQueryBuilder(guide_model_1.Guide, Object.assign({}, queryString), [
-        {
-            model: user_model_1.default,
-            localField: "userId",
-            foreignField: "_id",
-            as: "profile",
-            filterKeys: ["gender", "role"],
-            searchFields: ["name", "email", "phone"],
+    const res = yield db_1.default.guideProfile.findMany({
+        select: {
+            specialties: true,
+            languages: true,
         },
-    ]);
-    const res2 = yield builder2
-        .searchPopulated() // Search populated models (includes documents)
-        .filter() // Filter main model
-        .filterPopulated() // Filter populated models (reuses same populated docs)
-        .sort()
-        .paginate()
-        .exec();
-    return { guides: res2.data, meta: res.meta };
+    });
+    const total = yield db_1.default.guideProfile.count();
+    return {
+        guides: [...new Set(res.flatMap((guide) => guide.languages))],
+        meta: { total, limit: 20, page: 1 },
+    };
 });
 const getGuide = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const guide = yield guide_model_1.Guide.findOne({ userId: id }).populate("userId", "-password");

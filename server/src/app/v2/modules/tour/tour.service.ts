@@ -294,7 +294,7 @@ const getSingleTour = async (id: string, isSlug = false) => {
 };
 
 const createTourInDB = async (
-  payload: any,
+  payload: CreateTourInput,
   userId: string,
   image: Express.Multer.File,
 ) => {
@@ -306,7 +306,6 @@ const createTourInDB = async (
     priceFrom,
     durationDays,
     maxGroupSize,
-    language,
   } = payload;
 
   // Validate destination exists
@@ -341,7 +340,7 @@ const createTourInDB = async (
       title,
       description,
       destinationId,
-      category: category.toUpperCase(),
+      category: category.toUpperCase() as TourCategory,
       priceFrom,
       image: imageUrl,
       slug: tourSlug,
@@ -349,7 +348,6 @@ const createTourInDB = async (
       maxGroupSize,
       difficulty: TourDifficulty.MODERATE,
       createdById: userId,
-      language,
     },
     include: {
       destination: {

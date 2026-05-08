@@ -110,7 +110,6 @@ const getNearbyDestinations = (lat_1, lng_1, ...args_1) => __awaiter(void 0, [la
   ORDER BY distance
   LIMIT 2
 `);
-    console.log(destinations);
     if (!destinations || destinations.length === 0) {
         const fallback = yield db_1.default.destination.findMany({
             take: 2,

@@ -121,6 +121,7 @@ const getAllTripsFromDB = (options, filters) => __awaiter(void 0, void 0, void 0
                     title: true,
                     description: true,
                     category: true,
+                    image: true,
                 },
             },
             guide: {

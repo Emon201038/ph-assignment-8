@@ -48,7 +48,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineExtension = exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.TravelerProfileScalarFieldEnum = exports.GuideProfileScalarFieldEnum = exports.UserScalarFieldEnum = exports.TripScalarFieldEnum = exports.TripIncludeItemScalarFieldEnum = exports.TripIncludeScalarFieldEnum = exports.TourItineraryScalarFieldEnum = exports.TourScalarFieldEnum = exports.ReviewScalarFieldEnum = exports.TopAttractionScalarFieldEnum = exports.DestinationScalarFieldEnum = exports.LoggedInDeviceScalarFieldEnum = exports.EmergencyContactScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.prismaVersion = exports.getExtensionContext = exports.Decimal = exports.Sql = exports.raw = exports.join = exports.empty = exports.sql = exports.PrismaClientValidationError = exports.PrismaClientInitializationError = exports.PrismaClientRustPanicError = exports.PrismaClientUnknownRequestError = exports.PrismaClientKnownRequestError = void 0;
+exports.defineExtension = exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.AdminProfileScalarFieldEnum = exports.TravelerProfileScalarFieldEnum = exports.GuideProfileScalarFieldEnum = exports.UserScalarFieldEnum = exports.TripScalarFieldEnum = exports.TripIncludeItemScalarFieldEnum = exports.TripIncludeScalarFieldEnum = exports.TourItineraryScalarFieldEnum = exports.Tour_GuideScalarFieldEnum = exports.TourScalarFieldEnum = exports.ReviewScalarFieldEnum = exports.OTPScalarFieldEnum = exports.TopAttractionScalarFieldEnum = exports.DestinationScalarFieldEnum = exports.TwoFactorAuthScalarFieldEnum = exports.LoggedInDeviceScalarFieldEnum = exports.EmergencyContactScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.prismaVersion = exports.getExtensionContext = exports.Decimal = exports.Sql = exports.raw = exports.join = exports.empty = exports.sql = exports.PrismaClientValidationError = exports.PrismaClientInitializationError = exports.PrismaClientRustPanicError = exports.PrismaClientUnknownRequestError = exports.PrismaClientKnownRequestError = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/client"));
 /**
  * Prisma Errors
@@ -105,17 +105,21 @@ exports.AnyNull = runtime.AnyNull;
 exports.ModelName = {
     EmergencyContact: 'EmergencyContact',
     LoggedInDevice: 'LoggedInDevice',
+    TwoFactorAuth: 'TwoFactorAuth',
     Destination: 'Destination',
     TopAttraction: 'TopAttraction',
+    OTP: 'OTP',
     Review: 'Review',
     Tour: 'Tour',
+    Tour_Guide: 'Tour_Guide',
     TourItinerary: 'TourItinerary',
     TripInclude: 'TripInclude',
     TripIncludeItem: 'TripIncludeItem',
     Trip: 'Trip',
     User: 'User',
     GuideProfile: 'GuideProfile',
-    TravelerProfile: 'TravelerProfile'
+    TravelerProfile: 'TravelerProfile',
+    AdminProfile: 'AdminProfile'
 };
 /**
  * Enums
@@ -137,11 +141,27 @@ exports.EmergencyContactScalarFieldEnum = {
 };
 exports.LoggedInDeviceScalarFieldEnum = {
     id: 'id',
-    device: 'device',
+    deviceId: 'deviceId',
     ipAddress: 'ipAddress',
     country: 'country',
     city: 'city',
     userId: 'userId',
+    deviceName: 'deviceName',
+    browserName: 'browserName',
+    os: 'os',
+    deviceType: 'deviceType',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    isTrusted: 'isTrusted'
+};
+exports.TwoFactorAuthScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    email: 'email',
+    method: 'method',
+    secret: 'secret',
+    totpSecret: 'totpSecret',
+    isEnabled: 'isEnabled',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -173,6 +193,15 @@ exports.TopAttractionScalarFieldEnum = {
     destinationId: 'destinationId',
     createdAt: 'createdAt'
 };
+exports.OTPScalarFieldEnum = {
+    id: 'id',
+    type: 'type',
+    userId: 'userId',
+    email: 'email',
+    otp: 'otp',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt'
+};
 exports.ReviewScalarFieldEnum = {
     id: 'id',
     tourId: 'tourId',
@@ -202,6 +231,10 @@ exports.TourScalarFieldEnum = {
     isPublished: 'isPublished',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
+};
+exports.Tour_GuideScalarFieldEnum = {
+    tourId: 'tourId',
+    guideId: 'guideId'
 };
 exports.TourItineraryScalarFieldEnum = {
     id: 'id',
@@ -273,6 +306,7 @@ exports.GuideProfileScalarFieldEnum = {
     rating: 'rating',
     totalTours: 'totalTours',
     bio: 'bio',
+    dateOfBirth: 'dateOfBirth',
     isVerified: 'isVerified',
     isTopRated: 'isTopRated',
     createdAt: 'createdAt',
@@ -285,11 +319,23 @@ exports.TravelerProfileScalarFieldEnum = {
     aboutMe: 'aboutMe',
     gender: 'gender',
     bloodGroup: 'bloodGroup',
+    dateOfBirth: 'dateOfBirth',
     emergencyContactPhone: 'emergencyContactPhone',
     emergencyContactRelation: 'emergencyContactRelation',
     userId: 'userId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
+};
+exports.AdminProfileScalarFieldEnum = {
+    id: 'id',
+    permissions: 'permissions',
+    isSuperAdmin: 'isSuperAdmin',
+    gender: 'gender',
+    bloodGroup: 'bloodGroup',
+    emergencyContactPhone: 'emergencyContactPhone',
+    emergencyContactRelation: 'emergencyContactRelation',
+    userId: 'userId',
+    createdAt: 'createdAt'
 };
 exports.SortOrder = {
     asc: 'asc',

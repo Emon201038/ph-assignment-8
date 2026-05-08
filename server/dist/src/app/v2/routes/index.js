@@ -10,6 +10,8 @@ const tour_routes_1 = __importDefault(require("../modules/tour/tour.routes"));
 const trip_routes_1 = __importDefault(require("../modules/trip/trip.routes"));
 const review_routes_1 = __importDefault(require("../modules/review/review.routes"));
 const auth_routes_1 = __importDefault(require("../modules/auth/auth.routes"));
+const otp_routes_1 = __importDefault(require("../modules/otp/otp.routes"));
+const two_factor_routes_1 = __importDefault(require("../modules/two-factor/two-factor.routes"));
 const routerv2 = express_1.default.Router();
 const routes = [
     {
@@ -35,6 +37,14 @@ const routes = [
     {
         path: "/auth",
         route: auth_routes_1.default,
+    },
+    {
+        path: "/two-factor",
+        route: two_factor_routes_1.default,
+    },
+    {
+        path: "/otp",
+        route: otp_routes_1.default,
     },
 ];
 routes.forEach((route) => {

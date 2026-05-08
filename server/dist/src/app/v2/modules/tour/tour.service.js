@@ -8,14 +8,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TourService = void 0;
+const slugify_1 = __importDefault(require("slugify"));
+const client_1 = require("../../../../../prisma/generated/client");
 const db_1 = __importDefault(require("../../../config/db"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const appError_1 = __importDefault(require("../../../helpers/appError"));
+const upload_files_1 = require("../../../utils/upload-files");
 const getAllTourFromDB = (options, filters) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, skip, page, sortBy, sortOrder } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm, category, country, city, minPrice, maxPrice, language } = filters;
@@ -40,6 +54,12 @@ const getAllTourFromDB = (options, filters) => __awaiter(void 0, void 0, void 0,
                         OR: [
                             {
                                 name: {
+                                    contains: searchTerm,
+                                    mode: "insensitive",
+                                },
+                            },
+                            {
+                                id: {
                                     contains: searchTerm,
                                     mode: "insensitive",
                                 },
@@ -114,10 +134,6 @@ const getAllTourFromDB = (options, filters) => __awaiter(void 0, void 0, void 0,
         });
         const mainarr = lang.map((i) => i.languages).flatMap((i) => i);
         const unique = mainarr.filter((item, index, arr) => arr.indexOf(item) === index);
-        console.log(unique.map((i) => ({
-            label: i.charAt(0).toUpperCase() + i.slice(1),
-            value: i,
-        })));
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
     const result = yield db_1.default.tour.findMany({
@@ -148,75 +164,122 @@ const getAllTourFromDB = (options, filters) => __awaiter(void 0, void 0, void 0,
         data: result,
     };
 });
-const getSingleTour = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield db_1.default.tour.findUnique({
-        where: {
-            id,
-        },
-        include: {
-            destination: {
-                select: {
-                    city: true,
-                    country: true,
-                    languages: true,
-                },
+const getSingleTour = (id_1, ...args_1) => __awaiter(void 0, [id_1, ...args_1], void 0, function* (id, isSlug = false) {
+    if (!isSlug) {
+        const result = yield db_1.default.tour.findUnique({
+            where: {
+                id,
             },
-            trips: {
-                select: {
-                    guide: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            phone: true,
-                            city: true,
-                            avatar: true,
-                        },
+            include: {
+                destination: {
+                    select: {
+                        city: true,
+                        country: true,
+                        languages: true,
                     },
-                    includes: {
-                        select: {
-                            tripInclude: {
-                                select: {
-                                    category: true,
-                                    title: true,
-                                    description: true,
+                },
+                trips: {
+                    select: {
+                        guide: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                phone: true,
+                                city: true,
+                                avatar: true,
+                            },
+                        },
+                        includes: {
+                            select: {
+                                tripInclude: {
+                                    select: {
+                                        category: true,
+                                        title: true,
+                                        description: true,
+                                    },
                                 },
                             },
                         },
+                        startDate: true,
+                        endDate: true,
+                        price: true,
+                        maxGuests: true,
+                        bookedSeats: true,
+                        status: true,
                     },
-                    startDate: true,
-                    endDate: true,
-                    price: true,
-                    maxGuests: true,
-                    bookedSeats: true,
-                    status: true,
+                },
+                itineraries: {
+                    select: {
+                        dayNumber: true,
+                        title: true,
+                        description: true,
+                        icon: true,
+                    },
                 },
             },
-            itineraries: {
-                select: {
-                    dayNumber: true,
-                    title: true,
-                    description: true,
-                    icon: true,
-                },
-            },
-        },
-    });
-    return Object.assign(Object.assign({}, result), { trips: result === null || result === void 0 ? void 0 : result.trips.map((trip) => (Object.assign(Object.assign({}, trip), { includes: trip.includes.map((include) => include.tripInclude) }))) });
-});
-const createTourInDB = (payload, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, description, destinationId, category, priceFrom, image, slug, durationDays, maxGroupSize, difficulty, } = payload;
-    // Validate required fields
-    if (!title ||
-        !description ||
-        !destinationId ||
-        !category ||
-        priceFrom === null ||
-        !durationDays ||
-        !maxGroupSize ||
-        !difficulty) {
-        throw new appError_1.default(400, "Missing required fields");
+        });
+        return Object.assign(Object.assign({}, result), { trips: result === null || result === void 0 ? void 0 : result.trips.map((trip) => (Object.assign(Object.assign({}, trip), { includes: trip.includes.map((include) => include.tripInclude) }))) });
     }
+    else {
+        const result = yield db_1.default.tour.findUnique({
+            where: {
+                slug: id,
+            },
+            include: {
+                destination: {
+                    select: {
+                        city: true,
+                        country: true,
+                        languages: true,
+                    },
+                },
+                trips: {
+                    select: {
+                        guide: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                phone: true,
+                                city: true,
+                                avatar: true,
+                            },
+                        },
+                        includes: {
+                            select: {
+                                tripInclude: {
+                                    select: {
+                                        category: true,
+                                        title: true,
+                                        description: true,
+                                    },
+                                },
+                            },
+                        },
+                        startDate: true,
+                        endDate: true,
+                        price: true,
+                        maxGuests: true,
+                        bookedSeats: true,
+                        status: true,
+                    },
+                },
+                itineraries: {
+                    select: {
+                        dayNumber: true,
+                        title: true,
+                        description: true,
+                        icon: true,
+                    },
+                },
+            },
+        });
+        return Object.assign(Object.assign({}, result), { trips: result === null || result === void 0 ? void 0 : result.trips.map((trip) => (Object.assign(Object.assign({}, trip), { includes: trip.includes.map((include) => include.tripInclude) }))) });
+    }
+});
+const createTourInDB = (payload, userId, image) => __awaiter(void 0, void 0, void 0, function* () {
+    const { title, description, destinationId, category, priceFrom, durationDays, maxGroupSize, } = payload;
     // Validate destination exists
     const destinationExists = yield db_1.default.destination.findUnique({
         where: { id: destinationId },
@@ -224,13 +287,19 @@ const createTourInDB = (payload, userId) => __awaiter(void 0, void 0, void 0, fu
     if (!destinationExists) {
         throw new appError_1.default(404, "Destination not found");
     }
-    // Generate slug if not provided
-    const tourSlug = slug ||
-        title
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "-")
-            .replace(/[^a-z0-9\-]/g, "");
+    const tourSlug = (0, slugify_1.default)(title, { lower: true, strict: true, trim: true });
+    let imageUrl = "";
+    if (image) {
+        const result = yield (0, upload_files_1.uploadFileToCloudinary)(image, "tour-buddy/tours");
+        if (!(result === null || result === void 0 ? void 0 : result.url)) {
+            throw new appError_1.default(400, "Image upload failed");
+        }
+        console.log(result);
+        imageUrl = result.url;
+    }
+    if (!imageUrl) {
+        throw new appError_1.default(400, "Image upload failed");
+    }
     // Create tour
     const result = yield db_1.default.tour.create({
         data: {
@@ -239,11 +308,11 @@ const createTourInDB = (payload, userId) => __awaiter(void 0, void 0, void 0, fu
             destinationId,
             category: category.toUpperCase(),
             priceFrom,
-            image: image || "https://via.placeholder.com/400x300",
+            image: imageUrl,
             slug: tourSlug,
             durationDays,
             maxGroupSize,
-            difficulty: difficulty.toUpperCase(),
+            difficulty: client_1.TourDifficulty.MODERATE,
             createdById: userId,
         },
         include: {
@@ -266,8 +335,126 @@ const createTourInDB = (payload, userId) => __awaiter(void 0, void 0, void 0, fu
     });
     return result;
 });
+const deleteTour = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield db_1.default.tour.delete({
+        where: {
+            id,
+        },
+    });
+    return result;
+});
+const updateTourInDB = (id, payload, file) => __awaiter(void 0, void 0, void 0, function* () {
+    const { category, difficulty, destinationId } = payload, body = __rest(payload, ["category", "difficulty", "destinationId"]);
+    const slug = (0, slugify_1.default)(payload.title, {
+        lower: true,
+        strict: true,
+        trim: true,
+    });
+    let imageUrl;
+    if (file) {
+        const uploadedRes = yield (0, upload_files_1.uploadFileToCloudinary)(file, "tour-buddy/tours");
+        if (!(uploadedRes === null || uploadedRes === void 0 ? void 0 : uploadedRes.url)) {
+            throw new appError_1.default(400, "Image upload failed");
+        }
+        imageUrl = uploadedRes.url;
+    }
+    const result = yield db_1.default.tour.update({
+        where: { id },
+        data: Object.assign(Object.assign(Object.assign({}, body), { slug, destination: {
+                connect: { id: destinationId },
+            }, category: category, difficulty: difficulty }), (imageUrl && { image: imageUrl })),
+    });
+    return result;
+});
+const getTourGuides = (tourId, searchTerm) => __awaiter(void 0, void 0, void 0, function* () {
+    let whereConditions = [
+        {
+            tourId,
+        },
+    ];
+    if (searchTerm) {
+        whereConditions.push({
+            AND: [
+                {
+                    guide: {
+                        OR: [
+                            {
+                                name: {
+                                    contains: searchTerm,
+                                    mode: "insensitive",
+                                },
+                            },
+                            {
+                                email: {
+                                    contains: searchTerm,
+                                    mode: "insensitive",
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
+        });
+    }
+    console.log(whereConditions);
+    const result = yield db_1.default.tour_Guide.findMany({
+        where: { AND: whereConditions },
+        take: 10,
+        select: {
+            guide: {
+                select: {
+                    name: true,
+                    phone: true,
+                    city: true,
+                    avatar: true,
+                },
+            },
+        },
+    });
+    return result;
+});
+const toggleTourGuide = (tourId, guideId) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExists = yield db_1.default.tour_Guide.findUnique({
+        where: {
+            tourId_guideId: {
+                guideId,
+                tourId,
+            },
+        },
+    });
+    let returnData = null;
+    let message = "";
+    if (isExists) {
+        returnData = yield db_1.default.tour_Guide.delete({
+            where: {
+                tourId_guideId: {
+                    guideId,
+                    tourId,
+                },
+            },
+        });
+        message = "Guide removed from tour successfully";
+    }
+    else {
+        returnData = yield db_1.default.tour_Guide.create({
+            data: {
+                tourId,
+                guideId,
+            },
+        });
+        message = "Guide added to tour successfully";
+    }
+    return {
+        message,
+        data: returnData,
+    };
+});
 exports.TourService = {
     getAllTourFromDB,
     getSingleTour,
     createTourInDB,
+    deleteTour,
+    updateTourInDB,
+    getTourGuides,
+    toggleTourGuide,
 };

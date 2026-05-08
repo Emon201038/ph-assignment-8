@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../src/app/config/db"));
-const enums_1 = require("../generated/enums");
 function getContinent(country) {
     const map = {
         Indonesia: "Asia",
@@ -232,137 +231,82 @@ const interests = [
     "food",
     "nightlife",
 ];
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        // ========== OLD SEEDING CODE (COMMENTED OUT) ==========
-        // Uncomment the sections below to re-seed the database with initial data
-        // await prisma.user.create({
-        //   data: {
-        //     name: "Admin One",
-        //     email: "admin@tourbuddy.com",
-        //     password: await bcrypt.hash("admin123@#", 10),
-        //     role: "ADMIN",
-        //     country: "Bangladesh",
-        //     city: "Cumilla",
-        //   },
-        // });
-        // for (const { languages, specialties, aboutMe, ...g } of guides) {
-        //   const rating = Number((Math.random() * (5 - 4) + 4).toFixed(1));
-        //   await prisma.user.create({
-        //     data: {
-        //       ...g,
-        //       password: await bcrypt.hash(g.password, 10),
-        //       guideProfile: {
-        //         create: {
-        //           rating: rating,
-        //           hourlyRate: Math.round(Math.random() * (40 - 20) + 20),
-        //           experience: Math.floor(Math.random() * (10 - 3) + 3),
-        //           aboutMe: aboutMe,
-        //           specialties: specialties,
-        //           languages: languages,
-        //           isTopRated: rating >= 4.6,
-        //         },
-        //       },
-        //     },
-        //   });
-        // }
-        // for (const t of travelers) {
-        //   await prisma.user.create({
-        //     data: {
-        //       ...t,
-        //       password: await bcrypt.hash(t.password, 10),
-        //     },
-        //   });
-        // }
-        // for (let index = 0; index < toursData.length; index++) {
-        //   const { itineraries, ...tour } = toursData[index];
-        //   await prisma.tour.create({
-        //     data: {
-        //       ...tour,
-        //       itineraries: {
-        //         createMany: {
-        //           data: itineraries.createMany,
-        //         },
-        //       },
-        //     },
-        //   });
-        // }
-        // ========== TRIPS SEEDING (MAIN) ==========
-        console.log("Generating trips data...");
-        // const tours = await prisma.tour.findMany({});
-        // const { trips, tripIncludes: tripIncludeItems } = generateTripsData(tours);
-        // console.log(`Creating ${trips.length} trips...`);
-        // for (const trip of trips) {
-        //   await prisma.trip.create({
-        //     data: trip,
-        //   });
-        // }
-        // console.log(`Creating ${tripIncludeItems.length} trip include items...`);
-        // for (const tripIncludeItem of tripIncludeItems) {
-        //   await prisma.tripIncludeItem.create({
-        //     data: tripIncludeItem,
-        //   });
-        // }
-        // console.log("Updating broken image URLs...");
-        // for (const tour of updates) {
-        //   await prisma.tour.update({
-        //     where: { id: tour.id },
-        //     data: { image: tour.url }, // Change 'imageUrl' to 'image' if that is your schema field name
-        //   });
-        // }
-        // await prisma.user.updateMany({
-        //   where: {
-        //     role: {
-        //       not: "ADMIN",
-        //     },
-        //   },
-        //   data: {
-        //     provider: "CREDENTIALS",
-        //   },
-        // });
-        const users = yield db_1.default.user.findMany({
-            where: {
-                role: enums_1.UserRole.TRAVELER,
+const updateTripDate = () => __awaiter(void 0, void 0, void 0, function* () {
+    const now = new Date();
+    const next30Days = new Date();
+    next30Days.setDate(now.getDate() + 30);
+    const result = yield db_1.default.trip.findMany({
+        where: {
+            startDate: {
+                lte: next30Days,
             },
-            select: {
-                id: true,
-                country: true,
-                bio: true,
+        },
+        skip: 0,
+        take: 40,
+        include: {
+            tour: {
+                select: {
+                    id: true,
+                    durationDays: true,
+                },
+            },
+        },
+    });
+    let updatedTrip = [];
+    for (let index = 0; index < result.length; index++) {
+        const element = result[index];
+        const newStartDate = new Date(element.startDate);
+        newStartDate.setDate(newStartDate.getDate() + 30);
+        const newEndDate = new Date(newStartDate);
+        newEndDate.setDate(newEndDate.getDate() + element.tour.durationDays);
+        const data = yield db_1.default.trip.update({
+            where: {
+                id: element.id,
+            },
+            data: {
+                endDate: newEndDate,
+                startDate: newStartDate,
             },
         });
-        for (const user of users) {
+        updatedTrip.push(data);
+    }
+    return updatedTrip;
+});
+const updateTravelerLanguages = () => __awaiter(void 0, void 0, void 0, function* () {
+    const travelers = yield db_1.default.travelerProfile.updateMany({
+        where: {
+            id: "94767fba-d49c-40f3-938e-20d91bcc3943",
+        },
+        data: {
+            languages: {
+                set: ["Avestan"],
+            },
+        },
+    });
+    return travelers;
+});
+const updateTravelerInterests = () => __awaiter(void 0, void 0, void 0, function* () {
+    const travelers = yield db_1.default.travelerProfile.findMany({});
+    for (let index = 0; index < travelers.length; index++) {
+        const element = travelers[index];
+        if (element.interests.filter(Boolean).length === 0) {
             yield db_1.default.travelerProfile.update({
                 where: {
-                    userId: user.id,
+                    id: element.id,
                 },
                 data: {
-                    gender: enums_1.Gender.MALE,
-                },
-            });
-            yield db_1.default.guideProfile.update({
-                where: {
-                    userId: user.id,
-                },
-                data: {
-                    gender: enums_1.Gender.MALE,
+                    interests: {
+                        set: [],
+                    },
                 },
             });
         }
-        // for (const user of users) {
-        //   // 1. Shuffle the interests and pick a random subset (e.g., between 1 and 4 interests)
-        //   const randomInterests = interests
-        //     .sort(() => 0.5 - Math.random()) // Simple shuffle
-        //     .slice(0, Math.floor(Math.random() * 4) + 1); // Select 1 to 4 items
-        //   await prisma.travelerProfile.create({
-        //     data: {
-        //       interests: randomInterests,
-        //       userId: user.id,
-        //       aboutMe: user.bio as string,
-        //       languages: getLanguages(user.country as string),
-        //     },
-        //   });
-        // }
-        console.log("Seed completed successfully!");
+    }
+    console.log(travelers, travelers[0].interests.length, travelers[0].interests.filter(Boolean).length);
+});
+function main() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield updateTravelerInterests();
     });
 }
 main()

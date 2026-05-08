@@ -9,7 +9,17 @@
 * 🟢 You can import this file directly.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Gender = exports.UserRole = exports.AuthProvider = exports.TripStatus = exports.TourCategory = exports.Visibility = exports.TourDifficulty = void 0;
+exports.AdminPermission = exports.Gender = exports.UserRole = exports.AuthProvider = exports.TripStatus = exports.TourCategory = exports.Visibility = exports.TourDifficulty = exports.OTPType = exports.TwoFactorMethod = void 0;
+exports.TwoFactorMethod = {
+    TOTP: 'TOTP',
+    EMAIL: 'EMAIL',
+    SECURITY_KEY: 'SECURITY_KEY'
+};
+exports.OTPType = {
+    TWO_FACTOR: 'TWO_FACTOR',
+    PASSWORD_RESET: 'PASSWORD_RESET',
+    AUTH_VERIFICATION: 'AUTH_VERIFICATION'
+};
 exports.TourDifficulty = {
     EASY: 'EASY',
     MODERATE: 'MODERATE',
@@ -48,4 +58,12 @@ exports.Gender = {
     MALE: 'MALE',
     FEMALE: 'FEMALE',
     OTHER: 'OTHER'
+};
+exports.AdminPermission = {
+    MANAGE_USERS: 'MANAGE_USERS',
+    MANAGE_TOURS: 'MANAGE_TOURS',
+    MANAGE_BOOKINGS: 'MANAGE_BOOKINGS',
+    VIEW_ANALYTICS: 'VIEW_ANALYTICS',
+    MANAGE_PAYMENTS: 'MANAGE_PAYMENTS',
+    SUPER_ADMIN_ACCESS: 'SUPER_ADMIN_ACCESS'
 };

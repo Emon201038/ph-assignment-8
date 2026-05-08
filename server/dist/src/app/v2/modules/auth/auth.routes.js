@@ -12,6 +12,7 @@ authRouter.post("/login", (0, validateRequest_1.validateRequest)(auth_validation
 // OAuth logins
 authRouter.post("/login/google", (0, validateRequest_1.validateRequest)(auth_validation_1.googleLoginSchema), auth_controller_1.AuthController.loginWithGoogle);
 authRouter.post("/login/facebook", (0, validateRequest_1.validateRequest)(auth_validation_1.facebookLoginSchema), auth_controller_1.AuthController.loginWithFacebook);
+authRouter.post("/verify-otp", (0, validateRequest_1.validateRequest)(auth_validation_1.verifyOtpSchema), auth_controller_1.AuthController.verify2FA);
 // Get current user
 authRouter.get("/me", auth_controller_1.AuthController.getMe);
 // Refresh token
@@ -22,4 +23,5 @@ authRouter.post("/forgot-password", (0, validateRequest_1.validateRequest)(auth_
 authRouter.post("/reset-password", (0, validateRequest_1.validateRequest)(auth_validation_1.resetPasswordSchema), auth_controller_1.AuthController.resetPassword);
 // Change password (protected route)
 authRouter.post("/change-password", (0, checkAuth_1.checkAuth)(enums_1.UserRole.TRAVELER, enums_1.UserRole.GUIDE, enums_1.UserRole.ADMIN), (0, validateRequest_1.validateRequest)(auth_validation_1.changePasswordSchema), auth_controller_1.AuthController.changePassword);
+authRouter.get("/devices", (0, checkAuth_1.checkAuth)(enums_1.UserRole.TRAVELER, enums_1.UserRole.GUIDE, enums_1.UserRole.ADMIN), auth_controller_1.AuthController.getSavedDevices);
 exports.default = authRouter;

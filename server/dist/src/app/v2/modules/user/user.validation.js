@@ -10,8 +10,14 @@ exports.createUserSchema = zod_1.z.object({
         .string({ error: "Password is required" })
         .min(6, "Password must be at least 6 characters long"),
     role: zod_1.z.enum(enums_1.UserRole).default(enums_1.UserRole.TRAVELER),
+    gender: zod_1.z.enum(enums_1.Gender).default(enums_1.Gender.MALE),
     country: zod_1.z.string().optional(),
     city: zod_1.z.string().optional(),
+    bio: zod_1.z.string(),
+    phone: zod_1.z.string().optional(),
+    interests: zod_1.z.array(zod_1.z.string()).default([]),
+    languages: zod_1.z.array(zod_1.z.string()).default([]),
+    specialties: zod_1.z.array(zod_1.z.string()).default([]),
 });
 exports.updateUserSchema = zod_1.z.object({
     name: zod_1.z.string().optional(),
@@ -23,8 +29,6 @@ exports.updateUserSchema = zod_1.z.object({
     city: zod_1.z.string().optional(),
     gender: zod_1.z.enum(enums_1.Gender).default(enums_1.Gender.MALE),
     avatar: zod_1.z.any().optional(),
-    emergencyContactRelation: zod_1.z.string().optional(),
-    emergencyContactNumber: zod_1.z.string().optional(),
     bloodGroup: zod_1.z.string().optional(),
     bio: zod_1.z.string().optional(),
     dateOfBirth: zod_1.z.string().optional(),

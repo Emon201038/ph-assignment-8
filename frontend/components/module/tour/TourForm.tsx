@@ -156,6 +156,11 @@ const TourForm = ({
                 : ""
           }
         />
+        <input
+          type="hidden"
+          name="guides"
+          value={selectedGuides.map((g) => g.id)}
+        />
 
         {/* Basic Information */}
         <div className="space-y-4">

@@ -23,6 +23,10 @@ const getAllUsers = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(v
         "country",
         "city",
         "topGuides",
+        "specialties",
+        "languages",
+        "interests",
+        "gender",
     ]);
     const data = yield user_service_1.UserService.getAllUserFromDB(options, filters);
     (0, sendResponse_1.sendResponse)(res, {

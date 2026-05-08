@@ -51,6 +51,8 @@ const extractPayload = (formData: FormData) => ({
 export const createTour = async (_: unknown, formData: FormData) => {
   const isPublished = formData.get("isPublished") === "on";
   const featured = formData.get("featured") === "on";
+  const guides = formData.getAll("guides");
+  console.log(guides);
   formData.delete("isPublished");
   formData.delete("featured");
 
@@ -76,6 +78,7 @@ export const createTour = async (_: unknown, formData: FormData) => {
   }
 
   try {
+    throw new Error("test");
     const res = await serverFetch.post("/v2/tours", {
       body: formData, // ✅ reuse original FormData
     });

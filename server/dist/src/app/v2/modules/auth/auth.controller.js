@@ -8,19 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const enums_1 = require("../../../../../prisma/generated/enums");
+const appError_1 = __importDefault(require("../../../helpers/appError"));
 const catchAsync_1 = require("../../../utils/catchAsync");
 const sendResponse_1 = require("../../../utils/sendResponse");
 const auth_service_1 = require("./auth.service");
 const login = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    yield auth_service_1.AuthService.login(res, req.body.email, req.body.password);
+    const data = yield auth_service_1.AuthService.login(res, req.body);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: 200,
         success: true,
         message: "Logged In successfully",
-        data: null,
+        data,
     });
 }));
 const loginWithGoogle = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -88,6 +92,26 @@ const changePassword = (0, catchAsync_1.catchAsync)((req, res, next) => __awaite
         data: null,
     });
 }));
+const verify2FA = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        message: "2FA verified successfully",
+        success: true,
+        data: yield auth_service_1.AuthService.verify2FA(req.body, res),
+    });
+}));
+const getSavedDevices = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    if (!user) {
+        throw new appError_1.default(403, "You are not logged in");
+    }
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        message: "Devices retrieved successfully",
+        success: true,
+        data: yield auth_service_1.AuthService.savedDevices(req.user.userId),
+    });
+}));
 exports.AuthController = {
     login,
     loginWithGoogle,
@@ -97,4 +121,6 @@ exports.AuthController = {
     forgotPassword,
     resetPassword,
     changePassword,
+    verify2FA,
+    getSavedDevices,
 };

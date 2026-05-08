@@ -24,7 +24,7 @@ const getGuides = async (queryString?: Record<string, string>) => {
 
   return {
     guides: [...new Set(res.flatMap((guide) => guide.languages))],
-    meta: { total, limit: 20 },
+    meta: { total, limit: 20, page: 1 },
   };
 };
 
