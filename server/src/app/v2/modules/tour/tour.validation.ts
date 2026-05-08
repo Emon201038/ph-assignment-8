@@ -38,6 +38,12 @@ export const createTourSchema = z.object({
     .min(1, "At least one difficulty is required"),
   isPublished: z.boolean().default(false),
   featured: z.boolean().default(false),
+  guides: z
+    .string("Guide ID is required")
+    .min(1)
+    .transform((z) => {
+      return z.split(",");
+    }),
 });
 
 export const toggleTourGuideSchema = z.object({

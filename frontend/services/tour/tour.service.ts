@@ -21,6 +21,10 @@ const tourSchema = z.object({
   isPublished: z.boolean().optional().default(false),
   featured: z.boolean().optional().default(false),
 
+  guides: z
+    .string("guides is required")
+    .min(1, "At least one guide is required"),
+
   image: z
     .instanceof(File)
     .refine((file) => file.size > 0, "Image is required")
@@ -44,6 +48,7 @@ const extractPayload = (formData: FormData) => ({
   difficulty: formData.get("difficulty"),
   image: formData.get("image"),
 
+  guides: formData.get("guides"),
   isActive: formData.get("isPublished") === "on",
   featured: formData.get("featured") === "on",
 });
@@ -51,8 +56,7 @@ const extractPayload = (formData: FormData) => ({
 export const createTour = async (_: unknown, formData: FormData) => {
   const isPublished = formData.get("isPublished") === "on";
   const featured = formData.get("featured") === "on";
-  const guides = formData.getAll("guides");
-  console.log(guides);
+  const guides = formData.get("guides");
   formData.delete("isPublished");
   formData.delete("featured");
 
@@ -78,7 +82,6 @@ export const createTour = async (_: unknown, formData: FormData) => {
   }
 
   try {
-    throw new Error("test");
     const res = await serverFetch.post("/v2/tours", {
       body: formData, // ✅ reuse original FormData
     });

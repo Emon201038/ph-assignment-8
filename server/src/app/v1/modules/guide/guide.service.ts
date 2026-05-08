@@ -125,14 +125,6 @@ const updateGuide = async (req: Request) => {
       { new: true },
     ).session(session);
 
-    console.log({
-      name: data.name,
-      phone: data.phone,
-      address: data.address,
-      gender: data.gender,
-      bio: data.bio,
-    });
-
     // Update user
     await User.findOneAndUpdate(
       { _id: id },

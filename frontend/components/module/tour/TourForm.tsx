@@ -47,6 +47,7 @@ import { useRouter } from "next/navigation";
 import useBeforeUnload from "@/hooks/useBeforeUnload";
 import { AssignGuides } from "./AssignGuide";
 import { IUser } from "@/interfaces/user.interface";
+import { set } from "zod";
 
 interface TourFormProps {
   tourData?: ITour;
@@ -86,6 +87,12 @@ const TourForm = ({
 
   const action = !isEdit ? createTour : updateTour;
   const [state, formAction, isPending] = useActionState(action, null);
+
+  useEffect(() => {
+    if (guides.length) {
+      setSelectedGuides(guides);
+    }
+  }, [guides]);
 
   useEffect(() => {
     if (state?.success) {

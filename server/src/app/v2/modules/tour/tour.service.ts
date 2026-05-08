@@ -326,7 +326,6 @@ const createTourInDB = async (
       throw new AppError(400, "Image upload failed");
     }
 
-    console.log(result);
     imageUrl = result.url;
   }
 
@@ -335,37 +334,51 @@ const createTourInDB = async (
   }
 
   // Create tour
-  const result = await prisma.tour.create({
-    data: {
-      title,
-      description,
-      destinationId,
-      category: category.toUpperCase() as TourCategory,
-      priceFrom,
-      image: imageUrl,
-      slug: tourSlug,
-      durationDays,
-      maxGroupSize,
-      difficulty: TourDifficulty.MODERATE,
-      createdById: userId,
-    },
-    include: {
-      destination: {
-        select: {
-          id: true,
-          name: true,
-          city: true,
-          country: true,
+  const { tour: result } = await prisma.$transaction(async (tnx) => {
+    const tour = await tnx.tour.create({
+      data: {
+        title,
+        description,
+        destinationId,
+        category: category.toUpperCase() as TourCategory,
+        priceFrom,
+        image: imageUrl,
+        slug: tourSlug,
+        durationDays,
+        maxGroupSize,
+        difficulty: TourDifficulty.MODERATE,
+        createdById: userId,
+      },
+      include: {
+        destination: {
+          select: {
+            id: true,
+            name: true,
+            city: true,
+            country: true,
+          },
+        },
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
         },
       },
-      creator: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
-    },
+    });
+
+    const tourGuides = await tnx.tour_Guide.createMany({
+      data: payload.guides.map((guideId) => ({
+        tourId: tour.id,
+        guideId,
+      })),
+    });
+
+    return {
+      tour,
+      tourGuides,
+    };
   });
 
   return result;
@@ -385,7 +398,7 @@ const updateTourInDB = async (
   payload: CreateTourInput,
   file?: Express.Multer.File,
 ) => {
-  const { category, difficulty, destinationId, ...body } = payload;
+  const { category, difficulty, destinationId, guides = [], ...body } = payload;
 
   const slug = slugify(payload.title, {
     lower: true,
@@ -395,31 +408,73 @@ const updateTourInDB = async (
 
   let imageUrl: string | undefined;
 
+  // Upload image only if new file exists
   if (file) {
     const uploadedRes = await uploadFileToCloudinary(file, "tour-buddy/tours");
+
     if (!uploadedRes?.url) {
       throw new AppError(400, "Image upload failed");
     }
+
     imageUrl = uploadedRes.url;
   }
 
-  const result = await prisma.tour.update({
-    where: { id },
-    data: {
-      ...body,
-      slug,
-      destination: {
-        connect: { id: destinationId },
+  const result = await prisma.$transaction(async (tx) => {
+    const updatedTour = await tx.tour.update({
+      where: { id },
+      data: {
+        ...body,
+        slug,
+        category: category as TourCategory,
+        difficulty: difficulty as TourDifficulty,
+
+        destination: {
+          connect: { id: destinationId },
+        },
+
+        ...(imageUrl && { image: imageUrl }),
       },
-      category: category as TourCategory,
-      difficulty: difficulty as TourDifficulty,
-      ...(imageUrl && { image: imageUrl }),
-    },
+    });
+
+    await tx.tour_Guide.deleteMany({
+      where: {
+        tourId: id,
+        guideId: {
+          notIn: guides,
+        },
+      },
+    });
+
+    const existingGuides = await tx.tour_Guide.findMany({
+      where: {
+        tourId: id,
+      },
+      select: {
+        guideId: true,
+      },
+    });
+
+    const existingGuideIds = existingGuides.map((guide) => guide.guideId);
+
+    const newGuideIds = guides.filter(
+      (guideId) => !existingGuideIds.includes(guideId),
+    );
+
+    if (newGuideIds.length > 0) {
+      await tx.tour_Guide.createMany({
+        data: newGuideIds.map((guideId) => ({
+          tourId: id,
+          guideId,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    return updatedTour;
   });
 
   return result;
 };
-
 const getTourGuides = async (tourId: string, searchTerm?: string) => {
   let whereConditions: Prisma.Tour_GuideWhereInput[] = [
     {
@@ -452,14 +507,13 @@ const getTourGuides = async (tourId: string, searchTerm?: string) => {
     });
   }
 
-  console.log(whereConditions);
-
   const result = await prisma.tour_Guide.findMany({
     where: { AND: whereConditions },
     take: 10,
     select: {
       guide: {
         select: {
+          id: true,
           name: true,
           phone: true,
           city: true,
@@ -468,7 +522,7 @@ const getTourGuides = async (tourId: string, searchTerm?: string) => {
       },
     },
   });
-  return result;
+  return result.map((g) => ({ ...g.guide }));
 };
 
 const toggleTourGuide = async (tourId: string, guideId: string) => {

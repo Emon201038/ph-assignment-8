@@ -16,8 +16,10 @@ const page = async ({
   const { isSlug = true } = await searchParams;
   const res = await serverFetch.get(`/v2/tours/${slug}?isSlug=${isSlug}`);
   const data: IResponse<ITour> = await res.json();
-  console.log(data);
-  return <UpdateTour tour={data.data} />;
+
+  const guidesRes = await serverFetch.get(`/v2/tours/${data.data.id}/guides`);
+  const guidesData = await guidesRes.json();
+  return <UpdateTour tour={data.data} guides={guidesData.data} />;
 };
 
 export default page;

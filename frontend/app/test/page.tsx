@@ -9,8 +9,7 @@ const TouristsManagementLoading = () => {
       onSubmit={(e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        console.log(formData.getAll("guides"));
-        console.log(selectedGuides);
+        formData.getAll("guides");
       }}
     >
       <AssignGuides />

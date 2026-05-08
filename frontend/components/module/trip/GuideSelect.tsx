@@ -136,8 +136,6 @@ export function GuideSearchSelect({
     }
   }, [open]);
 
-  console.log(guides);
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild id={id}>

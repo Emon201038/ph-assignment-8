@@ -79,7 +79,6 @@ export class QueryBuilder<T extends Document> {
     this.filters = { ...this.filters, ...filters };
     this.mongooseQuery = this.model.find(this.filters);
 
-    console.log(this.filters, this.queryParams, filters);
     return this;
   }
 
@@ -97,7 +96,7 @@ export class QueryBuilder<T extends Document> {
     refModel: Model<any>,
     localField: string,
     filterFields: Record<string, string>,
-    foreignField: string = "_id"
+    foreignField: string = "_id",
   ): Promise<this> {
     const refFilters: Record<string, any> = {};
 
@@ -146,7 +145,7 @@ export class QueryBuilder<T extends Document> {
         const existingIds = existingFilter.$in.map((id: any) => id.toString());
         const newIds = matchingValues.map((id: any) => id.toString());
         const intersection = existingIds.filter((id: string) =>
-          newIds.includes(id)
+          newIds.includes(id),
         );
 
         if (intersection.length > 0) {
@@ -154,7 +153,7 @@ export class QueryBuilder<T extends Document> {
             ...this.filters,
             [localField]: {
               $in: intersection.map(
-                (id: string) => new mongoose.Types.ObjectId(id)
+                (id: string) => new mongoose.Types.ObjectId(id),
               ),
             },
           };
@@ -212,7 +211,7 @@ export class QueryBuilder<T extends Document> {
     refModel: Model<any>,
     localField: string,
     searchFields: string[],
-    foreignField: string = "_id"
+    foreignField: string = "_id",
   ): Promise<this> {
     const keyword = this.queryParams.searchTerm;
     if (!keyword || searchFields.length === 0) {
@@ -279,21 +278,21 @@ export class QueryBuilder<T extends Document> {
 
   populate(
     fields?: string[] | string,
-    renameFields?: Record<string, string>
+    renameFields?: Record<string, string>,
   ): this {
     // Handle if fields is a string (single field)
     const fieldsArray: string[] = !fields
       ? []
       : typeof fields === "string"
-      ? [fields]
-      : fields;
+        ? [fields]
+        : fields;
 
     const populateFromQuery = this.queryParams.populate as string;
     const fieldsToPopulate = populateFromQuery
       ? populateFromQuery.split(",")
       : fieldsArray.length
-      ? fieldsArray
-      : [];
+        ? fieldsArray
+        : [];
 
     fieldsToPopulate.forEach((field) => {
       // Support syntax: "author:name;email" => populate only name, email
@@ -324,8 +323,8 @@ export class QueryBuilder<T extends Document> {
     const fieldsToSelect = fields.length
       ? fields
       : selectFromQuery
-      ? selectFromQuery.split(",")
-      : [];
+        ? selectFromQuery.split(",")
+        : [];
 
     if (fieldsToSelect.length > 0) {
       const projection = fieldsToSelect.join(" ");

@@ -21,7 +21,6 @@ const page = async ({
   const res = await serverFetch.get(`/v2/trips?${queryString}`);
   const data = await res.json();
 
-  console.log(data.data);
   return (
     <div className="space-y-4 p-6">
       <TripManagementHeader />
