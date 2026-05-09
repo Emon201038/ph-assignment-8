@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { ITrip, TripStatus } from "@/interfaces/trip.interface";
+import { ITrip, TripInclude, TripStatus } from "@/interfaces/trip.interface";
 import { createTrip, updateTrip } from "@/services/trip/trip.service";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { TourSearchSelect } from "./TourSelect";
@@ -18,23 +18,37 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TOUR_DURATIONS } from "@/constants/user";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { useRouter } from "next/navigation";
 
 interface TripFormProps {
   trip?: ITrip;
+  tripIncludes: TripInclude[];
   onClose?: () => void;
   onSuccess?: () => void;
 }
 
-const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
+const TripForm = ({
+  onClose,
+  onSuccess,
+  trip,
+  tripIncludes,
+}: TripFormProps) => {
   const isEdit = !!trip;
   const [selectedTourId, setSelectedTourId] = useState(trip?.tour?._id || "");
   const [selectedGuideId, setSelectedGuideId] = useState(trip?.guide?.id || "");
-  const [duration, setDuration] = useState<number>();
+  const [duration, setDuration] = useState<number>(1);
   const [status, setStatus] = useState<TripStatus>(
     trip?.status || TripStatus.OPEN,
   );
 
+  const [selectedTripIncludes, setSelectedTripIncludes] = useState<string[]>(
+    trip?.includes?.map((include) => include.id) || [],
+  );
+
   const formRef = useRef<HTMLFormElement>(null);
+
+  const router = useRouter();
 
   const [state, formAction, isPending] = useActionState(
     isEdit ? updateTrip : createTrip,
@@ -50,6 +64,8 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
 
       onSuccess?.();
       onClose?.();
+
+      router.push("/admin/dashboard/trips-management");
     } else if (state && !state.success) {
       if ((state.errors && state.errors?.length === 0) || !state.errors)
         toast.error(state.message);
@@ -63,10 +79,9 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
       className="space-y-4 max-w-4xl w-full mx-auto "
     >
       {isEdit && <input type="hidden" name="tripId" value={trip?._id} />}
-      <input type="hidden" name="status" value={status} />
       <input type="hidden" name="tourId" value={selectedTourId} />
       <input type="hidden" name="guideId" value={selectedGuideId} />
-      <input type="hidden" name="duration" value={duration} />
+      <input type="hidden" name="tripIncludes" value={selectedTripIncludes} />
       <Field>
         <FieldLabel htmlFor="tourId">Select Tour</FieldLabel>
         <FieldContent>
@@ -78,7 +93,6 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
           <InputFieldError state={state as IInputErrorState} field="tourId" />
         </FieldContent>
       </Field>
-
       <Field>
         <FieldLabel htmlFor="guideId">Assign Guide</FieldLabel>
         <FieldContent>
@@ -91,12 +105,12 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
           <InputFieldError state={state as IInputErrorState} field="guideId" />
         </FieldContent>
       </Field>
-
       {isEdit && (
         <Field>
           <FieldLabel htmlFor="status">Status</FieldLabel>
           <FieldContent>
             <Select
+              name="status"
               value={status}
               onValueChange={(e) => setStatus(e as TripStatus)}
             >
@@ -118,7 +132,6 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
           </FieldContent>
         </Field>
       )}
-
       <Field>
         <FieldLabel htmlFor="startDate">Start Date</FieldLabel>
         <FieldContent>
@@ -142,23 +155,22 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
           />
         </FieldContent>
       </Field>
-
       <Field>
-        <FieldLabel htmlFor="duration_days">Duration</FieldLabel>
+        <FieldLabel htmlFor="duration">Duration</FieldLabel>
         <FieldContent>
           <Select
+            name="duration"
             value={duration?.toString()}
             onValueChange={(e) => setDuration(parseInt(e))}
           >
-            <SelectTrigger name="duration_days" className="w-full">
+            <SelectTrigger name="duration" className="w-full">
               <SelectValue placeholder="Select a duration" />
             </SelectTrigger>
-            <SelectContent id="duration_days">
+            <SelectContent id="duration">
               {TOUR_DURATIONS.map((duration) => (
                 <SelectItem
                   key={duration.value}
                   value={duration.value.toString()}
-                  // className="capitalize"
                 >
                   {duration.label}
                 </SelectItem>
@@ -168,7 +180,6 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
           <InputFieldError state={state} field="duration" />
         </FieldContent>
       </Field>
-
       <Field>
         <FieldLabel htmlFor="maxCapacity">Max Capacity</FieldLabel>
         <FieldContent>
@@ -193,7 +204,19 @@ const TripForm = ({ onClose, onSuccess, trip }: TripFormProps) => {
           />
         </FieldContent>
       </Field>
-
+      <Field>
+        <FieldLabel htmlFor="tripIncludes">Trip Includes</FieldLabel>
+        <FieldContent>
+          <MultiSelect
+            options={tripIncludes.map((t) => ({
+              label: t.description,
+              value: t.id,
+            }))}
+            value={selectedTripIncludes}
+            onValueChange={setSelectedTripIncludes}
+          />
+        </FieldContent>
+      </Field>
       <div className="flex gap-3 pt-4">
         <Button type="submit" className="flex-1" disabled={isPending}>
           {isPending

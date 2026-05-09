@@ -7,19 +7,13 @@ import z from "zod";
 
 const tripSchema = z
   .object({
-    tourId: z
-      .string("Tour is required")
-      .regex(/^[0-9a-fA-F]{24}$/, "Invalid tour ID"),
-    guideId: z
-      .string("Guide is required")
-      .regex(/^[0-9a-fA-F]{24}$/, "Invalid guide ID"),
+    tourId: z.string("Tour is required"),
+    guideId: z.string("Guide is required"),
     startDate: z.coerce.date("Start date is required"),
-    duration: z.coerce
-      .string("Duration is required")
-      .transform((d) => parseInt(d)),
-    // .min(180, "Duration should minimum 3 hours")
-    // .max(10080, "Duration should maximum 7 days"),
-    maxCapacity: z
+    duration: z.coerce.string("Duration is required").transform((d) => {
+      return parseInt(d);
+    }),
+    maxGuests: z
       .string("Max capacity is required")
       .min(1, "Max capacity is required")
       .transform((z) => {
@@ -27,22 +21,25 @@ const tripSchema = z
       })
       .refine((data) => data > 0, {
         message: "Max capacity must be greater than 0",
-        path: ["maxCapacity"],
+        path: ["maxGuests"],
       })
       .refine((data) => data <= 50, {
         message: "Max capacity must be less than 50",
-        path: ["maxCapacity"],
+        path: ["maxGuests"],
       }),
-    status: z.enum(Object.values(TripStatus)).default(TripStatus.OPEN),
+    status: z.enum(Object.values(TripStatus)).default(TripStatus.UPCOMING),
+    tripIncludes: z
+      .string("Trip includes is required")
+      .min(1, "Trip includes is required"),
   })
   .refine(
     (data) => {
-      return data.duration >= 180 && data.duration <= 10080;
+      return data.duration >= 1 && data.duration <= 7;
     },
     {
-      message: "Duration must be between 3 hours and 7 days",
+      message: "Duration must be between 1 - 7 days",
       path: ["duration"],
-    }
+    },
   );
 
 export const createTrip = async (prevState: unknown, formData: FormData) => {
@@ -51,7 +48,8 @@ export const createTrip = async (prevState: unknown, formData: FormData) => {
     guideId: formData.get("guideId"),
     startDate: formData.get("startDate"),
     duration: formData.get("duration"),
-    maxCapacity: formData.get("maxCapacity"),
+    maxGuests: formData.get("maxCapacity"),
+    tripIncludes: formData.get("tripIncludes"),
   };
   try {
     const validationResult = zodValidator(payload, tripSchema);
@@ -73,7 +71,7 @@ export const createTrip = async (prevState: unknown, formData: FormData) => {
       };
     }
 
-    const res = await serverFetch.post("/trips", {
+    const res = await serverFetch.post("/v2/trips", {
       body: JSON.stringify(validationResult.data),
       headers: {
         "Content-Type": "application/json",
@@ -157,7 +155,7 @@ export const updateTrip = async (prevState: unknown, formData: FormData) => {
 };
 
 export const getTrips = async (
-  queryString: string
+  queryString: string,
 ): Promise<IResponse<ITrip[]>> => {
   const res = await serverFetch.get(`/trips?${queryString}`);
   const data = await res.json();
@@ -187,7 +185,7 @@ export const bookTrip = async (payload: { tripId: string; seats: number }) => {
         seats: z
           .number("seats is required. Type missmatch")
           .min(1, "seats is required. Quantity missmatch"),
-      })
+      }),
     );
     if (!validationResult.success && validationResult.errors) {
       return {

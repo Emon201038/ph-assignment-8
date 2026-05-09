@@ -8,7 +8,7 @@ export enum TripStatus {
   ONGOING = "ONGOING",
   COMPLETED = "COMPLETED",
   CANCELLED = "CANCELLED",
-  UPCOMING = "UPCOMING",
+  UPCOMING = "SCHEDULED",
 }
 
 export interface IFinalItinerary {
@@ -28,7 +28,20 @@ export interface ITrip<T = string> {
   duration: number;
   maxCapacity: number;
   bookedSeats: number;
+  includes: TripInclude[];
   finalItinerary: IFinalItinerary[];
   status: TripStatus;
   isDeleted: boolean;
+}
+
+export interface TripInclude {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  icon: string;
+  createdAt: Date;
+  _count: {
+    trips: number;
+  };
 }

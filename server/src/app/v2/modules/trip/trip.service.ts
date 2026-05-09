@@ -1,7 +1,8 @@
-import { Prisma } from "../../../../../prisma/generated/client";
+import { Prisma, UserRole } from "../../../../../prisma/generated/client";
 import prisma from "../../../config/db";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import AppError from "../../../helpers/appError";
+import { CreateTripInput } from "./trip.validation";
 
 const getTripInclude = async (filters: Record<string, string>) => {
   const andConditions: Prisma.TripIncludeWhereInput[] = [];
@@ -157,7 +158,10 @@ const getAllTripsFromDB = async (options: any, filters: any) => {
       page,
       limit,
     },
-    data: result,
+    data: result.map((trip) => ({
+      ...trip,
+      includes: trip.includes.map((include) => include.tripInclude),
+    })),
   };
 };
 
@@ -196,10 +200,8 @@ const getSingleTrip = async (id: string) => {
   };
 };
 
-const createTripInDB = async (
-  payload: Prisma.TripCreateInput & { tourId: string; guideId: string },
-) => {
-  const { tourId, guideId, startDate, endDate, price, maxGuests, includes } =
+const createTripInDB = async (payload: CreateTripInput) => {
+  const { tourId, guideId, startDate, duration, maxGuests, tripIncludes } =
     payload;
 
   // Validate tour exists
@@ -212,49 +214,71 @@ const createTripInDB = async (
   }
 
   // Validate guide exists if provided
-  if (guideId) {
-    const guideExists = await prisma.user.findUnique({
-      where: { id: guideId as string },
-    });
+  const guideExists = await prisma.user.findUnique({
+    where: { id: guideId as string },
+  });
 
-    if (!guideExists) {
-      throw new AppError(404, "Guide not found");
-    }
+  if (!guideExists) {
+    throw new AppError(404, "Guide not found");
+  }
+
+  if (guideExists.role !== UserRole.GUIDE) {
+    throw new AppError(400, "User is not a guide");
   }
 
   // Validate dates
-  const startDateObj = new Date(startDate as string | Date);
-  const endDateObj = new Date(endDate as string | Date);
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(startDateObj);
+  endDateObj.setDate(startDateObj.getDate() + duration);
 
-  if (startDateObj >= endDateObj) {
-    throw new AppError(400, "Start date must be before end date");
+  if (duration <= 0) {
+    throw new AppError(400, "Duration must be greater than 0");
   }
 
-  if (startDateObj < new Date()) {
+  const now = new Date();
+
+  if (startDateObj.getTime() <= now.getTime()) {
     throw new AppError(400, "Start date must be in the future");
   }
 
-  // Create trip
-  const result = await prisma.trip.create({
-    data: {
-      tourId: tourId as string,
-      guideId: guideId as string | null,
-      startDate: startDateObj,
-      endDate: endDateObj,
-      price: price as number,
-      maxGuests: maxGuests as number,
-    },
-    include: {
-      tour: true,
-      guide: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          city: true,
+  const result = await prisma.$transaction(async (tx) => {
+    const trip = await tx.trip.create({
+      data: {
+        tourId: tourId,
+        guideId: guideId,
+        startDate: startDateObj,
+        endDate: endDateObj,
+        price: tourExists.priceFrom,
+        maxGuests: maxGuests,
+      },
+      include: {
+        tour: true,
+        guide: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            city: true,
+          },
+        },
+        includes: {
+          select: {
+            tripInclude: true,
+          },
         },
       },
-    },
+    });
+
+    await tx.tripIncludeItem.createMany({
+      data: tripIncludes.map((include) => ({
+        tripId: trip.id,
+        tripIncludeId: include,
+      })),
+    });
+    return {
+      ...trip,
+      includes: trip.includes.map((include) => include.tripInclude),
+    };
   });
 
   return result;
