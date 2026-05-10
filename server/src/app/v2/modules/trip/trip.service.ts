@@ -201,7 +201,7 @@ const getSingleTrip = async (id: string) => {
 };
 
 const createTripInDB = async (payload: CreateTripInput) => {
-  const { tourId, guideId, startDate, duration, maxGuests, tripIncludes } =
+  const { tourId, guideId, startDate, endDate, maxGuests, tripIncludes } =
     payload;
 
   // Validate tour exists
@@ -226,28 +226,13 @@ const createTripInDB = async (payload: CreateTripInput) => {
     throw new AppError(400, "User is not a guide");
   }
 
-  // Validate dates
-  const startDateObj = new Date(startDate);
-  const endDateObj = new Date(startDateObj);
-  endDateObj.setDate(startDateObj.getDate() + duration);
-
-  if (duration <= 0) {
-    throw new AppError(400, "Duration must be greater than 0");
-  }
-
-  const now = new Date();
-
-  if (startDateObj.getTime() <= now.getTime()) {
-    throw new AppError(400, "Start date must be in the future");
-  }
-
   const result = await prisma.$transaction(async (tx) => {
     const trip = await tx.trip.create({
       data: {
         tourId: tourId,
         guideId: guideId,
-        startDate: startDateObj,
-        endDate: endDateObj,
+        startDate: startDate,
+        endDate: endDate,
         price: tourExists.priceFrom,
         maxGuests: maxGuests,
       },
@@ -284,9 +269,95 @@ const createTripInDB = async (payload: CreateTripInput) => {
   return result;
 };
 
+const updateTripInDB = async (id: string, payload: CreateTripInput) => {
+  const { tourId, guideId, startDate, endDate, maxGuests, tripIncludes } =
+    payload;
+
+  // Validate tour exists
+  const tourExists = await prisma.tour.findUnique({
+    where: { id: tourId as string },
+  });
+
+  if (!tourExists) {
+    throw new AppError(404, "Tour not found");
+  }
+
+  // Validate guide exists if provided
+  const guideExists = await prisma.user.findUnique({
+    where: { id: guideId as string },
+  });
+
+  if (!guideExists) {
+    throw new AppError(404, "Guide not found");
+  }
+
+  if (guideExists.role !== UserRole.GUIDE) {
+    throw new AppError(400, "User is not a guide");
+  }
+
+  const result = await prisma.$transaction(async (tx) => {
+    const trip = await tx.trip.update({
+      where: { id },
+      data: {
+        tourId,
+        guideId,
+        startDate,
+        endDate,
+        maxGuests,
+        price: tourExists.priceFrom,
+      },
+      include: {
+        tour: true,
+        guide: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            city: true,
+          },
+        },
+        includes: {
+          select: {
+            tripInclude: true,
+          },
+        },
+      },
+    });
+
+    await tx.tripIncludeItem.deleteMany({ where: { tripId: id } });
+    await tx.tripIncludeItem.createMany({
+      data: tripIncludes.map((include) => ({
+        tripId: trip.id,
+        tripIncludeId: include,
+      })),
+    });
+    return {
+      ...trip,
+      includes: trip.includes.map((include) => include.tripInclude),
+    };
+  });
+
+  return result;
+};
+
+const softDeleteTripInDB = async (id: string) => {
+  const result = await prisma.trip.update({
+    where: {
+      id,
+    },
+    data: {
+      isDeleted: true,
+      deletedAt: new Date(),
+    },
+  });
+  return result;
+};
+
 export const TripService = {
   getTripInclude,
   getAllTripsFromDB,
   getSingleTrip,
   createTripInDB,
+  updateTripInDB,
+  softDeleteTripInDB,
 };

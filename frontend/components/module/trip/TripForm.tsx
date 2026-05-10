@@ -35,9 +35,8 @@ const TripForm = ({
   tripIncludes,
 }: TripFormProps) => {
   const isEdit = !!trip;
-  const [selectedTourId, setSelectedTourId] = useState(trip?.tour?._id || "");
+  const [selectedTourId, setSelectedTourId] = useState(trip?.tour?.id || "");
   const [selectedGuideId, setSelectedGuideId] = useState(trip?.guide?.id || "");
-  const [duration, setDuration] = useState<number>(1);
   const [status, setStatus] = useState<TripStatus>(
     trip?.status || TripStatus.OPEN,
   );
@@ -56,6 +55,17 @@ const TripForm = ({
   );
 
   useEffect(() => {
+    if (trip) {
+      setSelectedTourId(trip.tour?.id || "");
+      setSelectedTripIncludes(
+        trip.includes?.map((include) => include.id) || [],
+      );
+      setSelectedGuideId(trip.guide?.id || "");
+      setStatus(trip.status);
+    }
+  }, [trip]);
+
+  useEffect(() => {
     if (state?.success) {
       toast.success(state.message);
       if (formRef?.current) {
@@ -70,7 +80,7 @@ const TripForm = ({
       if ((state.errors && state.errors?.length === 0) || !state.errors)
         toast.error(state.message);
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <form
@@ -78,7 +88,7 @@ const TripForm = ({
       action={formAction}
       className="space-y-4 max-w-4xl w-full mx-auto "
     >
-      {isEdit && <input type="hidden" name="tripId" value={trip?._id} />}
+      {isEdit && <input type="hidden" name="tripId" value={trip?.id} />}
       <input type="hidden" name="tourId" value={selectedTourId} />
       <input type="hidden" name="guideId" value={selectedGuideId} />
       <input type="hidden" name="tripIncludes" value={selectedTripIncludes} />
@@ -86,9 +96,10 @@ const TripForm = ({
         <FieldLabel htmlFor="tourId">Select Tour</FieldLabel>
         <FieldContent>
           <TourSearchSelect
-            value={trip?.tour?._id || selectedTourId}
+            value={trip?.tour?.id || selectedTourId}
             onValueChange={setSelectedTourId}
             id="tourId"
+            disabled={isEdit}
           />
           <InputFieldError state={state as IInputErrorState} field="tourId" />
         </FieldContent>
@@ -99,7 +110,9 @@ const TripForm = ({
           <GuideSearchSelect
             selectedTourId={trip?.tour?.id || selectedTourId}
             value={trip?.guide?.id || selectedGuideId}
-            onValueChange={setSelectedGuideId}
+            onValueChange={(value) => {
+              setSelectedGuideId(value);
+            }}
             id="guideId"
           />
           <InputFieldError state={state as IInputErrorState} field="guideId" />
@@ -156,51 +169,46 @@ const TripForm = ({
         </FieldContent>
       </Field>
       <Field>
-        <FieldLabel htmlFor="duration">Duration</FieldLabel>
+        <FieldLabel htmlFor="endDate">End Date</FieldLabel>
         <FieldContent>
-          <Select
-            name="duration"
-            value={duration?.toString()}
-            onValueChange={(e) => setDuration(parseInt(e))}
-          >
-            <SelectTrigger name="duration" className="w-full">
-              <SelectValue placeholder="Select a duration" />
-            </SelectTrigger>
-            <SelectContent id="duration">
-              {TOUR_DURATIONS.map((duration) => (
-                <SelectItem
-                  key={duration.value}
-                  value={duration.value.toString()}
-                >
-                  {duration.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <InputFieldError state={state} field="duration" />
+          <Input
+            id="endDate"
+            name="endDate"
+            type="date"
+            min={new Date().toISOString().split("T")[0]}
+            defaultValue={
+              state?.formData?.endDate
+                ? (state?.formData?.endDate?.toString() as string)
+                : "".split("T")[0] ||
+                  (isEdit
+                    ? new Date(trip.endDate).toISOString().split("T")[0]
+                    : "")
+            }
+          />
+          <InputFieldError state={state as IInputErrorState} field="endDate" />
         </FieldContent>
       </Field>
       <Field>
-        <FieldLabel htmlFor="maxCapacity">Max Capacity</FieldLabel>
+        <FieldLabel htmlFor="maxGuests">Max Guests</FieldLabel>
         <FieldContent>
           <Input
-            id="maxCapacity"
-            name="maxCapacity"
+            id="maxGuests"
+            name="maxGuests"
             type="number"
             placeholder="e.g., 10"
             min="1"
             // max="50"
             defaultValue={
-              state?.formData?.maxCapacity
-                ? (state?.formData?.maxCapacity?.toString() as string)
+              state?.formData?.maxGuests
+                ? (state?.formData?.maxGuests?.toString() as string)
                 : isEdit
-                  ? trip.maxCapacity.toString()
+                  ? trip.maxGuests.toString()
                   : ""
             }
           />
           <InputFieldError
             state={state as IInputErrorState}
-            field="maxCapacity"
+            field="maxGuests"
           />
         </FieldContent>
       </Field>
@@ -216,6 +224,10 @@ const TripForm = ({
             onValueChange={setSelectedTripIncludes}
           />
         </FieldContent>
+        <InputFieldError
+          state={state as IInputErrorState}
+          field="tripIncludes"
+        />
       </Field>
       <div className="flex gap-3 pt-4">
         <Button type="submit" className="flex-1" disabled={isPending}>

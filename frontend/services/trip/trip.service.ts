@@ -10,21 +10,19 @@ const tripSchema = z
     tourId: z.string("Tour is required"),
     guideId: z.string("Guide is required"),
     startDate: z.coerce.date("Start date is required"),
-    duration: z.coerce.string("Duration is required").transform((d) => {
-      return parseInt(d);
-    }),
+    endDate: z.coerce.date("End date is required"),
     maxGuests: z
-      .string("Max capacity is required")
-      .min(1, "Max capacity is required")
+      .string("Max guests is required")
+      .min(1, "Max guests is required")
       .transform((z) => {
         return parseInt(z.toString());
       })
       .refine((data) => data > 0, {
-        message: "Max capacity must be greater than 0",
+        message: "Max guests must be greater than 0",
         path: ["maxGuests"],
       })
       .refine((data) => data <= 50, {
-        message: "Max capacity must be less than 50",
+        message: "Max guests must be less than 50",
         path: ["maxGuests"],
       }),
     status: z.enum(Object.values(TripStatus)).default(TripStatus.UPCOMING),
@@ -34,11 +32,11 @@ const tripSchema = z
   })
   .refine(
     (data) => {
-      return data.duration >= 1 && data.duration <= 7;
+      return data.endDate >= data.startDate;
     },
     {
-      message: "Duration must be between 1 - 7 days",
-      path: ["duration"],
+      message: "End date must be after start date",
+      path: ["endDate"],
     },
   );
 
@@ -47,8 +45,8 @@ export const createTrip = async (prevState: unknown, formData: FormData) => {
     tourId: formData.get("tourId"),
     guideId: formData.get("guideId"),
     startDate: formData.get("startDate"),
-    duration: formData.get("duration"),
-    maxGuests: formData.get("maxCapacity"),
+    endDate: formData.get("endDate"),
+    maxGuests: formData.get("maxGuests"),
     tripIncludes: formData.get("tripIncludes"),
   };
   try {
@@ -103,8 +101,9 @@ export const updateTrip = async (prevState: unknown, formData: FormData) => {
     tourId: formData.get("tourId"),
     guideId: formData.get("guideId"),
     startDate: formData.get("startDate"),
-    duration: formData.get("duration"),
-    maxCapacity: formData.get("maxCapacity"),
+    endDate: formData.get("endDate"),
+    maxGuests: formData.get("maxGuests"),
+    tripIncludes: formData.get("tripIncludes"),
     status: formData.get("status"),
   };
   try {
@@ -127,7 +126,7 @@ export const updateTrip = async (prevState: unknown, formData: FormData) => {
       };
     }
 
-    const res = await serverFetch.put(`/trips/${formData.get("tripId")}`, {
+    const res = await serverFetch.put(`/v2/trips/${formData.get("tripId")}`, {
       body: JSON.stringify(validationResult.data),
       headers: {
         "Content-Type": "application/json",

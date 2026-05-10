@@ -55,6 +55,8 @@ export type DestinationMinAggregateOutputType = {
   averageCost: number | null
   currency: string | null
   transportation: string | null
+  isDeleted: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +76,8 @@ export type DestinationMaxAggregateOutputType = {
   averageCost: number | null
   currency: string | null
   transportation: string | null
+  isDeleted: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -95,6 +99,8 @@ export type DestinationCountAggregateOutputType = {
   currency: number
   languages: number
   transportation: number
+  isDeleted: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -130,6 +136,8 @@ export type DestinationMinAggregateInputType = {
   averageCost?: true
   currency?: true
   transportation?: true
+  isDeleted?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -149,6 +157,8 @@ export type DestinationMaxAggregateInputType = {
   averageCost?: true
   currency?: true
   transportation?: true
+  isDeleted?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -170,6 +180,8 @@ export type DestinationCountAggregateInputType = {
   currency?: true
   languages?: true
   transportation?: true
+  isDeleted?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -278,6 +290,8 @@ export type DestinationGroupByOutputType = {
   currency: string
   languages: string[]
   transportation: string
+  isDeleted: boolean
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: DestinationCountAggregateOutputType | null
@@ -322,6 +336,8 @@ export type DestinationWhereInput = {
   currency?: Prisma.StringFilter<"Destination"> | string
   languages?: Prisma.StringNullableListFilter<"Destination">
   transportation?: Prisma.StringFilter<"Destination"> | string
+  isDeleted?: Prisma.BoolFilter<"Destination"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Destination"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Destination"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Destination"> | Date | string
   attractions?: Prisma.TopAttractionListRelationFilter
@@ -345,6 +361,8 @@ export type DestinationOrderByWithRelationInput = {
   currency?: Prisma.SortOrder
   languages?: Prisma.SortOrder
   transportation?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   attractions?: Prisma.TopAttractionOrderByRelationAggregateInput
@@ -371,6 +389,8 @@ export type DestinationWhereUniqueInput = Prisma.AtLeast<{
   currency?: Prisma.StringFilter<"Destination"> | string
   languages?: Prisma.StringNullableListFilter<"Destination">
   transportation?: Prisma.StringFilter<"Destination"> | string
+  isDeleted?: Prisma.BoolFilter<"Destination"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Destination"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Destination"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Destination"> | Date | string
   attractions?: Prisma.TopAttractionListRelationFilter
@@ -394,6 +414,8 @@ export type DestinationOrderByWithAggregationInput = {
   currency?: Prisma.SortOrder
   languages?: Prisma.SortOrder
   transportation?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DestinationCountOrderByAggregateInput
@@ -423,6 +445,8 @@ export type DestinationScalarWhereWithAggregatesInput = {
   currency?: Prisma.StringWithAggregatesFilter<"Destination"> | string
   languages?: Prisma.StringNullableListFilter<"Destination">
   transportation?: Prisma.StringWithAggregatesFilter<"Destination"> | string
+  isDeleted?: Prisma.BoolWithAggregatesFilter<"Destination"> | boolean
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Destination"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Destination"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Destination"> | Date | string
 }
@@ -444,6 +468,8 @@ export type DestinationCreateInput = {
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
   transportation: string
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attractions?: Prisma.TopAttractionCreateNestedManyWithoutDestinationInput
@@ -467,6 +493,8 @@ export type DestinationUncheckedCreateInput = {
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
   transportation: string
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attractions?: Prisma.TopAttractionUncheckedCreateNestedManyWithoutDestinationInput
@@ -490,6 +518,8 @@ export type DestinationUpdateInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
   transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attractions?: Prisma.TopAttractionUpdateManyWithoutDestinationNestedInput
@@ -513,6 +543,8 @@ export type DestinationUncheckedUpdateInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
   transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attractions?: Prisma.TopAttractionUncheckedUpdateManyWithoutDestinationNestedInput
@@ -536,6 +568,8 @@ export type DestinationCreateManyInput = {
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
   transportation: string
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -557,6 +591,8 @@ export type DestinationUpdateManyMutationInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
   transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -578,6 +614,8 @@ export type DestinationUncheckedUpdateManyInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
   transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -607,6 +645,8 @@ export type DestinationCountOrderByAggregateInput = {
   currency?: Prisma.SortOrder
   languages?: Prisma.SortOrder
   transportation?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -633,6 +673,8 @@ export type DestinationMaxOrderByAggregateInput = {
   averageCost?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   transportation?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -652,6 +694,8 @@ export type DestinationMinOrderByAggregateInput = {
   averageCost?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   transportation?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -702,6 +746,10 @@ export type DestinationUpdatelanguagesInput = {
   push?: string | string[]
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type DestinationCreateNestedOneWithoutAttractionsInput = {
   create?: Prisma.XOR<Prisma.DestinationCreateWithoutAttractionsInput, Prisma.DestinationUncheckedCreateWithoutAttractionsInput>
   connectOrCreate?: Prisma.DestinationCreateOrConnectWithoutAttractionsInput
@@ -747,6 +795,8 @@ export type DestinationCreateWithoutAttractionsInput = {
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
   transportation: string
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tours?: Prisma.TourCreateNestedManyWithoutDestinationInput
@@ -769,6 +819,8 @@ export type DestinationUncheckedCreateWithoutAttractionsInput = {
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
   transportation: string
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tours?: Prisma.TourUncheckedCreateNestedManyWithoutDestinationInput
@@ -807,6 +859,8 @@ export type DestinationUpdateWithoutAttractionsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
   transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tours?: Prisma.TourUpdateManyWithoutDestinationNestedInput
@@ -829,6 +883,8 @@ export type DestinationUncheckedUpdateWithoutAttractionsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
   transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tours?: Prisma.TourUncheckedUpdateManyWithoutDestinationNestedInput
@@ -851,6 +907,8 @@ export type DestinationCreateWithoutToursInput = {
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
   transportation: string
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attractions?: Prisma.TopAttractionCreateNestedManyWithoutDestinationInput
@@ -873,6 +931,8 @@ export type DestinationUncheckedCreateWithoutToursInput = {
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
   transportation: string
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attractions?: Prisma.TopAttractionUncheckedCreateNestedManyWithoutDestinationInput
@@ -911,6 +971,8 @@ export type DestinationUpdateWithoutToursInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
   transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attractions?: Prisma.TopAttractionUpdateManyWithoutDestinationNestedInput
@@ -933,6 +995,8 @@ export type DestinationUncheckedUpdateWithoutToursInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
   transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attractions?: Prisma.TopAttractionUncheckedUpdateManyWithoutDestinationNestedInput
@@ -995,6 +1059,8 @@ export type DestinationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   currency?: boolean
   languages?: boolean
   transportation?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   attractions?: boolean | Prisma.Destination$attractionsArgs<ExtArgs>
@@ -1019,6 +1085,8 @@ export type DestinationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   currency?: boolean
   languages?: boolean
   transportation?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["destination"]>
@@ -1040,6 +1108,8 @@ export type DestinationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   currency?: boolean
   languages?: boolean
   transportation?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["destination"]>
@@ -1061,11 +1131,13 @@ export type DestinationSelectScalar = {
   currency?: boolean
   languages?: boolean
   transportation?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DestinationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "city" | "country" | "continent" | "image" | "description" | "overview" | "lat" | "lng" | "rating" | "averageCost" | "bestSeason" | "currency" | "languages" | "transportation" | "createdAt" | "updatedAt", ExtArgs["result"]["destination"]>
+export type DestinationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "city" | "country" | "continent" | "image" | "description" | "overview" | "lat" | "lng" | "rating" | "averageCost" | "bestSeason" | "currency" | "languages" | "transportation" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["destination"]>
 export type DestinationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   attractions?: boolean | Prisma.Destination$attractionsArgs<ExtArgs>
   tours?: boolean | Prisma.Destination$toursArgs<ExtArgs>
@@ -1097,6 +1169,8 @@ export type $DestinationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     currency: string
     languages: string[]
     transportation: string
+    isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["destination"]>
@@ -1540,6 +1614,8 @@ export interface DestinationFieldRefs {
   readonly currency: Prisma.FieldRef<"Destination", 'String'>
   readonly languages: Prisma.FieldRef<"Destination", 'String[]'>
   readonly transportation: Prisma.FieldRef<"Destination", 'String'>
+  readonly isDeleted: Prisma.FieldRef<"Destination", 'Boolean'>
+  readonly deletedAt: Prisma.FieldRef<"Destination", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Destination", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Destination", 'DateTime'>
 }

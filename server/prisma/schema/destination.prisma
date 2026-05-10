@@ -21,11 +21,14 @@ model Destination {
 
   transportation String
 
-  attractions TopAttraction[]
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  tours     Tour[]
+
+  attractions TopAttraction[]
+  tours       Tour[]
 }
 
 model TopAttraction {

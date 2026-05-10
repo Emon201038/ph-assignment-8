@@ -17,7 +17,7 @@ model TripIncludeItem {
   tripId        String
   tripIncludeId String
 
-  trip        Trip        @relation(fields: [tripId], references: [id])
+  trip        Trip        @relation(fields: [tripId], references: [id], onDelete: Cascade)
   tripInclude TripInclude @relation(fields: [tripIncludeId], references: [id])
 
   @@unique([tripId, tripIncludeId])
@@ -36,11 +36,13 @@ model Trip {
   maxGuests   Int
   bookedSeats Int   @default(0)
 
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
   status TripStatus @default(SCHEDULED)
 
-  tour  Tour  @relation(fields: [tourId], references: [id])
-  guide User? @relation(fields: [guideId], references: [id])
-
+  tour     Tour              @relation(fields: [tourId], references: [id])
+  guide    User?             @relation(fields: [guideId], references: [id])
   includes TripIncludeItem[]
 
   createdAt DateTime @default(now())

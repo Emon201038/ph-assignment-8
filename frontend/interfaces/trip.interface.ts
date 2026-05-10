@@ -19,6 +19,7 @@ export interface IFinalItinerary {
 
 export interface ITrip<T = string> {
   _id: string;
+  id: string;
   tourId: T;
   guide: IUser<IGuide>;
   tour: ITour;
@@ -26,7 +27,9 @@ export interface ITrip<T = string> {
   startDate: Date;
   endDate: Date;
   duration: number;
+  durationDays: number;
   maxCapacity: number;
+  maxGuests: number;
   bookedSeats: number;
   includes: TripInclude[];
   finalItinerary: IFinalItinerary[];

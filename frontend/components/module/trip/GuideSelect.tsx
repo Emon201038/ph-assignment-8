@@ -25,6 +25,7 @@ import { IUser, UserRole } from "@/interfaces/user.interface";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { serverFetch } from "@/lib/server-fetch";
 import Link from "next/link";
+import { set } from "zod";
 
 export interface Guide {
   id: string;
@@ -67,13 +68,10 @@ export function GuideSearchSelect({
         setSelected(null);
         return;
       }
-
       if (selected?.id === value) return;
-
       try {
         const res = await serverFetch.get(`/v2/users/${value}`);
         const data = await res.json();
-
         if (data?.success) {
           setSelected(data.data);
         }
@@ -83,7 +81,7 @@ export function GuideSearchSelect({
     };
 
     fetchSelected();
-  }, [value]);
+  }, [value, selected]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -204,6 +202,7 @@ export function GuideSearchSelect({
                       onValueChange?.(
                         currentValue === value ? "" : currentValue,
                       );
+                      setSelected(guide);
                       setOpen(false);
                     }}
                     className="cursor-pointer justify-start"

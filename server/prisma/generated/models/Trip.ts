@@ -47,6 +47,8 @@ export type TripMinAggregateOutputType = {
   price: number | null
   maxGuests: number | null
   bookedSeats: number | null
+  isDeleted: boolean | null
+  deletedAt: Date | null
   status: $Enums.TripStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -61,6 +63,8 @@ export type TripMaxAggregateOutputType = {
   price: number | null
   maxGuests: number | null
   bookedSeats: number | null
+  isDeleted: boolean | null
+  deletedAt: Date | null
   status: $Enums.TripStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -75,6 +79,8 @@ export type TripCountAggregateOutputType = {
   price: number
   maxGuests: number
   bookedSeats: number
+  isDeleted: number
+  deletedAt: number
   status: number
   createdAt: number
   updatedAt: number
@@ -103,6 +109,8 @@ export type TripMinAggregateInputType = {
   price?: true
   maxGuests?: true
   bookedSeats?: true
+  isDeleted?: true
+  deletedAt?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -117,6 +125,8 @@ export type TripMaxAggregateInputType = {
   price?: true
   maxGuests?: true
   bookedSeats?: true
+  isDeleted?: true
+  deletedAt?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -131,6 +141,8 @@ export type TripCountAggregateInputType = {
   price?: true
   maxGuests?: true
   bookedSeats?: true
+  isDeleted?: true
+  deletedAt?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -232,6 +244,8 @@ export type TripGroupByOutputType = {
   price: number
   maxGuests: number
   bookedSeats: number
+  isDeleted: boolean
+  deletedAt: Date | null
   status: $Enums.TripStatus
   createdAt: Date
   updatedAt: Date
@@ -269,6 +283,8 @@ export type TripWhereInput = {
   price?: Prisma.FloatFilter<"Trip"> | number
   maxGuests?: Prisma.IntFilter<"Trip"> | number
   bookedSeats?: Prisma.IntFilter<"Trip"> | number
+  isDeleted?: Prisma.BoolFilter<"Trip"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Trip"> | Date | string | null
   status?: Prisma.EnumTripStatusFilter<"Trip"> | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFilter<"Trip"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trip"> | Date | string
@@ -286,6 +302,8 @@ export type TripOrderByWithRelationInput = {
   price?: Prisma.SortOrder
   maxGuests?: Prisma.SortOrder
   bookedSeats?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -306,6 +324,8 @@ export type TripWhereUniqueInput = Prisma.AtLeast<{
   price?: Prisma.FloatFilter<"Trip"> | number
   maxGuests?: Prisma.IntFilter<"Trip"> | number
   bookedSeats?: Prisma.IntFilter<"Trip"> | number
+  isDeleted?: Prisma.BoolFilter<"Trip"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Trip"> | Date | string | null
   status?: Prisma.EnumTripStatusFilter<"Trip"> | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFilter<"Trip"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trip"> | Date | string
@@ -323,6 +343,8 @@ export type TripOrderByWithAggregationInput = {
   price?: Prisma.SortOrder
   maxGuests?: Prisma.SortOrder
   bookedSeats?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -345,6 +367,8 @@ export type TripScalarWhereWithAggregatesInput = {
   price?: Prisma.FloatWithAggregatesFilter<"Trip"> | number
   maxGuests?: Prisma.IntWithAggregatesFilter<"Trip"> | number
   bookedSeats?: Prisma.IntWithAggregatesFilter<"Trip"> | number
+  isDeleted?: Prisma.BoolWithAggregatesFilter<"Trip"> | boolean
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Trip"> | Date | string | null
   status?: Prisma.EnumTripStatusWithAggregatesFilter<"Trip"> | $Enums.TripStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Trip"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Trip"> | Date | string
@@ -357,6 +381,8 @@ export type TripCreateInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -374,6 +400,8 @@ export type TripUncheckedCreateInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -387,6 +415,8 @@ export type TripUpdateInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -404,6 +434,8 @@ export type TripUncheckedUpdateInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -419,6 +451,8 @@ export type TripCreateManyInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -431,6 +465,8 @@ export type TripUpdateManyMutationInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -445,6 +481,8 @@ export type TripUncheckedUpdateManyInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -474,6 +512,8 @@ export type TripCountOrderByAggregateInput = {
   price?: Prisma.SortOrder
   maxGuests?: Prisma.SortOrder
   bookedSeats?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -494,6 +534,8 @@ export type TripMaxOrderByAggregateInput = {
   price?: Prisma.SortOrder
   maxGuests?: Prisma.SortOrder
   bookedSeats?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -508,6 +550,8 @@ export type TripMinOrderByAggregateInput = {
   price?: Prisma.SortOrder
   maxGuests?: Prisma.SortOrder
   bookedSeats?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -628,6 +672,8 @@ export type TripCreateWithoutTourInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -643,6 +689,8 @@ export type TripUncheckedCreateWithoutTourInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -687,6 +735,8 @@ export type TripScalarWhereInput = {
   price?: Prisma.FloatFilter<"Trip"> | number
   maxGuests?: Prisma.IntFilter<"Trip"> | number
   bookedSeats?: Prisma.IntFilter<"Trip"> | number
+  isDeleted?: Prisma.BoolFilter<"Trip"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Trip"> | Date | string | null
   status?: Prisma.EnumTripStatusFilter<"Trip"> | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFilter<"Trip"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trip"> | Date | string
@@ -699,6 +749,8 @@ export type TripCreateWithoutIncludesInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -715,6 +767,8 @@ export type TripUncheckedCreateWithoutIncludesInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -743,6 +797,8 @@ export type TripUpdateWithoutIncludesInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -759,6 +815,8 @@ export type TripUncheckedUpdateWithoutIncludesInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -771,6 +829,8 @@ export type TripCreateWithoutGuideInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -786,6 +846,8 @@ export type TripUncheckedCreateWithoutGuideInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -826,6 +888,8 @@ export type TripCreateManyTourInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -838,6 +902,8 @@ export type TripUpdateWithoutTourInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -853,6 +919,8 @@ export type TripUncheckedUpdateWithoutTourInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -867,6 +935,8 @@ export type TripUncheckedUpdateManyWithoutTourInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -880,6 +950,8 @@ export type TripCreateManyGuideInput = {
   price: number
   maxGuests: number
   bookedSeats?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   status?: $Enums.TripStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -892,6 +964,8 @@ export type TripUpdateWithoutGuideInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -907,6 +981,8 @@ export type TripUncheckedUpdateWithoutGuideInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -921,6 +997,8 @@ export type TripUncheckedUpdateManyWithoutGuideInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
   bookedSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumTripStatusFieldUpdateOperationsInput | $Enums.TripStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -966,6 +1044,8 @@ export type TripSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   price?: boolean
   maxGuests?: boolean
   bookedSeats?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -984,6 +1064,8 @@ export type TripSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   price?: boolean
   maxGuests?: boolean
   bookedSeats?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1000,6 +1082,8 @@ export type TripSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   price?: boolean
   maxGuests?: boolean
   bookedSeats?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1016,12 +1100,14 @@ export type TripSelectScalar = {
   price?: boolean
   maxGuests?: boolean
   bookedSeats?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TripOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tourId" | "guideId" | "startDate" | "endDate" | "price" | "maxGuests" | "bookedSeats" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["trip"]>
+export type TripOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tourId" | "guideId" | "startDate" | "endDate" | "price" | "maxGuests" | "bookedSeats" | "isDeleted" | "deletedAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["trip"]>
 export type TripInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tour?: boolean | Prisma.TourDefaultArgs<ExtArgs>
   guide?: boolean | Prisma.Trip$guideArgs<ExtArgs>
@@ -1053,6 +1139,8 @@ export type $TripPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     price: number
     maxGuests: number
     bookedSeats: number
+    isDeleted: boolean
+    deletedAt: Date | null
     status: $Enums.TripStatus
     createdAt: Date
     updatedAt: Date
@@ -1490,6 +1578,8 @@ export interface TripFieldRefs {
   readonly price: Prisma.FieldRef<"Trip", 'Float'>
   readonly maxGuests: Prisma.FieldRef<"Trip", 'Int'>
   readonly bookedSeats: Prisma.FieldRef<"Trip", 'Int'>
+  readonly isDeleted: Prisma.FieldRef<"Trip", 'Boolean'>
+  readonly deletedAt: Prisma.FieldRef<"Trip", 'DateTime'>
   readonly status: Prisma.FieldRef<"Trip", 'TripStatus'>
   readonly createdAt: Prisma.FieldRef<"Trip", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Trip", 'DateTime'>

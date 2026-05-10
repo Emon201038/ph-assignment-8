@@ -740,10 +740,6 @@ export type NullableFloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type GuideProfileCreateWithoutUserInput = {
   id?: string
   gender?: $Enums.Gender

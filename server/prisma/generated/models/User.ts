@@ -39,6 +39,7 @@ export type UserMinAggregateOutputType = {
   providerId: string | null
   isEmailVerified: boolean | null
   isDeleted: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,6 +59,7 @@ export type UserMaxAggregateOutputType = {
   providerId: string | null
   isEmailVerified: boolean | null
   isDeleted: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -77,6 +79,7 @@ export type UserCountAggregateOutputType = {
   providerId: number
   isEmailVerified: number
   isDeleted: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -98,6 +101,7 @@ export type UserMinAggregateInputType = {
   providerId?: true
   isEmailVerified?: true
   isDeleted?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -117,6 +121,7 @@ export type UserMaxAggregateInputType = {
   providerId?: true
   isEmailVerified?: true
   isDeleted?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -136,6 +141,7 @@ export type UserCountAggregateInputType = {
   providerId?: true
   isEmailVerified?: true
   isDeleted?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -228,6 +234,7 @@ export type UserGroupByOutputType = {
   providerId: string | null
   isEmailVerified: boolean
   isDeleted: boolean
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -268,6 +275,7 @@ export type UserWhereInput = {
   providerId?: Prisma.StringNullableFilter<"User"> | string | null
   isEmailVerified?: Prisma.BoolFilter<"User"> | boolean
   isDeleted?: Prisma.BoolFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   trips?: Prisma.TripListRelationFilter
@@ -299,6 +307,7 @@ export type UserOrderByWithRelationInput = {
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
   isEmailVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   trips?: Prisma.TripOrderByRelationAggregateInput
@@ -333,6 +342,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   providerId?: Prisma.StringNullableFilter<"User"> | string | null
   isEmailVerified?: Prisma.BoolFilter<"User"> | boolean
   isDeleted?: Prisma.BoolFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   trips?: Prisma.TripListRelationFilter
@@ -364,6 +374,7 @@ export type UserOrderByWithAggregationInput = {
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
   isEmailVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -389,6 +400,7 @@ export type UserScalarWhereWithAggregatesInput = {
   providerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   isEmailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isDeleted?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -408,6 +420,7 @@ export type UserCreateInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -439,6 +452,7 @@ export type UserUncheckedCreateInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -470,6 +484,7 @@ export type UserUpdateInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -501,6 +516,7 @@ export type UserUncheckedUpdateInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -532,6 +548,7 @@ export type UserCreateManyInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -551,6 +568,7 @@ export type UserUpdateManyMutationInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -570,6 +588,7 @@ export type UserUncheckedUpdateManyInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -599,6 +618,7 @@ export type UserCountOrderByAggregateInput = {
   providerId?: Prisma.SortOrder
   isEmailVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -618,6 +638,7 @@ export type UserMaxOrderByAggregateInput = {
   providerId?: Prisma.SortOrder
   isEmailVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -637,6 +658,7 @@ export type UserMinOrderByAggregateInput = {
   providerId?: Prisma.SortOrder
   isEmailVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -836,6 +858,7 @@ export type UserCreateWithoutEmergencyContactsInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -866,6 +889,7 @@ export type UserUncheckedCreateWithoutEmergencyContactsInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -912,6 +936,7 @@ export type UserUpdateWithoutEmergencyContactsInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -942,6 +967,7 @@ export type UserUncheckedUpdateWithoutEmergencyContactsInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -972,6 +998,7 @@ export type UserCreateWithoutLoggedInDevicesInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -1002,6 +1029,7 @@ export type UserUncheckedCreateWithoutLoggedInDevicesInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -1048,6 +1076,7 @@ export type UserUpdateWithoutLoggedInDevicesInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -1078,6 +1107,7 @@ export type UserUncheckedUpdateWithoutLoggedInDevicesInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -1108,6 +1138,7 @@ export type UserCreateWithoutTwoFactorAuthInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -1138,6 +1169,7 @@ export type UserUncheckedCreateWithoutTwoFactorAuthInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -1184,6 +1216,7 @@ export type UserUpdateWithoutTwoFactorAuthInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -1214,6 +1247,7 @@ export type UserUncheckedUpdateWithoutTwoFactorAuthInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -1244,6 +1278,7 @@ export type UserCreateWithoutTwoFactorOTPsInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -1274,6 +1309,7 @@ export type UserUncheckedCreateWithoutTwoFactorOTPsInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -1320,6 +1356,7 @@ export type UserUpdateWithoutTwoFactorOTPsInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -1350,6 +1387,7 @@ export type UserUncheckedUpdateWithoutTwoFactorOTPsInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -1380,6 +1418,7 @@ export type UserCreateWithoutGuidesInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -1410,6 +1449,7 @@ export type UserUncheckedCreateWithoutGuidesInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -1445,6 +1485,7 @@ export type UserCreateWithoutReviewsInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -1475,6 +1516,7 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -1521,6 +1563,7 @@ export type UserUpdateWithoutGuidesInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -1551,6 +1594,7 @@ export type UserUncheckedUpdateWithoutGuidesInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -1592,6 +1636,7 @@ export type UserUpdateWithoutReviewsInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -1622,6 +1667,7 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -1652,6 +1698,7 @@ export type UserCreateWithoutToursInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -1682,6 +1729,7 @@ export type UserUncheckedCreateWithoutToursInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -1728,6 +1776,7 @@ export type UserUpdateWithoutToursInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -1758,6 +1807,7 @@ export type UserUncheckedUpdateWithoutToursInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -1788,6 +1838,7 @@ export type UserCreateWithoutTourGuidesInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -1818,6 +1869,7 @@ export type UserUncheckedCreateWithoutTourGuidesInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -1864,6 +1916,7 @@ export type UserUpdateWithoutTourGuidesInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -1894,6 +1947,7 @@ export type UserUncheckedUpdateWithoutTourGuidesInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -1924,6 +1978,7 @@ export type UserCreateWithoutTripsInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tours?: Prisma.TourCreateNestedManyWithoutCreatorInput
@@ -1954,6 +2009,7 @@ export type UserUncheckedCreateWithoutTripsInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tours?: Prisma.TourUncheckedCreateNestedManyWithoutCreatorInput
@@ -2000,6 +2056,7 @@ export type UserUpdateWithoutTripsInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tours?: Prisma.TourUpdateManyWithoutCreatorNestedInput
@@ -2030,6 +2087,7 @@ export type UserUncheckedUpdateWithoutTripsInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tours?: Prisma.TourUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2060,6 +2118,7 @@ export type UserCreateWithoutGuideProfileInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -2090,6 +2149,7 @@ export type UserUncheckedCreateWithoutGuideProfileInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -2136,6 +2196,7 @@ export type UserUpdateWithoutGuideProfileInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -2166,6 +2227,7 @@ export type UserUncheckedUpdateWithoutGuideProfileInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -2196,6 +2258,7 @@ export type UserCreateWithoutTravelerProfileInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -2226,6 +2289,7 @@ export type UserUncheckedCreateWithoutTravelerProfileInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -2272,6 +2336,7 @@ export type UserUpdateWithoutTravelerProfileInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -2302,6 +2367,7 @@ export type UserUncheckedUpdateWithoutTravelerProfileInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -2332,6 +2398,7 @@ export type UserCreateWithoutAdminProfileInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripCreateNestedManyWithoutGuideInput
@@ -2362,6 +2429,7 @@ export type UserUncheckedCreateWithoutAdminProfileInput = {
   providerId?: string | null
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutGuideInput
@@ -2408,6 +2476,7 @@ export type UserUpdateWithoutAdminProfileInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUpdateManyWithoutGuideNestedInput
@@ -2438,6 +2507,7 @@ export type UserUncheckedUpdateWithoutAdminProfileInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutGuideNestedInput
@@ -2571,6 +2641,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   providerId?: boolean
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   trips?: boolean | Prisma.User$tripsArgs<ExtArgs>
@@ -2603,6 +2674,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   providerId?: boolean
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2622,6 +2694,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   providerId?: boolean
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2641,11 +2714,12 @@ export type UserSelectScalar = {
   providerId?: boolean
   isEmailVerified?: boolean
   isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "avatar" | "bio" | "phone" | "city" | "country" | "provider" | "providerId" | "isEmailVerified" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "avatar" | "bio" | "phone" | "city" | "country" | "provider" | "providerId" | "isEmailVerified" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   trips?: boolean | Prisma.User$tripsArgs<ExtArgs>
   tours?: boolean | Prisma.User$toursArgs<ExtArgs>
@@ -2695,6 +2769,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     providerId: string | null
     isEmailVerified: boolean
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -3146,6 +3221,7 @@ export interface UserFieldRefs {
   readonly providerId: Prisma.FieldRef<"User", 'String'>
   readonly isEmailVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly isDeleted: Prisma.FieldRef<"User", 'Boolean'>
+  readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

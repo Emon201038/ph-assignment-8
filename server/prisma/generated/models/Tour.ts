@@ -59,6 +59,8 @@ export type TourMinAggregateOutputType = {
   totalReviews: number | null
   featured: boolean | null
   isPublished: boolean | null
+  isDeleted: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,6 +82,8 @@ export type TourMaxAggregateOutputType = {
   totalReviews: number | null
   featured: boolean | null
   isPublished: boolean | null
+  isDeleted: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -101,6 +105,8 @@ export type TourCountAggregateOutputType = {
   totalReviews: number
   featured: number
   isPublished: number
+  isDeleted: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -140,6 +146,8 @@ export type TourMinAggregateInputType = {
   totalReviews?: true
   featured?: true
   isPublished?: true
+  isDeleted?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -161,6 +169,8 @@ export type TourMaxAggregateInputType = {
   totalReviews?: true
   featured?: true
   isPublished?: true
+  isDeleted?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -182,6 +192,8 @@ export type TourCountAggregateInputType = {
   totalReviews?: true
   featured?: true
   isPublished?: true
+  isDeleted?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -290,6 +302,8 @@ export type TourGroupByOutputType = {
   totalReviews: number
   featured: boolean
   isPublished: boolean
+  isDeleted: boolean
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: TourCountAggregateOutputType | null
@@ -334,6 +348,8 @@ export type TourWhereInput = {
   totalReviews?: Prisma.IntFilter<"Tour"> | number
   featured?: Prisma.BoolFilter<"Tour"> | boolean
   isPublished?: Prisma.BoolFilter<"Tour"> | boolean
+  isDeleted?: Prisma.BoolFilter<"Tour"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Tour"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   destination?: Prisma.XOR<Prisma.DestinationScalarRelationFilter, Prisma.DestinationWhereInput>
@@ -361,6 +377,8 @@ export type TourOrderByWithRelationInput = {
   totalReviews?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   destination?: Prisma.DestinationOrderByWithRelationInput
@@ -391,6 +409,8 @@ export type TourWhereUniqueInput = Prisma.AtLeast<{
   totalReviews?: Prisma.IntFilter<"Tour"> | number
   featured?: Prisma.BoolFilter<"Tour"> | boolean
   isPublished?: Prisma.BoolFilter<"Tour"> | boolean
+  isDeleted?: Prisma.BoolFilter<"Tour"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Tour"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   destination?: Prisma.XOR<Prisma.DestinationScalarRelationFilter, Prisma.DestinationWhereInput>
@@ -418,6 +438,8 @@ export type TourOrderByWithAggregationInput = {
   totalReviews?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TourCountOrderByAggregateInput
@@ -447,6 +469,8 @@ export type TourScalarWhereWithAggregatesInput = {
   totalReviews?: Prisma.IntWithAggregatesFilter<"Tour"> | number
   featured?: Prisma.BoolWithAggregatesFilter<"Tour"> | boolean
   isPublished?: Prisma.BoolWithAggregatesFilter<"Tour"> | boolean
+  isDeleted?: Prisma.BoolWithAggregatesFilter<"Tour"> | boolean
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Tour"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tour"> | Date | string
 }
@@ -466,6 +490,8 @@ export type TourCreateInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   destination: Prisma.DestinationCreateNestedOneWithoutToursInput
@@ -493,6 +519,8 @@ export type TourUncheckedCreateInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutTourInput
@@ -516,6 +544,8 @@ export type TourUpdateInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   destination?: Prisma.DestinationUpdateOneRequiredWithoutToursNestedInput
@@ -543,6 +573,8 @@ export type TourUncheckedUpdateInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutTourNestedInput
@@ -568,6 +600,8 @@ export type TourCreateManyInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -587,6 +621,8 @@ export type TourUpdateManyMutationInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -608,6 +644,8 @@ export type TourUncheckedUpdateManyInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -644,6 +682,8 @@ export type TourCountOrderByAggregateInput = {
   totalReviews?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -673,6 +713,8 @@ export type TourMaxOrderByAggregateInput = {
   totalReviews?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -694,6 +736,8 @@ export type TourMinOrderByAggregateInput = {
   totalReviews?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -876,6 +920,8 @@ export type TourCreateWithoutDestinationInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutToursInput
@@ -901,6 +947,8 @@ export type TourUncheckedCreateWithoutDestinationInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutTourInput
@@ -955,6 +1003,8 @@ export type TourScalarWhereInput = {
   totalReviews?: Prisma.IntFilter<"Tour"> | number
   featured?: Prisma.BoolFilter<"Tour"> | boolean
   isPublished?: Prisma.BoolFilter<"Tour"> | boolean
+  isDeleted?: Prisma.BoolFilter<"Tour"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Tour"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
 }
@@ -974,6 +1024,8 @@ export type TourCreateWithoutReviewsInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   destination: Prisma.DestinationCreateNestedOneWithoutToursInput
@@ -1000,6 +1052,8 @@ export type TourUncheckedCreateWithoutReviewsInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutTourInput
@@ -1038,6 +1092,8 @@ export type TourUpdateWithoutReviewsInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   destination?: Prisma.DestinationUpdateOneRequiredWithoutToursNestedInput
@@ -1064,6 +1120,8 @@ export type TourUncheckedUpdateWithoutReviewsInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutTourNestedInput
@@ -1086,6 +1144,8 @@ export type TourCreateWithoutTourGuidesInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   destination: Prisma.DestinationCreateNestedOneWithoutToursInput
@@ -1112,6 +1172,8 @@ export type TourUncheckedCreateWithoutTourGuidesInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutTourInput
@@ -1150,6 +1212,8 @@ export type TourUpdateWithoutTourGuidesInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   destination?: Prisma.DestinationUpdateOneRequiredWithoutToursNestedInput
@@ -1176,6 +1240,8 @@ export type TourUncheckedUpdateWithoutTourGuidesInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutTourNestedInput
@@ -1198,6 +1264,8 @@ export type TourCreateWithoutItinerariesInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   destination: Prisma.DestinationCreateNestedOneWithoutToursInput
@@ -1224,6 +1292,8 @@ export type TourUncheckedCreateWithoutItinerariesInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutTourInput
@@ -1262,6 +1332,8 @@ export type TourUpdateWithoutItinerariesInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   destination?: Prisma.DestinationUpdateOneRequiredWithoutToursNestedInput
@@ -1288,6 +1360,8 @@ export type TourUncheckedUpdateWithoutItinerariesInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutTourNestedInput
@@ -1310,6 +1384,8 @@ export type TourCreateWithoutTripsInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   destination: Prisma.DestinationCreateNestedOneWithoutToursInput
@@ -1336,6 +1412,8 @@ export type TourUncheckedCreateWithoutTripsInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   itineraries?: Prisma.TourItineraryUncheckedCreateNestedManyWithoutTourInput
@@ -1374,6 +1452,8 @@ export type TourUpdateWithoutTripsInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   destination?: Prisma.DestinationUpdateOneRequiredWithoutToursNestedInput
@@ -1400,6 +1480,8 @@ export type TourUncheckedUpdateWithoutTripsInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   itineraries?: Prisma.TourItineraryUncheckedUpdateManyWithoutTourNestedInput
@@ -1422,6 +1504,8 @@ export type TourCreateWithoutCreatorInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   destination: Prisma.DestinationCreateNestedOneWithoutToursInput
@@ -1447,6 +1531,8 @@ export type TourUncheckedCreateWithoutCreatorInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   trips?: Prisma.TripUncheckedCreateNestedManyWithoutTourInput
@@ -1497,6 +1583,8 @@ export type TourCreateManyDestinationInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1516,6 +1604,8 @@ export type TourUpdateWithoutDestinationInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutToursNestedInput
@@ -1541,6 +1631,8 @@ export type TourUncheckedUpdateWithoutDestinationInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutTourNestedInput
@@ -1565,6 +1657,8 @@ export type TourUncheckedUpdateManyWithoutDestinationInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1585,6 +1679,8 @@ export type TourCreateManyCreatorInput = {
   totalReviews?: number
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1604,6 +1700,8 @@ export type TourUpdateWithoutCreatorInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   destination?: Prisma.DestinationUpdateOneRequiredWithoutToursNestedInput
@@ -1629,6 +1727,8 @@ export type TourUncheckedUpdateWithoutCreatorInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trips?: Prisma.TripUncheckedUpdateManyWithoutTourNestedInput
@@ -1653,6 +1753,8 @@ export type TourUncheckedUpdateManyWithoutCreatorInput = {
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1732,6 +1834,8 @@ export type TourSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   totalReviews?: boolean
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
@@ -1760,6 +1864,8 @@ export type TourSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   totalReviews?: boolean
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
@@ -1783,6 +1889,8 @@ export type TourSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   totalReviews?: boolean
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
@@ -1806,11 +1914,13 @@ export type TourSelectScalar = {
   totalReviews?: boolean
   featured?: boolean
   isPublished?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TourOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "description" | "image" | "destinationId" | "createdById" | "durationDays" | "maxGroupSize" | "priceFrom" | "difficulty" | "category" | "rating" | "totalReviews" | "featured" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["tour"]>
+export type TourOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "description" | "image" | "destinationId" | "createdById" | "durationDays" | "maxGroupSize" | "priceFrom" | "difficulty" | "category" | "rating" | "totalReviews" | "featured" | "isPublished" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["tour"]>
 export type TourInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1856,6 +1966,8 @@ export type $TourPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     totalReviews: number
     featured: boolean
     isPublished: boolean
+    isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["tour"]>
@@ -2303,6 +2415,8 @@ export interface TourFieldRefs {
   readonly totalReviews: Prisma.FieldRef<"Tour", 'Int'>
   readonly featured: Prisma.FieldRef<"Tour", 'Boolean'>
   readonly isPublished: Prisma.FieldRef<"Tour", 'Boolean'>
+  readonly isDeleted: Prisma.FieldRef<"Tour", 'Boolean'>
+  readonly deletedAt: Prisma.FieldRef<"Tour", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Tour", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Tour", 'DateTime'>
 }

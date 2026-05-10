@@ -150,6 +150,8 @@ export const DestinationScalarFieldEnum = {
   currency: 'currency',
   languages: 'languages',
   transportation: 'transportation',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -213,6 +215,8 @@ export const TourScalarFieldEnum = {
   totalReviews: 'totalReviews',
   featured: 'featured',
   isPublished: 'isPublished',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -273,6 +277,8 @@ export const TripScalarFieldEnum = {
   price: 'price',
   maxGuests: 'maxGuests',
   bookedSeats: 'bookedSeats',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -296,6 +302,7 @@ export const UserScalarFieldEnum = {
   providerId: 'providerId',
   isEmailVerified: 'isEmailVerified',
   isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

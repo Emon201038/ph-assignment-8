@@ -5,7 +5,7 @@ export const createTripSchema = z.object({
   tourId: z.string("Tour ID is required").min(1, "Tour ID is required"),
   guideId: z.string("Guide ID is required").min(1, "Guide ID is required"),
   startDate: z.coerce.date("Start date is required"),
-  duration: z.coerce.number("Duration is required"),
+  endDate: z.coerce.date("End date is required"),
   maxGuests: z.coerce
     .number("Max guests is required")
     .min(1, "Max guests is required"),

@@ -59,9 +59,22 @@ const createTrip = catchAsync(async (req, res, next) => {
   });
 });
 
+const updateTrip = catchAsync(async (req, res, next) => {
+  sendResponse(res, {
+    message: "Trip updated successfully",
+    statusCode: 200,
+    success: true,
+    data: await TripService.updateTripInDB(req.params.id, req.body),
+  });
+});
+
+const softDeleteTrip = catchAsync(async (req, res, next) => {});
+
 export const TripController = {
   getTripInclude,
   getAllTrips,
   getSingleTrip,
   createTrip,
+  updateTrip,
+  softDeleteTrip,
 };

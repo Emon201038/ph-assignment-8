@@ -1,7 +1,6 @@
 import TripForm from "@/components/module/trip/TripForm";
 import { TripInclude } from "@/interfaces/trip.interface";
 import { serverFetch } from "@/lib/server-fetch";
-import React from "react";
 
 const page = async () => {
   const res = await serverFetch.get("/v2/trips/includes");

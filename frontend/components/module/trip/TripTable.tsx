@@ -29,9 +29,7 @@ const TripsTable = ({ trips }: TripsTableProps) => {
   };
 
   const handleEdit = (trip: ITrip) => {
-    setTimeout(() => {
-      setEditingTrip(trip);
-    }, 0);
+    router.push(`/admin/dashboard/trips-management/update-trip/${trip.id}`);
   };
 
   const handleDelete = (trip: ITrip) => {
