@@ -65,7 +65,6 @@ class QueryBuilder {
         }
         this.filters = Object.assign(Object.assign({}, this.filters), filters);
         this.mongooseQuery = this.model.find(this.filters);
-        console.log(this.filters, this.queryParams, filters);
         return this;
     }
     /**

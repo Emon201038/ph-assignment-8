@@ -60,9 +60,20 @@ const createTrip = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
         data,
     });
 }));
+const updateTrip = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "Trip updated successfully",
+        statusCode: 200,
+        success: true,
+        data: yield trip_service_1.TripService.updateTripInDB(req.params.id, req.body),
+    });
+}));
+const softDeleteTrip = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () { }));
 exports.TripController = {
     getTripInclude,
     getAllTrips,
     getSingleTrip,
     createTrip,
+    updateTrip,
+    softDeleteTrip,
 };

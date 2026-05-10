@@ -3,7 +3,6 @@ import ManagementTable from "@/components/shared/ManagementTable";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ITrip } from "@/interfaces/trip.interface";
-import TripFormDialog from "./TripFormDialog";
 import { tripsColumns } from "./TripColumns";
 
 interface TripsTableProps {
@@ -62,16 +61,6 @@ const TripsTable = ({ trips }: TripsTableProps) => {
         onDelete={handleDelete}
         getRowKey={(trip) => trip._id!}
         emptyMessage="No trips found"
-      />
-      {/* Edit Doctor Form Dialog */}
-      <TripFormDialog
-        open={!!editingTrip}
-        onClose={() => setEditingTrip(null)}
-        trip={editingTrip!}
-        onSuccess={() => {
-          setEditingTrip(null);
-          handleRefresh();
-        }}
       />
 
       {/* View Doctor Detail Dialog */}

@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TripService = void 0;
+const client_1 = require("../../../../../prisma/generated/client");
 const db_1 = __importDefault(require("../../../config/db"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const appError_1 = __importDefault(require("../../../helpers/appError"));
@@ -153,7 +154,7 @@ const getAllTripsFromDB = (options, filters) => __awaiter(void 0, void 0, void 0
             page,
             limit,
         },
-        data: result,
+        data: result.map((trip) => (Object.assign(Object.assign({}, trip), { includes: trip.includes.map((include) => include.tripInclude) }))),
     };
 });
 const getSingleTrip = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -186,7 +187,7 @@ const getSingleTrip = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return Object.assign(Object.assign({}, result), { includes: result.includes.map((include) => include.tripInclude) });
 });
 const createTripInDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { tourId, guideId, startDate, endDate, price, maxGuests, includes } = payload;
+    const { tourId, guideId, startDate, endDate, maxGuests, tripIncludes } = payload;
     // Validate tour exists
     const tourExists = yield db_1.default.tour.findUnique({
         where: { id: tourId },
@@ -195,43 +196,118 @@ const createTripInDB = (payload) => __awaiter(void 0, void 0, void 0, function* 
         throw new appError_1.default(404, "Tour not found");
     }
     // Validate guide exists if provided
-    if (guideId) {
-        const guideExists = yield db_1.default.user.findUnique({
-            where: { id: guideId },
-        });
-        if (!guideExists) {
-            throw new appError_1.default(404, "Guide not found");
-        }
+    const guideExists = yield db_1.default.user.findUnique({
+        where: { id: guideId },
+    });
+    if (!guideExists) {
+        throw new appError_1.default(404, "Guide not found");
     }
-    // Validate dates
-    const startDateObj = new Date(startDate);
-    const endDateObj = new Date(endDate);
-    if (startDateObj >= endDateObj) {
-        throw new appError_1.default(400, "Start date must be before end date");
+    if (guideExists.role !== client_1.UserRole.GUIDE) {
+        throw new appError_1.default(400, "User is not a guide");
     }
-    if (startDateObj < new Date()) {
-        throw new appError_1.default(400, "Start date must be in the future");
-    }
-    // Create trip
-    const result = yield db_1.default.trip.create({
-        data: {
-            tourId: tourId,
-            guideId: guideId,
-            startDate: startDateObj,
-            endDate: endDateObj,
-            price: price,
-            maxGuests: maxGuests,
-        },
-        include: {
-            tour: true,
-            guide: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    city: true,
+    const result = yield db_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        const trip = yield tx.trip.create({
+            data: {
+                tourId: tourId,
+                guideId: guideId,
+                startDate: startDate,
+                endDate: endDate,
+                price: tourExists.priceFrom,
+                maxGuests: maxGuests,
+            },
+            include: {
+                tour: true,
+                guide: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        city: true,
+                    },
+                },
+                includes: {
+                    select: {
+                        tripInclude: true,
+                    },
                 },
             },
+        });
+        yield tx.tripIncludeItem.createMany({
+            data: tripIncludes.map((include) => ({
+                tripId: trip.id,
+                tripIncludeId: include,
+            })),
+        });
+        return Object.assign(Object.assign({}, trip), { includes: trip.includes.map((include) => include.tripInclude) });
+    }));
+    return result;
+});
+const updateTripInDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { tourId, guideId, startDate, endDate, maxGuests, tripIncludes } = payload;
+    // Validate tour exists
+    const tourExists = yield db_1.default.tour.findUnique({
+        where: { id: tourId },
+    });
+    if (!tourExists) {
+        throw new appError_1.default(404, "Tour not found");
+    }
+    // Validate guide exists if provided
+    const guideExists = yield db_1.default.user.findUnique({
+        where: { id: guideId },
+    });
+    if (!guideExists) {
+        throw new appError_1.default(404, "Guide not found");
+    }
+    if (guideExists.role !== client_1.UserRole.GUIDE) {
+        throw new appError_1.default(400, "User is not a guide");
+    }
+    const result = yield db_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        const trip = yield tx.trip.update({
+            where: { id },
+            data: {
+                tourId,
+                guideId,
+                startDate,
+                endDate,
+                maxGuests,
+                price: tourExists.priceFrom,
+            },
+            include: {
+                tour: true,
+                guide: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        city: true,
+                    },
+                },
+                includes: {
+                    select: {
+                        tripInclude: true,
+                    },
+                },
+            },
+        });
+        yield tx.tripIncludeItem.deleteMany({ where: { tripId: id } });
+        yield tx.tripIncludeItem.createMany({
+            data: tripIncludes.map((include) => ({
+                tripId: trip.id,
+                tripIncludeId: include,
+            })),
+        });
+        return Object.assign(Object.assign({}, trip), { includes: trip.includes.map((include) => include.tripInclude) });
+    }));
+    return result;
+});
+const softDeleteTripInDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield db_1.default.trip.update({
+        where: {
+            id,
+        },
+        data: {
+            isDeleted: true,
+            deletedAt: new Date(),
         },
     });
     return result;
@@ -241,4 +317,6 @@ exports.TripService = {
     getAllTripsFromDB,
     getSingleTrip,
     createTripInDB,
+    updateTripInDB,
+    softDeleteTripInDB,
 };

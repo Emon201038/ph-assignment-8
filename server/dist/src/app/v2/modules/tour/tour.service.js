@@ -294,45 +294,56 @@ const createTourInDB = (payload, userId, image) => __awaiter(void 0, void 0, voi
         if (!(result === null || result === void 0 ? void 0 : result.url)) {
             throw new appError_1.default(400, "Image upload failed");
         }
-        console.log(result);
         imageUrl = result.url;
     }
     if (!imageUrl) {
         throw new appError_1.default(400, "Image upload failed");
     }
     // Create tour
-    const result = yield db_1.default.tour.create({
-        data: {
-            title,
-            description,
-            destinationId,
-            category: category.toUpperCase(),
-            priceFrom,
-            image: imageUrl,
-            slug: tourSlug,
-            durationDays,
-            maxGroupSize,
-            difficulty: client_1.TourDifficulty.MODERATE,
-            createdById: userId,
-        },
-        include: {
-            destination: {
-                select: {
-                    id: true,
-                    name: true,
-                    city: true,
-                    country: true,
+    const { tour: result } = yield db_1.default.$transaction((tnx) => __awaiter(void 0, void 0, void 0, function* () {
+        const tour = yield tnx.tour.create({
+            data: {
+                title,
+                description,
+                destinationId,
+                category: category.toUpperCase(),
+                priceFrom,
+                image: imageUrl,
+                slug: tourSlug,
+                durationDays,
+                maxGroupSize,
+                difficulty: client_1.TourDifficulty.MODERATE,
+                createdById: userId,
+            },
+            include: {
+                destination: {
+                    select: {
+                        id: true,
+                        name: true,
+                        city: true,
+                        country: true,
+                    },
+                },
+                creator: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
                 },
             },
-            creator: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                },
-            },
-        },
-    });
+        });
+        const tourGuides = yield tnx.tour_Guide.createMany({
+            data: payload.guides.map((guideId) => ({
+                tourId: tour.id,
+                guideId,
+            })),
+        });
+        return {
+            tour,
+            tourGuides,
+        };
+    }));
     return result;
 });
 const deleteTour = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -344,13 +355,14 @@ const deleteTour = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const updateTourInDB = (id, payload, file) => __awaiter(void 0, void 0, void 0, function* () {
-    const { category, difficulty, destinationId } = payload, body = __rest(payload, ["category", "difficulty", "destinationId"]);
+    const { category, difficulty, destinationId, guides = [] } = payload, body = __rest(payload, ["category", "difficulty", "destinationId", "guides"]);
     const slug = (0, slugify_1.default)(payload.title, {
         lower: true,
         strict: true,
         trim: true,
     });
     let imageUrl;
+    // Upload image only if new file exists
     if (file) {
         const uploadedRes = yield (0, upload_files_1.uploadFileToCloudinary)(file, "tour-buddy/tours");
         if (!(uploadedRes === null || uploadedRes === void 0 ? void 0 : uploadedRes.url)) {
@@ -358,12 +370,42 @@ const updateTourInDB = (id, payload, file) => __awaiter(void 0, void 0, void 0, 
         }
         imageUrl = uploadedRes.url;
     }
-    const result = yield db_1.default.tour.update({
-        where: { id },
-        data: Object.assign(Object.assign(Object.assign({}, body), { slug, destination: {
-                connect: { id: destinationId },
-            }, category: category, difficulty: difficulty }), (imageUrl && { image: imageUrl })),
-    });
+    const result = yield db_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        const updatedTour = yield tx.tour.update({
+            where: { id },
+            data: Object.assign(Object.assign(Object.assign({}, body), { slug, category: category, difficulty: difficulty, destination: {
+                    connect: { id: destinationId },
+                } }), (imageUrl && { image: imageUrl })),
+        });
+        yield tx.tour_Guide.deleteMany({
+            where: {
+                tourId: id,
+                guideId: {
+                    notIn: guides,
+                },
+            },
+        });
+        const existingGuides = yield tx.tour_Guide.findMany({
+            where: {
+                tourId: id,
+            },
+            select: {
+                guideId: true,
+            },
+        });
+        const existingGuideIds = existingGuides.map((guide) => guide.guideId);
+        const newGuideIds = guides.filter((guideId) => !existingGuideIds.includes(guideId));
+        if (newGuideIds.length > 0) {
+            yield tx.tour_Guide.createMany({
+                data: newGuideIds.map((guideId) => ({
+                    tourId: id,
+                    guideId,
+                })),
+                skipDuplicates: true,
+            });
+        }
+        return updatedTour;
+    }));
     return result;
 });
 const getTourGuides = (tourId, searchTerm) => __awaiter(void 0, void 0, void 0, function* () {
@@ -396,13 +438,13 @@ const getTourGuides = (tourId, searchTerm) => __awaiter(void 0, void 0, void 0, 
             ],
         });
     }
-    console.log(whereConditions);
     const result = yield db_1.default.tour_Guide.findMany({
         where: { AND: whereConditions },
         take: 10,
         select: {
             guide: {
                 select: {
+                    id: true,
                     name: true,
                     phone: true,
                     city: true,
@@ -411,7 +453,7 @@ const getTourGuides = (tourId, searchTerm) => __awaiter(void 0, void 0, void 0, 
             },
         },
     });
-    return result;
+    return result.map((g) => (Object.assign({}, g.guide)));
 });
 const toggleTourGuide = (tourId, guideId) => __awaiter(void 0, void 0, void 0, function* () {
     const isExists = yield db_1.default.tour_Guide.findUnique({

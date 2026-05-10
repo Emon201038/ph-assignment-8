@@ -154,6 +154,8 @@ exports.DestinationScalarFieldEnum = {
     currency: 'currency',
     languages: 'languages',
     transportation: 'transportation',
+    isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -201,6 +203,8 @@ exports.TourScalarFieldEnum = {
     totalReviews: 'totalReviews',
     featured: 'featured',
     isPublished: 'isPublished',
+    isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -241,6 +245,8 @@ exports.TripScalarFieldEnum = {
     price: 'price',
     maxGuests: 'maxGuests',
     bookedSeats: 'bookedSeats',
+    isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -260,6 +266,7 @@ exports.UserScalarFieldEnum = {
     providerId: 'providerId',
     isEmailVerified: 'isEmailVerified',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };

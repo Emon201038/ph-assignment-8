@@ -43,6 +43,12 @@ exports.createTourSchema = zod_1.default.object({
         .min(1, "At least one difficulty is required"),
     isPublished: zod_1.default.boolean().default(false),
     featured: zod_1.default.boolean().default(false),
+    guides: zod_1.default
+        .string("Guide ID is required")
+        .min(1)
+        .transform((z) => {
+        return z.split(",");
+    }),
 });
 exports.toggleTourGuideSchema = zod_1.default.object({
     guideId: zod_1.default
