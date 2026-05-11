@@ -58,7 +58,7 @@ export function CountrySelect({
     }
 
     return countries.filter((country) => country.continent === continent);
-  }, [continent, filterByContinent]);
+  }, [continent, filterByContinent, countries]);
 
   const loadCountries = async () => {
     if (loaded || loading) return;
@@ -68,6 +68,7 @@ export function CountrySelect({
 
       const module = await import("@/constants/countries");
 
+      console.log(module.default);
       setCountries(module.default);
 
       setLoaded(true);

@@ -39,23 +39,6 @@ export const createDestinationSchema = z.object({
       error: "Description is required",
     })
     .min(1, "Description is required"),
-  overview: z
-    .string({
-      error: "Overview is required",
-    })
-    .min(1, "Overview is required"),
-  lat: z.coerce.number({
-    error: "Latitude is required",
-  }),
-  lng: z.coerce.number({
-    error: "Longitude is required",
-  }),
-  rating: z.coerce.number({
-    error: "Rating is required",
-  }),
-  averageCost: z.coerce.number({
-    error: "Average cost is required",
-  }),
   bestSeason: commaSeparatedListSchema("Best season is required"),
   currency: z
     .string({

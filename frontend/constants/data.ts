@@ -142,3 +142,38 @@ export const continents = [
   "South America",
   "Antarctica",
 ];
+
+export const transportations = [
+  "Airplane",
+  "Helicopter",
+  "Hot Air Balloon",
+  "Glider",
+  "Drone",
+
+  "Car",
+  "Taxi",
+  "Bus",
+  "Mini Bus",
+  "Van",
+  "Truck",
+  "Motorcycle",
+  "Scooter",
+  "Bicycle",
+  "Rickshaw",
+  "Auto Rickshaw",
+
+  "Train",
+  "Metro",
+  "Tram",
+  "Monorail",
+
+  "Boat",
+  "Ship",
+  "Ferry",
+  "Yacht",
+  "Submarine",
+
+  "Walking",
+  "Horse",
+  "Camel",
+] as const;

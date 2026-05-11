@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 
 import {
@@ -15,15 +13,37 @@ import {
   ComboboxValue,
   useComboboxAnchor,
 } from "@/components/ui/combobox";
-import { languages } from "@/constants/data";
 
-interface LanguagesSelectProps {
+type Props = {
   onChange?: (value: React.SetStateAction<string[]>) => void;
   value?: string[];
   id?: string;
-}
+  name?: string;
+  placeholder?: string;
+};
 
-export function LanguagesSelect({ onChange, value, id }: LanguagesSelectProps) {
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const MonthSelect = ({
+  onChange,
+  value,
+  id,
+  name = "months",
+  placeholder = "Select months",
+}: Props) => {
   const anchor = useComboboxAnchor();
 
   return (
@@ -39,16 +59,26 @@ export function LanguagesSelect({ onChange, value, id }: LanguagesSelectProps) {
       }
       multiple
       autoHighlight
-      items={languages}
+      items={months}
       value={value}
-      name="languages"
+      name={name}
     >
-      <ComboboxChips id={id} ref={anchor} className="w-full max-w-xs">
-        <ComboboxValue placeholder="Select languages">
+      <ComboboxChips
+        id={id}
+        ref={anchor}
+        onClick={() => anchor.current?.focus?.()}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            anchor.current?.focus?.();
+          }
+        }}
+        className="w-full max-w-xs"
+      >
+        <ComboboxValue placeholder={placeholder}>
           {(values: string[]) => {
             if (!values || values.length === 0) {
               return (
-                <span className="text-muted-foreground">Select languages</span>
+                <span className="text-muted-foreground">{placeholder}</span>
               );
             }
 
@@ -76,4 +106,6 @@ export function LanguagesSelect({ onChange, value, id }: LanguagesSelectProps) {
       </ComboboxContent>
     </Combobox>
   );
-}
+};
+
+export default MonthSelect;

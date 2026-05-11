@@ -12,8 +12,8 @@ model Destination {
   lat Float
   lng Float
 
-  rating      Float
-  averageCost Int
+  rating      Float @default(0)
+  averageCost Int   @default(0)
 
   bestSeason String[]
   currency   String
