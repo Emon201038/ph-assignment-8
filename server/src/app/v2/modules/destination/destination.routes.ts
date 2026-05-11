@@ -2,23 +2,34 @@ import express from "express";
 import { DestinationController } from "./destination.controller";
 import { validateRequest } from "../../../middlewares/validateRequest";
 import { createDestinationSchema } from "./destination.validation";
+import { checkAuth } from "../../../middlewares/checkAuth";
+import { uploadImage } from "../../../middlewares/uploadFile";
 
 const destinationRoutes = express.Router();
 
 destinationRoutes
   .route("/")
   .get(DestinationController.getAllDestinations)
-  .post(validateRequest(createDestinationSchema), (req, res) => {
-    // POST route for creating destinations
-    res.status(501).json({ message: "Not yet implemented" });
-  });
+  .post(
+    uploadImage.single("image"),
+    checkAuth("ADMIN", "GUIDE"),
+    validateRequest(createDestinationSchema),
+    DestinationController.createDestination,
+  );
 
 destinationRoutes
   .route("/nearby")
   .get(DestinationController.getNearbyDestinations);
 
-destinationRoutes.route("/:id").get(DestinationController.getSingleDestination);
-// .put(validateRequest(createDestinationSchema), DestinationController.updateDestination)
-// .delete(DestinationController.deleteDestination);
+destinationRoutes
+  .route("/:id")
+  .get(DestinationController.getSingleDestination)
+  .put(
+    uploadImage.single("image"),
+    checkAuth("ADMIN", "GUIDE"),
+    validateRequest(createDestinationSchema),
+    DestinationController.updateDestination,
+  )
+  .delete(checkAuth("ADMIN"), DestinationController.deleteDestination);
 
 export default destinationRoutes;

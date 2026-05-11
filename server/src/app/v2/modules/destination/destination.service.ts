@@ -1,10 +1,10 @@
 import { Prisma } from "../../../../../prisma/generated/client";
 import prisma from "../../../config/db";
-import {
-  IOptionResult,
-  paginationHelper,
-} from "../../../helpers/paginationHelper";
+import { paginationHelper } from "../../../helpers/paginationHelper";
 import { destinationSearchableField } from "./destination.constant";
+import AppError from "../../../helpers/appError";
+import { uploadFileToCloudinary } from "../../../utils/upload-files";
+import { CreateDestinationInput } from "./destination.validation";
 
 const getDestinationsFromDb = async (
   options: Record<string, string>,
@@ -14,6 +14,10 @@ const getDestinationsFromDb = async (
     paginationHelper.calculatePagination(options);
 
   const andConditions: Prisma.DestinationWhereInput[] = [];
+
+  andConditions.push({
+    isDeleted: false,
+  });
 
   if (filters.searchTerm) {
     andConditions.push({
@@ -86,16 +90,97 @@ const getDestinationsFromDb = async (
   };
 };
 
+const createDestinationInDB = async (
+  payload: CreateDestinationInput,
+  image: Express.Multer.File,
+) => {
+  if (!image) {
+    throw new AppError(400, "Destination image is required");
+  }
+
+  const imageUpload = await uploadFileToCloudinary(
+    image,
+    "tour-buddy/destinations",
+  );
+
+  if (!imageUpload?.url) {
+    throw new AppError(400, "Image upload failed");
+  }
+
+  const result = await prisma.destination.create({
+    data: {
+      ...payload,
+      image: imageUpload.url,
+    },
+    include: {
+      attractions: true,
+    },
+  });
+
+  return result;
+};
+
 const getSingleDestination = async (id: string) => {
-  const destination = await prisma.destination.findUnique({
+  const destination = await prisma.destination.findFirst({
     where: {
       id,
+      isDeleted: false,
     },
     include: {
       attractions: true,
     },
   });
   return destination;
+};
+
+const updateDestinationInDB = async (
+  id: string,
+  payload: CreateDestinationInput,
+  file?: Express.Multer.File,
+) => {
+  let imageUrl: string | undefined;
+
+  if (file) {
+    const uploadedRes = await uploadFileToCloudinary(
+      file,
+      "tour-buddy/destinations",
+    );
+
+    if (!uploadedRes?.url) {
+      throw new AppError(400, "Image upload failed");
+    }
+
+    imageUrl = uploadedRes.url;
+  }
+
+  const result = await prisma.destination.update({
+    where: {
+      id,
+    },
+    data: {
+      ...payload,
+      ...(imageUrl && { image: imageUrl }),
+    },
+    include: {
+      attractions: true,
+    },
+  });
+
+  return result;
+};
+
+const softDeleteDestinationInDB = async (id: string) => {
+  const result = await prisma.destination.update({
+    where: {
+      id,
+    },
+    data: {
+      isDeleted: true,
+      deletedAt: new Date(),
+    },
+  });
+
+  return result;
 };
 
 const getNearbyDestinations = async (
@@ -117,6 +202,7 @@ const getNearbyDestinations = async (
         )
       ) AS distance
     FROM "Destination"
+    WHERE "isDeleted" = false
   ) AS d
   WHERE distance < ${radius}
   ORDER BY distance
@@ -126,6 +212,9 @@ const getNearbyDestinations = async (
   if (!destinations || (destinations as any[]).length === 0) {
     const fallback = await prisma.destination.findMany({
       take: 2,
+      where: {
+        isDeleted: false,
+      },
       orderBy: {
         rating: "desc",
       },
@@ -139,6 +228,9 @@ const getNearbyDestinations = async (
 
 export const DestinationService = {
   getDestinationsFromDb,
+  createDestinationInDB,
   getSingleDestination,
+  updateDestinationInDB,
+  softDeleteDestinationInDB,
   getNearbyDestinations,
 };
