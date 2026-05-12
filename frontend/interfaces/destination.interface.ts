@@ -17,7 +17,7 @@ export interface IDestination {
   continent: string;
   currency: string;
   languages: string[];
-  transportation: string; // comma separated details
+  transportation: string[]; // comma separated details
   createdAt: Date;
   updatedAt: Date;
 }

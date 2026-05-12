@@ -39,18 +39,44 @@ export const createDestinationSchema = z.object({
       error: "Description is required",
     })
     .min(1, "Description is required"),
-  bestSeason: commaSeparatedListSchema("Best season is required"),
+  bestSeason: z.array(
+    z
+      .string({
+        error: "Best season is required",
+      })
+      .min(1, "Best season is required"),
+  ),
   currency: z
     .string({
       error: "Currency is required",
     })
     .min(1, "Currency is required"),
-  languages: commaSeparatedListSchema("Languages are required"),
+  languages: z.array(
+    z
+      .string({
+        error: "Languages is required",
+      })
+      .min(1, "Languages is required"),
+  ),
   transportation: z
-    .string({
-      error: "Transportation is required",
-    })
+    .array(
+      z.string({
+        error: "Transportation is required",
+      }),
+    )
     .min(1, "Transportation is required"),
+  lat: z
+    .string({
+      error: "Latitude is required",
+    })
+    .min(1, "Latitude is required")
+    .transform((z) => parseFloat(z)),
+  lng: z
+    .string({
+      error: "Longitude is required",
+    })
+    .min(1, "Longitude is required")
+    .transform((z) => parseFloat(z)),
 });
 
 export type CreateDestinationInput = z.infer<typeof createDestinationSchema>;

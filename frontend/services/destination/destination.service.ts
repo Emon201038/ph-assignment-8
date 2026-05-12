@@ -19,6 +19,9 @@ const destinationSchema = z.object({
   bestSeason: z
     .array(z.string("bestSeason is required"))
     .min(1, "bestSeason is required"),
+  transportation: z
+    .array(z.string("transportation is required"))
+    .min(1, "transportation is required"),
   lat: z.string("lat is required").min(2, "lat is required"),
   lng: z.string("lng is required").min(2, "lng is required"),
   image: z
@@ -39,8 +42,13 @@ export const createDestination = async (
     currency: formData.get("currency"),
     languages: formData.getAll("languages"),
     bestSeason: formData.getAll("bestSeason"),
+    transportation: formData.getAll("transportation"),
+    lat: formData.get("lat"),
+    lng: formData.get("lng"),
     image: formData.get("image"),
   };
+
+  console.log(payload);
 
   try {
     const validationResult = zodValidator(payload, destinationSchema);
@@ -59,6 +67,7 @@ export const createDestination = async (
     });
     const data = await res.json();
     if (!data?.success) throw new Error(data?.message);
+    return data;
   } catch (error) {
     return {
       success: false,

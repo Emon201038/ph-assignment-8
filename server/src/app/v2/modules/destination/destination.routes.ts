@@ -7,12 +7,15 @@ import { uploadImage } from "../../../middlewares/uploadFile";
 
 const destinationRoutes = express.Router();
 
-destinationRoutes.route("/").get(DestinationController.getAllDestinations).post(
-  uploadImage.single("image"),
-  checkAuth("ADMIN", "GUIDE"),
-  // validateRequest(createDestinationSchema),
-  DestinationController.createDestination,
-);
+destinationRoutes
+  .route("/")
+  .get(DestinationController.getAllDestinations)
+  .post(
+    uploadImage.single("image"),
+    checkAuth("ADMIN", "GUIDE"),
+    validateRequest(createDestinationSchema),
+    DestinationController.createDestination,
+  );
 
 destinationRoutes
   .route("/nearby")

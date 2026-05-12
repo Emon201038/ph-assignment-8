@@ -330,8 +330,71 @@ const updateTravelerInterests = async () => {
   );
 };
 
+const transportations = [
+  "Airplane",
+  "Helicopter",
+  "Hot Air Balloon",
+  "Glider",
+  "Drone",
+
+  "Car",
+  "Taxi",
+  "Bus",
+  "Mini Bus",
+  "Van",
+  "Truck",
+  "Motorcycle",
+  "Scooter",
+  "Bicycle",
+  "Rickshaw",
+  "Auto Rickshaw",
+
+  "Train",
+  "Metro",
+  "Tram",
+  "Monorail",
+
+  "Boat",
+  "Ship",
+  "Ferry",
+  "Yacht",
+  "Submarine",
+
+  "Walking",
+  "Horse",
+  "Camel",
+];
+
+function getRandomTransportations() {
+  const shuffled = [...transportations].sort(() => 0.5 - Math.random());
+
+  // random 3 to 6 transportations
+  const selected = shuffled.slice(0, Math.floor(Math.random() * 4) + 3);
+
+  return selected;
+}
+
+const updateTransportation = async () => {
+  const destinations = await prisma.destination.findMany({});
+  for (let index = 0; index < destinations.length; index++) {
+    const element = destinations[index];
+    if (element.transportation.filter(Boolean).length === 0) {
+      await prisma.destination.update({
+        where: {
+          id: element.id,
+        },
+        data: {
+          transportation: {
+            set: getRandomTransportations(),
+          },
+        },
+      });
+    }
+  }
+};
+
 async function main() {
-  return await updateTravelerInterests();
+  return await updateTransportation();
 }
 
 main()

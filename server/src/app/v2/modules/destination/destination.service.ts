@@ -94,8 +94,6 @@ const createDestinationInDB = async (
   payload: CreateDestinationInput,
   image: Express.Multer.File,
 ) => {
-  console.log(payload, image);
-  throw new AppError(400, "Destination image is required");
   if (!image) {
     throw new AppError(400, "Destination image is required");
   }
@@ -112,6 +110,7 @@ const createDestinationInDB = async (
   const result = await prisma.destination.create({
     data: {
       ...payload,
+      overview: payload.description,
       image: imageUpload?.url as string,
     },
     include: {

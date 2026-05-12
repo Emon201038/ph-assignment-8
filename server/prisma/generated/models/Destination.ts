@@ -54,7 +54,6 @@ export type DestinationMinAggregateOutputType = {
   rating: number | null
   averageCost: number | null
   currency: string | null
-  transportation: string | null
   isDeleted: boolean | null
   deletedAt: Date | null
   createdAt: Date | null
@@ -75,7 +74,6 @@ export type DestinationMaxAggregateOutputType = {
   rating: number | null
   averageCost: number | null
   currency: string | null
-  transportation: string | null
   isDeleted: boolean | null
   deletedAt: Date | null
   createdAt: Date | null
@@ -135,7 +133,6 @@ export type DestinationMinAggregateInputType = {
   rating?: true
   averageCost?: true
   currency?: true
-  transportation?: true
   isDeleted?: true
   deletedAt?: true
   createdAt?: true
@@ -156,7 +153,6 @@ export type DestinationMaxAggregateInputType = {
   rating?: true
   averageCost?: true
   currency?: true
-  transportation?: true
   isDeleted?: true
   deletedAt?: true
   createdAt?: true
@@ -289,7 +285,7 @@ export type DestinationGroupByOutputType = {
   bestSeason: string[]
   currency: string
   languages: string[]
-  transportation: string
+  transportation: string[]
   isDeleted: boolean
   deletedAt: Date | null
   createdAt: Date
@@ -335,7 +331,7 @@ export type DestinationWhereInput = {
   bestSeason?: Prisma.StringNullableListFilter<"Destination">
   currency?: Prisma.StringFilter<"Destination"> | string
   languages?: Prisma.StringNullableListFilter<"Destination">
-  transportation?: Prisma.StringFilter<"Destination"> | string
+  transportation?: Prisma.StringNullableListFilter<"Destination">
   isDeleted?: Prisma.BoolFilter<"Destination"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"Destination"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Destination"> | Date | string
@@ -388,7 +384,7 @@ export type DestinationWhereUniqueInput = Prisma.AtLeast<{
   bestSeason?: Prisma.StringNullableListFilter<"Destination">
   currency?: Prisma.StringFilter<"Destination"> | string
   languages?: Prisma.StringNullableListFilter<"Destination">
-  transportation?: Prisma.StringFilter<"Destination"> | string
+  transportation?: Prisma.StringNullableListFilter<"Destination">
   isDeleted?: Prisma.BoolFilter<"Destination"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"Destination"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Destination"> | Date | string
@@ -444,7 +440,7 @@ export type DestinationScalarWhereWithAggregatesInput = {
   bestSeason?: Prisma.StringNullableListFilter<"Destination">
   currency?: Prisma.StringWithAggregatesFilter<"Destination"> | string
   languages?: Prisma.StringNullableListFilter<"Destination">
-  transportation?: Prisma.StringWithAggregatesFilter<"Destination"> | string
+  transportation?: Prisma.StringNullableListFilter<"Destination">
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Destination"> | boolean
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Destination"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Destination"> | Date | string
@@ -462,12 +458,12 @@ export type DestinationCreateInput = {
   overview: string
   lat: number
   lng: number
-  rating: number
-  averageCost: number
+  rating?: number
+  averageCost?: number
   bestSeason?: Prisma.DestinationCreatebestSeasonInput | string[]
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
-  transportation: string
+  transportation?: Prisma.DestinationCreatetransportationInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -487,12 +483,12 @@ export type DestinationUncheckedCreateInput = {
   overview: string
   lat: number
   lng: number
-  rating: number
-  averageCost: number
+  rating?: number
+  averageCost?: number
   bestSeason?: Prisma.DestinationCreatebestSeasonInput | string[]
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
-  transportation: string
+  transportation?: Prisma.DestinationCreatetransportationInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -517,7 +513,7 @@ export type DestinationUpdateInput = {
   bestSeason?: Prisma.DestinationUpdatebestSeasonInput | string[]
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
-  transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  transportation?: Prisma.DestinationUpdatetransportationInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -542,7 +538,7 @@ export type DestinationUncheckedUpdateInput = {
   bestSeason?: Prisma.DestinationUpdatebestSeasonInput | string[]
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
-  transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  transportation?: Prisma.DestinationUpdatetransportationInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -562,12 +558,12 @@ export type DestinationCreateManyInput = {
   overview: string
   lat: number
   lng: number
-  rating: number
-  averageCost: number
+  rating?: number
+  averageCost?: number
   bestSeason?: Prisma.DestinationCreatebestSeasonInput | string[]
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
-  transportation: string
+  transportation?: Prisma.DestinationCreatetransportationInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -590,7 +586,7 @@ export type DestinationUpdateManyMutationInput = {
   bestSeason?: Prisma.DestinationUpdatebestSeasonInput | string[]
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
-  transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  transportation?: Prisma.DestinationUpdatetransportationInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -613,7 +609,7 @@ export type DestinationUncheckedUpdateManyInput = {
   bestSeason?: Prisma.DestinationUpdatebestSeasonInput | string[]
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
-  transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  transportation?: Prisma.DestinationUpdatetransportationInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -672,7 +668,6 @@ export type DestinationMaxOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   averageCost?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  transportation?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -693,7 +688,6 @@ export type DestinationMinOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   averageCost?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  transportation?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -720,6 +714,10 @@ export type DestinationCreatelanguagesInput = {
   set: string[]
 }
 
+export type DestinationCreatetransportationInput = {
+  set: string[]
+}
+
 export type FloatFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -742,6 +740,11 @@ export type DestinationUpdatebestSeasonInput = {
 }
 
 export type DestinationUpdatelanguagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type DestinationUpdatetransportationInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -789,12 +792,12 @@ export type DestinationCreateWithoutAttractionsInput = {
   overview: string
   lat: number
   lng: number
-  rating: number
-  averageCost: number
+  rating?: number
+  averageCost?: number
   bestSeason?: Prisma.DestinationCreatebestSeasonInput | string[]
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
-  transportation: string
+  transportation?: Prisma.DestinationCreatetransportationInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -813,12 +816,12 @@ export type DestinationUncheckedCreateWithoutAttractionsInput = {
   overview: string
   lat: number
   lng: number
-  rating: number
-  averageCost: number
+  rating?: number
+  averageCost?: number
   bestSeason?: Prisma.DestinationCreatebestSeasonInput | string[]
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
-  transportation: string
+  transportation?: Prisma.DestinationCreatetransportationInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -858,7 +861,7 @@ export type DestinationUpdateWithoutAttractionsInput = {
   bestSeason?: Prisma.DestinationUpdatebestSeasonInput | string[]
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
-  transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  transportation?: Prisma.DestinationUpdatetransportationInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -882,7 +885,7 @@ export type DestinationUncheckedUpdateWithoutAttractionsInput = {
   bestSeason?: Prisma.DestinationUpdatebestSeasonInput | string[]
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
-  transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  transportation?: Prisma.DestinationUpdatetransportationInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -901,12 +904,12 @@ export type DestinationCreateWithoutToursInput = {
   overview: string
   lat: number
   lng: number
-  rating: number
-  averageCost: number
+  rating?: number
+  averageCost?: number
   bestSeason?: Prisma.DestinationCreatebestSeasonInput | string[]
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
-  transportation: string
+  transportation?: Prisma.DestinationCreatetransportationInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -925,12 +928,12 @@ export type DestinationUncheckedCreateWithoutToursInput = {
   overview: string
   lat: number
   lng: number
-  rating: number
-  averageCost: number
+  rating?: number
+  averageCost?: number
   bestSeason?: Prisma.DestinationCreatebestSeasonInput | string[]
   currency: string
   languages?: Prisma.DestinationCreatelanguagesInput | string[]
-  transportation: string
+  transportation?: Prisma.DestinationCreatetransportationInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -970,7 +973,7 @@ export type DestinationUpdateWithoutToursInput = {
   bestSeason?: Prisma.DestinationUpdatebestSeasonInput | string[]
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
-  transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  transportation?: Prisma.DestinationUpdatetransportationInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -994,7 +997,7 @@ export type DestinationUncheckedUpdateWithoutToursInput = {
   bestSeason?: Prisma.DestinationUpdatebestSeasonInput | string[]
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   languages?: Prisma.DestinationUpdatelanguagesInput | string[]
-  transportation?: Prisma.StringFieldUpdateOperationsInput | string
+  transportation?: Prisma.DestinationUpdatetransportationInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1168,7 +1171,7 @@ export type $DestinationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     bestSeason: string[]
     currency: string
     languages: string[]
-    transportation: string
+    transportation: string[]
     isDeleted: boolean
     deletedAt: Date | null
     createdAt: Date
@@ -1613,7 +1616,7 @@ export interface DestinationFieldRefs {
   readonly bestSeason: Prisma.FieldRef<"Destination", 'String[]'>
   readonly currency: Prisma.FieldRef<"Destination", 'String'>
   readonly languages: Prisma.FieldRef<"Destination", 'String[]'>
-  readonly transportation: Prisma.FieldRef<"Destination", 'String'>
+  readonly transportation: Prisma.FieldRef<"Destination", 'String[]'>
   readonly isDeleted: Prisma.FieldRef<"Destination", 'Boolean'>
   readonly deletedAt: Prisma.FieldRef<"Destination", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Destination", 'DateTime'>

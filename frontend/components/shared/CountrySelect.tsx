@@ -34,6 +34,7 @@ interface CountrySelectProps {
   placeholder?: string;
   continent?: string;
   filterByContinent?: boolean;
+  defaultValue?: Country | null;
 }
 
 export function CountrySelect({

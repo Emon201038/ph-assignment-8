@@ -19,6 +19,7 @@ import TransportationSelect from "@/components/shared/TransportationSelect";
 import { toast } from "sonner";
 import InputFieldError from "@/components/shared/InputFieldError";
 import { IInputErrorState } from "@/lib/getInputFieldError";
+import { useRouter } from "next/navigation";
 
 type Props = {
   destination?: IDestination;
@@ -33,6 +34,7 @@ interface Country {
 }
 
 const DestinationForm = ({ destination }: Props) => {
+  const isEditMode = !!destination;
   const [selectedContinent, setSelectedContinent] = React.useState<
     string | null
   >(null);
@@ -54,11 +56,33 @@ const DestinationForm = ({ destination }: Props) => {
     null,
   );
 
+  const router = useRouter();
+
   useEffect(() => {
     if (selectedCountry) {
       setCurrency(selectedCountry.currency);
     }
   }, [selectedCountry]);
+
+  console.log(state);
+  useEffect(() => {
+    if (state && state.success) {
+      toast.success(
+        `Destination ${isEditMode ? "updated" : "created"} successfully`,
+      );
+      router.push("/admin/dashboard/destinations-management");
+    } else if (state && !state.success && state.errors?.length === 0) {
+      toast.error(state.message || "Something went wrong");
+    }
+  }, [state, router, isEditMode]);
+
+  useEffect(() => {
+    if (state && !state.success && image && fileInputRef.current) {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(image);
+      fileInputRef.current.files = dataTransfer.files;
+    }
+  }, [state, image]);
 
   const handleFileRemove = () => {
     setImage(null);
@@ -96,13 +120,23 @@ const DestinationForm = ({ destination }: Props) => {
     }
   };
 
+  console.log(state);
+
   return (
     <form className="space-y-5" action={createDestinationAction}>
       <div className="grid grid-cols-2 gap-3">
         <Field>
           <FieldLabel htmlFor="name">Name *</FieldLabel>
           <FieldContent>
-            <Input id="name" name="name" placeholder="Enter destination name" />
+            <Input
+              defaultValue={
+                (state?.formData?.name as string) ||
+                (isEditMode ? destination?.name : undefined)
+              }
+              id="name"
+              name="name"
+              placeholder="Enter destination name"
+            />
           </FieldContent>
           <InputFieldError state={state as IInputErrorState} field="name" />
         </Field>
@@ -112,6 +146,10 @@ const DestinationForm = ({ destination }: Props) => {
             <ContinentSelect
               id="continent"
               value={selectedContinent}
+              defaultValue={
+                (state?.formData?.continent as string) ||
+                (isEditMode ? destination?.continent : undefined)
+              }
               onChange={(value) => {
                 setSelectedContinent(value);
                 setSelectedCountry(null);
@@ -171,6 +209,10 @@ const DestinationForm = ({ destination }: Props) => {
             <Textarea
               rows={3}
               id="description"
+              defaultValue={
+                (state?.formData?.description as string) ||
+                (isEditMode ? destination?.description : undefined)
+              }
               name="description"
               placeholder="Enter destination description"
             />
@@ -230,20 +272,8 @@ const DestinationForm = ({ destination }: Props) => {
         <Field>
           <FieldLabel htmlFor="lat_lng">Latitude, Longitude *</FieldLabel>
           <FieldContent className="flex flex-row gap-1">
-            <Input
-              disabled
-              id="lat_lng"
-              name="lat"
-              type="text"
-              value={location?.lat || ""}
-            />
-            <Input
-              disabled
-              id="lat_lng"
-              name="lng"
-              type="text"
-              value={location?.lng || ""}
-            />
+            <Input readOnly name="lat" value={location?.lat || ""} />
+            <Input readOnly name="lng" value={location?.lng || ""} />
             <Button
               disabled={
                 !selectedCity || !selectedCountry?.name || isLoadingLocation

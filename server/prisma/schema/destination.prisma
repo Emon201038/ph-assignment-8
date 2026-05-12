@@ -19,7 +19,7 @@ model Destination {
   currency   String
   languages  String[]
 
-  transportation String
+  transportation String[]
 
   isDeleted Boolean   @default(false)
   deletedAt DateTime?

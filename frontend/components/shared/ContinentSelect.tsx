@@ -17,12 +17,19 @@ interface ContinentSelectProps {
   onChange?: (value: string | null) => void;
   value?: string | null;
   id?: string;
+  defaultValue?: string | null;
 }
 
-export function ContinentSelect({ onChange, value, id }: ContinentSelectProps) {
+export function ContinentSelect({
+  onChange,
+  value,
+  id,
+  defaultValue,
+}: ContinentSelectProps) {
   return (
     <Combobox
       items={continents}
+      defaultValue={defaultValue}
       onValueChange={onChange}
       value={value}
       name="continent"
