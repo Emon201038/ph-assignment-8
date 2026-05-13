@@ -48,8 +48,6 @@ export const createDestination = async (
     image: formData.get("image"),
   };
 
-  console.log(payload);
-
   try {
     const validationResult = zodValidator(payload, destinationSchema);
 
@@ -65,6 +63,65 @@ export const createDestination = async (
     const res = await serverFetch.post("/v2/destinations", {
       body: formData,
     });
+    const data = await res.json();
+    if (!data?.success) throw new Error(data?.message);
+    return data;
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong",
+      formData: payload,
+      errors: [],
+    };
+  }
+};
+
+export const updateDestination = async (
+  initialState: unknown,
+  formData: FormData,
+) => {
+  const payload = {
+    name: formData.get("name"),
+    continent: formData.get("continent"),
+    country: formData.get("country"),
+    city: formData.get("city"),
+    description: formData.get("description"),
+    currency: formData.get("currency"),
+    languages: formData.getAll("languages"),
+    bestSeason: formData.getAll("bestSeason"),
+    transportation: formData.getAll("transportation"),
+    lat: formData.get("lat"),
+    lng: formData.get("lng"),
+    image: formData.get("image"),
+  };
+
+  if (payload?.image instanceof File) {
+    if (payload.image.size <= 0) formData.delete("image");
+  }
+
+  try {
+    const validationResult = zodValidator(
+      payload,
+      destinationSchema.extend({
+        image: z.optional(z.instanceof(File)).nullable(),
+      }),
+    );
+
+    if (!validationResult.success && validationResult.errors) {
+      return {
+        success: false,
+        errors: validationResult.errors,
+        formData: payload,
+        message: "validation error",
+      };
+    }
+
+    const res = await serverFetch.put(
+      `/v2/destinations/${formData.get("id")}`,
+      {
+        body: formData,
+      },
+    );
     const data = await res.json();
     if (!data?.success) throw new Error(data?.message);
     return data;
