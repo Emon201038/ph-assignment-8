@@ -44,6 +44,7 @@ export function CountrySelect({
   placeholder,
   continent,
   filterByContinent = false,
+  defaultValue,
 }: CountrySelectProps) {
   const [countries, setCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(false);
@@ -82,7 +83,7 @@ export function CountrySelect({
     <Combobox
       items={filteredCountries}
       onValueChange={(v) => onChange?.(v)}
-      value={value}
+      defaultValue={defaultValue || value}
       itemToStringValue={(c) => c.name}
       name="country"
     >

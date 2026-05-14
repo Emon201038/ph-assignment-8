@@ -26,12 +26,12 @@ export function ContinentSelect({
   id,
   defaultValue,
 }: ContinentSelectProps) {
+  console.log(defaultValue);
   return (
     <Combobox
       items={continents}
-      defaultValue={defaultValue}
+      defaultValue={defaultValue || value}
       onValueChange={onChange}
-      value={value}
       name="continent"
       itemToStringValue={(c) => c}
     >

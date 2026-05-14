@@ -64,7 +64,6 @@ const DestinationForm = ({ destination }: Props) => {
     }
   }, [selectedCountry]);
 
-  console.log(state);
   useEffect(() => {
     if (state && state.success) {
       toast.success(
@@ -120,7 +119,7 @@ const DestinationForm = ({ destination }: Props) => {
     }
   };
 
-  console.log(state);
+  console.log(destination);
 
   return (
     <form className="space-y-5" action={createDestinationAction}>
